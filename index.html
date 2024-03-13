@@ -5,14 +5,19 @@
     <title>markdown.web</title>
     <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
     
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <!-- CSS Libraries -->
-    <!-- Class -->
+    <!-- Classbased -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
     <!-- Classless - centered viewport -->
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css" /> -->
     <!-- Classless - fluid viewport --> 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.fluid.classless.min.css" /> -->
-    
+    <!-- CSS Overrides -->
+    <link rel="stylesheet" href="src/css/app.css" />
+
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,31 +28,109 @@
 </head>
 
 <body class="container">
-  <!-- Header -->
-  <!--
-    <header>
-    <hgroup>
-      <h1>markdown.web</h1>
-      <p>A tiny front-end library to build simple sites</p>
-      <p>Total project size is < 20kb gzipped</p>
-    </hgroup>
-    <nav>
-      <ul>
-        <li><a href="#" data-theme-switcher="auto">Auto</a></li>
-        <li><a href="#" data-theme-switcher="light">Light</a></li>
-        <li><a href="#" data-theme-switcher="dark">Dark</a></li>
-      </ul>
-    </nav>
-  </header>
-    -->
-    <div
-        ax-load="visible"
-        x-data="header({
-            title:'markdown.web',
-            subtitle:'A tiny front-end library to build simple sites',
-            text:'Total project size is < 20kb gzipped'
-        })"
-        x-ignore
+    <!-- Header -->
+    <div x-ref="navbar" x-data="htmlLoader('navbar', 'views/shared/navbar.html')"></div>
+
+    <div x-ref="header" x-data="htmlLoader('header', 'views/shared/header.html')"></div>
+    <div x-data>
+        <span x-uppercase>Hello World!</span>
+    </div>
+    <span x-text="$now"></span>
+    <!--
+    <div x-data="{ message: 'Hello World!' }">
+        <div x-log="message"></div>
+    </div>
+
+    <div x-data="{ message: 'Hello World!' }">
+      <div x-reactiveLog="message"></div>
+   
+      <button @click="message = 'yolo'">Change</button>
+    </div>
+-->
+    <!-- FEED --> 
+    <main>
+      <div x-ref="form" x-data="htmlLoader('form', 'views/shared/bitcoin-form.html')"></div>
+    </main>
+  
+    <!-- PROFILE -->
+
+    <!-- LOGIN -->
+
+    <!-- REGISTER -->
+
+    <!-- ERROR -->
+
+    <!-- INDEX ONLY-->
+    <div x-data>
+        <button @click="$store.tabs.setTab('first')">First Tab</button>
+        <button @click="$store.tabs.setTab('second')">Second Tab</button>
+        <button @click="$store.tabs.setTab('third')">Third Tab</button>
+  
+        <template x-for="tab in $store.tabs.items">
+            <div x-text="tab" x-show="tab == $store.tabs.current" x-transition>
+                tabe content
+            </div>
+        </template>
+    </div>
+     
+    <button x-data x-on:click="$store.darkmode.toggle()">Toggle Dark Mode</button>
+    <div x-data="$store.darkmode">
+        <div x-text="$store.darkmode.dark"></div>
+    </div>
+
+    <div x-data="dropdown">
+        <button @click="toggle">Toggle</button>
+        <div x-show="isOpen">
+            Content...
+        </div>
+    </div> 
+    <div ax-load="visible" x-ignore x-data="header(headerData)"></div>
+
+    <details class="dropdown">
+        <summary role="button" class="secondary">Theme</summary>
+        <ul>
+          <li><a href="#" data-theme-switcher="auto">Auto</a></li>
+          <li><a href="#" data-theme-switcher="light">Light</a></li>
+          <li><a href="#" data-theme-switcher="dark">Dark</a></li>
+        </ul>
+      </details>
+    
+    <article x-data data-theme="$store.darkmode.theme">
+        <header>
+            <ul>
+                <button aria-label="close" rel="prev" class="outline material-icons">add</button>
+            </ul>
+            <ul>
+                <p>
+                    <span ></span>h
+                    <strong>🗓️ Thank You for Registering!</strong>
+                </p>
+            </ul>
+        </header>
+        <p>
+            We're excited to have you join us for our
+            upcoming event. Please arrive at the museum 
+            on time to check in and get started.
+        </p>
+        <ul>
+            <li>Date: Saturday, April 15</li>
+            <li>Time: 10:00am - 12:00pm</li>
+        </ul>
+        <footer>
+            <button className="secondary">
+              Cancel
+            </button>
+            <button>Confirm</button>
+          </footer>
+    </article>
+
+    <div x-data="{ title: 'Start Here' }">
+        <h1 x-text="title"></h1>
+    </div>
+
+
+    <div ax-load="visible" x-ignore
+        x-data="card()"
     ></div>
   <!-- ./ Header -->
 
@@ -406,18 +489,66 @@
       </footer>
     </article>
   </dialog>
-    <!-- ./ Modal example -->
-
-    <!-- Minimal theme switcher -->
-    <!--
-    <script src="js/minimal-theme-switcher.js"></script>
-    -->
     
     <!-- JS Libraries -->
     <!-- For componentizing and lazy loading Alpine -->
+      <!--
     <script defer src="https://cdn.jsdelivr.net/npm/async-alpine@1.x.x/dist/async-alpine.script.js"></script>
+  
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <script type="module" src="app.js"></script>
+   
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
+     -->
+
+<!--
+    <script defer type="module" src="js/main-module.js"></script>
+    <script type="module" src="js/app-deps.js"></script>
+-->
+<!--
+    <script defer type="module">
+      import { loader } from './src/js/loader.js'
+      loader(['./data/index.js']).catch(err => console.error(err))
+    </script>
+
+    <script type="module" src="src/js/app-module.js"></script> 
+    -->
+    <script type="module" src="src/js/init.js"></script> 
+<!--
+    <script src="src/js/app.js"></script>
+    -->
+    <!-- Minimal theme switcher -->
+    <script src="src/js/minimal-theme-switcher.js"></script>
+
+    <!-- DATA -->
+    <script>
+        let navData = {
+            title: 'markdown.web',
+            links: [
+                {
+                    href: '#',
+                    text: 'about'
+                },
+                {
+                    href: '#',
+                    text: 'contact'
+                },
+                {
+                    href: '#',
+                    text: 'blog'
+                }
+            ]
+        }
+        let headerData = {
+            title: 'markdown.web',
+            subtitle: 'A tiny front-end library to build simple sites',
+            text: 'Total project size is < 20kb gzipped'
+        }
+    </script>
 </body>
 </html>
