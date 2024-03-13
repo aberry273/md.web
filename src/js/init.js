@@ -1,32 +1,22 @@
-/*
-import { data } from '/js/data/index.js'
-import { bindings } from '/js/bindings/index.js'
-import * as stores from '/js/stores/index.js'
-
-// Init shared bindings
-Object.keys(bindings).map(x => Alpine.bind(x, bindings[x]))
-const _bindings = Object.keys(bindings).map(x => { return [ x, bindings[x] ] })
-// Init shared data scopes
-Object.keys(data).map(x => Alpine.data(x, data[x]))
-const _data = Object.keys(data).map(x => { return [ x, data[x] ] })
-*/
-// Init AsyncAlpine + Alpine + Components
-//AsyncAlpine.init(Alpine);
-//AsyncAlpine.alias(`js/components/[name].js`);
-//AsyncAlpine.start();
-//Alpine.start()
+//Based on
+//https://dev.to/keuller/build-modular-app-with-alpinejs-2ece
 
 import alpinejs from 'https://cdn.skypack.dev/alpinejs';
 // Manually load components with initial parameters set
-alpinejs.data('htmlLoader', (ref, filePath) => ({
+alpinejs.data('html', (ref, filePath) => ({
     init() {
         fetch(filePath).then(r => r.text()).then(html => {
-            this.$refs[ref].innerHTML = html
+            const self = this
+            this.$nextTick(() => { self.$refs[ref].innerHTML = html });
         })
     }
 }))
 
 import * as components from './components/index.js';
+Object.keys(components).forEach(component => {
+    let data = components[component]();
+    alpinejs.data('_'+component, () => data);
+});
 
 // Load data
 import * as comps from './data/index.js';
@@ -58,4 +48,7 @@ Object.keys(magics).forEach(magic => {
     let data = magics[magic];
     alpinejs.magic(magic, data);
 });
+
+window.alpinejs = alpinejs
 alpinejs.start();
+

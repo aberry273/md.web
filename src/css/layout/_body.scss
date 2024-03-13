@@ -7,7 +7,7 @@ body {
     max-width: map.get(map.get($breakpoints, "md"), "viewport");
     margin-inline: auto;
   }
-
+ 
   > main {
     svg {
       display: block;
