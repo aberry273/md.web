@@ -2,28 +2,19 @@
 //https://dev.to/keuller/build-modular-app-with-alpinejs-2ece
 
 import alpinejs from 'https://cdn.skypack.dev/alpinejs';
-// Manually load components with initial parameters set
-alpinejs.data('html', (ref, filePath) => ({
-    init() {
-        fetch(filePath).then(r => r.text()).then(html => {
-            const self = this
-            this.$nextTick(() => { self.$refs[ref].innerHTML = html });
-        })
-    }
-}))
 
+// Load rendering components
 import * as components from './components/index.js';
 Object.keys(components).forEach(component => {
-    let data = components[component]();
-    alpinejs.data('_'+component, () => data);
+    alpinejs.data(component, components[component]);
 });
 
-// Load data
+// Load data components, prefix with _
 import * as comps from './data/index.js';
-Object.keys(comps).forEach(comp => {
-    let data = comps[comp]();
-    alpinejs.data(comp, () => data);
+Object.keys(comps).forEach(component => {
+    alpinejs.data('_'+component, comps[component]);
 });
+
 // Load bindings
 import * as bindings from './bindings/index.js';
 Object.keys(bindings).forEach(binding => {
@@ -48,7 +39,13 @@ Object.keys(magics).forEach(magic => {
     let data = magics[magic];
     alpinejs.magic(magic, data);
 });
-
+/*
+// Init AsyncAlpine + Alpine + Components
+AsyncAlpine.init(window.alpinejs);
+AsyncAlpine.alias(`src/js/components/[name].js`);
+AsyncAlpine.start();
+window.Alpine = alpine.js
+*/
 window.alpinejs = alpinejs
 alpinejs.start();
 

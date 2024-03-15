@@ -1,26 +1,40 @@
-<header>
-  <hgroup>
-    <h1 >Feeds</h1>
-  </hgroup>
-</header>
+<div class="grid">
+  <!-- Feed panel -->
+  <div>
 
-<div x-data>
-  <template x-for="tab in $store.feedtabs.items" >
-    <button @click="$store.feedtabs.setTab(tab)" x-text="tab"></button>
-  </template>
-    <main x-transition x-show="'AI updates' == $store.feedtabs.current">
-      <div x-ref="ai" x-data="html('ai', `view/shared/feed.html`)"></div>
-    </main>
-    <main x-transition x-show="'Receipes' == $store.feedtabs.current">
-      <div x-ref="receipes" x-data="html('receipes', `view/shared/header.html`)"></div>
-    </main>
-    <main x-transition x-show="'history' == $store.feedtabs.current">
-      <div x-ref="history" x-data="html('history',  `view/shared/header.html`)"></div>
-    </main>
-    <main x-transition x-show="'election' == $store.feedtabs.current">
-      <div x-ref="election" x-data="html('election',  `view/shared/header.html`)"></div>
-    </main>
-    <main x-transition x-show="'movies' == $store.feedtabs.current">
-      <div x-ref="movies" x-data="html('movies',  `view/shared/header.html`)"></div>
-    </main>
-  </div>  
+    <nav>
+      <ul>
+        <header>
+          <hgroup>
+            <h1>Your feeds</h1>
+            <p>Create a new feed</p>
+          </hgroup>
+        </header>
+      </ul>
+      <ul>
+      <!--Filters-->
+        <details class="dropdown">
+          <summary role="button" class="outline" x-text="$store.feedFilters.current">
+          </summary>
+            <ul>
+              <template x-for="tab in $store.feedFilters.items" >
+                <button class="flat" @click="$store.feedFilters.setTab(tab)" :class="$store.feedFilters.current == tab ? 'selected' : ''" x-text="tab"></button>
+              </template>
+            </ul>
+        </details>
+        <button class="material-icons flat">add</button>
+      </ul>
+    </nav>
+    <!--Feed-->
+    <div x-data="$store.feedFilters">
+      <div x-data="feed({
+        feed: $store.feedFilters.current
+      })"
+      x-watch="this.$watch(this.$store.feedFilters.current, value => console.log(value))"></div>
+    </div>
+  </div>
+  <!-- Other panel -->
+  <div>
+
+  </div>
+</div>

@@ -17,6 +17,7 @@
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.fluid.classless.min.css" /> -->
     <!-- CSS Overrides -->
     <link rel="stylesheet" href="src/css/app.css" />
+    <link rel="stylesheet" href="src/css/overrides.css" />
 
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,12 +26,22 @@
 
     <!-- PWA -->
     <link rel="manifest" href="manifest.json" />
+
 </head>
 
 <body class="container">
     <!-- Header -->
-    <div x-ref="navbar" x-data="html('navbar', 'view/shared/navbar.html')"></div>
+    <div x-ref="navbar" x-data="_html('navbar', 'view/shared/navbar.html')"></div>
 
+    <details class="dropdown">
+      <summary role="button" class="secondary">Theme</summary>
+      <ul>
+        <li><a href="#" data-theme-switcher="auto">Auto</a></li>
+        <li><a href="#" data-theme-switcher="light">Light</a></li>
+        <li><a href="#" data-theme-switcher="dark">Dark</a></li>
+      </ul>
+    </details>
+    
   <script>
     const tabs = [
       "feeds",
@@ -47,35 +58,26 @@
     <template x-for="tab in tabs" x-init="$store.tabs.setTab(tabs[0])">
       <button @click="$store.tabs.setTab(tab)" x-text="tab"></button>
     </template>
-    <!--
-    <template x-for="tab in tabs">
-      <main x-transition x-show="tab == $store.tabs.current">
-        <div x-text="tab"></div>
-        <div x-ref="tab" x-data="html(tab, `view/pages/${tab}.html`)"></div>
-      </main>
-    </template>
-    -->
-
       <main x-transition x-show="'feeds' == $store.tabs.current">
-        <div x-ref="feeds" x-data="html('feeds', `view/pages/feeds.html`)"></div>
+        <div x-ref="feeds" x-data="_html('feeds', `view/pages/feeds.html`)"></div>
       </main>
       <main x-transition x-show="'about' == $store.tabs.current">
-        <div x-ref="about" x-data="html('about', `view/pages/about.html`)"></div>
+        <div x-ref="about" x-data="_html('about', `view/pages/about.html`)"></div>
       </main>
       <main x-transition x-show="'profile' == $store.tabs.current">
-        <div x-ref="profile" x-data="html('profile', `view/pages/profile.html`)"></div>
+        <div x-ref="profile" x-data="_html('profile', `view/pages/profile.html`)"></div>
       </main>
       <main x-transition x-show="'register' == $store.tabs.current">
-        <div x-ref="register" x-data="html('register', `view/pages/register.html`)"></div>
+        <div x-ref="register" x-data="_html('register', `view/pages/register.html`)"></div>
       </main>
       <main x-transition x-show="'login' == $store.tabs.current">
-        <div x-ref="login" x-data="html('login', `view/pages/login.html`)"></div>
+        <div x-ref="login" x-data="_html('login', `view/pages/login.html`)"></div>
       </main>
       <main x-transition x-show="'error' == $store.tabs.current">
-        <div x-ref="error" x-data="html('error', `view/pages/error.html`)"></div>
+        <div x-ref="error" x-data="_html('error', `view/pages/error.html`)"></div>
       </main>
       <main x-transition x-show="'sandbox' == $store.tabs.current">
-        <div x-ref="sandbox" x-data="html('sandbox', `view/pages/sandbox.html`)"></div>
+        <div x-ref="sandbox" x-data="_html('sandbox', `view/pages/sandbox.html`)"></div>
       </main>
     </div>    
   </main>
@@ -115,8 +117,6 @@
      
    <!--
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  
-
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
@@ -125,25 +125,9 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
       -->
-<!--
-    <script defer type="module" src="js/main-module.js"></script>
-    <script type="module" src="js/app-deps.js"></script>
--->
-<!--
-    <script defer type="module">
-      import { loader } from './src/js/loader.js'
-      loader(['./data/index.js']).catch(err => console.error(err))
-    </script>
 
-    <script type="module" src="src/js/app-module.js"></script> 
-   
-    <script defer src="https://cdn.jsdelivr.net/npm/async-alpine@1.x.x/dist/async-alpine.script.js"></script>
-     -->
     <script type="module" src="src/js/init.js"></script> 
 
-<!--
-    <script src="src/js/app.js"></script>
-    -->
     <!-- Minimal theme switcher -->
     <script src="src/js/minimal-theme-switcher.js"></script>
 

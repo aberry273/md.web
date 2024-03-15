@@ -18,7 +18,7 @@
         <div x-text="$store.darkmode.dark"></div>
     </div>
 
-    <div x-data="dropdown">
+    <div x-data="_dropdown">
         <button @click="toggle">Toggle</button>
         <div x-show="isOpen">
             Content...
@@ -26,15 +26,6 @@
     </div> 
     <!-- requires aynsc alpine-->
     <div ax-load="visible" x-ignore x-data="header(headerData)"></div>
-
-    <details class="dropdown">
-        <summary role="button" class="secondary">Theme</summary>
-        <ul>
-          <li><a href="#" data-theme-switcher="auto">Auto</a></li>
-          <li><a href="#" data-theme-switcher="light">Light</a></li>
-          <li><a href="#" data-theme-switcher="dark">Dark</a></li>
-        </ul>
-      </details>
     
     <article x-data data-theme="$store.darkmode.theme">
         <header>

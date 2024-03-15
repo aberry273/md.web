@@ -1,0 +1,9 @@
+{
+    "triggerTaskOnSave.tasks": {
+        /* commented out until fix for task --load-path fix
+        "Sass Compile": [
+          "*.scss", // <-- Glob pasttern to specify which files should trigger the task
+        ],
+        */
+      }
+}

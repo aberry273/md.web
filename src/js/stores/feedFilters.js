@@ -4,7 +4,7 @@ export default () => ({
  
     items: [
         "AI updates",
-        "Receipes",
+        "Recipes",
         "Historical bites",
         "2024 Election",
         "Movies & TV",

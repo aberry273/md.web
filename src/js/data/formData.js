@@ -1,3 +1,5 @@
-export default () => ({
-    inputData: 10
-})
+export default function (){
+    return {
+        inputData: 10
+    }
+}

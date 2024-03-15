@@ -4,7 +4,11 @@
 @use "../../../node_modules/@picocss/pico/scss/colors" as *;
 @use "../../../node_modules/@picocss/pico/scss/helpers/functions";
 
-$bitcoin-color: #f7931a;
+// https://coolors.co/114b5f-028090-e4fde1-456990-f45b69
+//$primary-color: #8800ff;
+$primary-color: #f7931a;
+$secondary-color: #456990;
+$contrast-color: #E4FDE1;
 
 // Default: Dark theme
 @mixin theme {
@@ -14,46 +18,46 @@ $bitcoin-color: #f7931a;
   #{$css-var-prefix}color: #{$zinc-200};
 
   // Text selection color
-  #{$css-var-prefix}text-selection-color: #{rgba($bitcoin-color, 0.1875)};
+  #{$css-var-prefix}text-selection-color: #{rgba($primary-color, 0.1875)};
 
   // Muted colors
   #{$css-var-prefix}muted-color: #{$zinc-450};
   #{$css-var-prefix}muted-border-color: #{$slate-850};
 
   // Primary colors
-  #{$css-var-prefix}primary: #{$bitcoin-color};
+  #{$css-var-prefix}primary: #{$primary-color};
   #{$css-var-prefix}primary-background: var(#{$css-var-prefix}primary);
   #{$css-var-prefix}primary-border: var(#{$css-var-prefix}primary-background);
-  #{$css-var-prefix}primary-underline: #{rgba($bitcoin-color, 0.5)};
-  #{$css-var-prefix}primary-hover: #{color.scale($bitcoin-color, $lightness: 21%)};
+  #{$css-var-prefix}primary-underline: #{rgba($primary-color, 0.5)};
+  #{$css-var-prefix}primary-hover: #{color.scale($primary-color, $lightness: 21%)};
   #{$css-var-prefix}primary-hover-background: var(#{$css-var-prefix}primary-hover);
   #{$css-var-prefix}primary-hover-border: var(#{$css-var-prefix}primary-hover-background);
   #{$css-var-prefix}primary-hover-underline: var(#{$css-var-prefix}primary-hover);
-  #{$css-var-prefix}primary-focus: #{rgba($bitcoin-color, 0.375)};
+  #{$css-var-prefix}primary-focus: #{rgba($primary-color, 0.375)};
   #{$css-var-prefix}primary-inverse: #{$black};
 
   // Secondary colors
-  #{$css-var-prefix}secondary: #{$zinc-350};
-  #{$css-var-prefix}secondary-background: #{$slate-600};
+  #{$css-var-prefix}secondary: #{$secondary-color};
+  #{$css-var-prefix}secondary-background: var(#{$css-var-prefix}secondary);
   #{$css-var-prefix}secondary-border: var(#{$css-var-prefix}secondary-background);
-  #{$css-var-prefix}secondary-underline: #{rgba($zinc-350, 0.5)};
-  #{$css-var-prefix}secondary-hover: #{$zinc-250};
-  #{$css-var-prefix}secondary-hover-background: #{$slate-550};
+  #{$css-var-prefix}secondary-underline: #{rgba($secondary-color, 0.5)};
+  #{$css-var-prefix}secondary-hover: #{color.scale($secondary-color, $lightness: 21%)};
+  #{$css-var-prefix}secondary-hover-background: var(#{$css-var-prefix}secondary-hover);
   #{$css-var-prefix}secondary-hover-border: var(#{$css-var-prefix}secondary-hover-background);
   #{$css-var-prefix}secondary-hover-underline: var(#{$css-var-prefix}secondary-hover);
-  #{$css-var-prefix}secondary-focus: #{rgba($slate-350, 0.25)};
+  #{$css-var-prefix}secondary-focus: #{rgba($secondary-color, 0.375)};
   #{$css-var-prefix}secondary-inverse: #{$white};
 
   // Contrast colors
-  #{$css-var-prefix}contrast: #{$slate-100};
-  #{$css-var-prefix}contrast-background: #{$slate-50};
+  #{$css-var-prefix}contrast: #{$contrast-color};
+  #{$css-var-prefix}contrast-background: var(#{$css-var-prefix}contrast);
   #{$css-var-prefix}contrast-border: var(#{$css-var-prefix}contrast-background);
-  #{$css-var-prefix}contrast-underline: #{rgba($slate-100, 0.5)};
+  #{$css-var-prefix}contrast-underline: #{rgba($secondary-color, 0.5)};
   #{$css-var-prefix}contrast-hover: #{$white};
   #{$css-var-prefix}contrast-hover-background: #{$white};
   #{$css-var-prefix}contrast-hover-border: var(#{$css-var-prefix}contrast-hover-background);
   #{$css-var-prefix}contrast-hover-underline: var(#{$css-var-prefix}contrast-hover);
-  #{$css-var-prefix}contrast-focus: #{rgba($slate-150, 0.25)};
+  #{$css-var-prefix}contrast-focus: #{rgba($contrast-color, 0.25)};
   #{$css-var-prefix}contrast-inverse: #{$black};
 
   // Box shadow
