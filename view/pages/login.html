@@ -1,3 +1,25 @@
-<div>
-  <div x-ref="form" x-data="_html('form', 'view/shared/bitcoin-form.html')"></div>
+<div class="grid">
+  <!-- Feed panel -->
+  <div>
+
+    <nav>
+      <ul>
+        <header>
+          <hgroup>
+            <h1>Login</h1>
+          </hgroup>
+        </header>
+      </ul> 
+    </nav>
+    <!--Feed-->
+    <div>
+      <div x-data="formLogin({
+        feed: $store.feedFilters.current
+      })"></div>
+    </div>
+  </div>
+  <!-- Other panel -->
+  <div>
+
+  </div>
 </div>
