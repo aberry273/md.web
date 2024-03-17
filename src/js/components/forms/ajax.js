@@ -6,8 +6,10 @@ export default function (data) {
     // PROPERTIES
     loading: false,
     fields: [],
+    label: 'Submit',
     // INIT
     init() {
+      this.label = data.label;
       this.setHtml(data)
     },
     // METHODS
@@ -23,18 +25,28 @@ export default function (data) {
       
       return input(field)
     },
+    async submit(fields) {
+      const payload = {}
+      fields.map(x => {
+        payload[x.name] = x.value
+        return payload
+      })
+      this.$fetch.POST(data.postbackUrl, payload);
+      console.log(payload)
+    },
     setHtml(data) {
       // make ajax request
+      const label = data.label || 'Submit'
       this.fields = data.fields || []
       this.$root.innerHTML = `
-      <form>
+      <div>
         <fieldset>
           <template x-for="(field, i) in fields" :key="field.name+i"> 
-            <label x-html="renderField(field)"></label>
+            <label x-html="renderField(field)" x-show="!field.hidden"></label>
           </template>
         </fieldset>
-        <input type="submit" value="Submit"/>
-      </form>
+        <button @click="await submit(fields)">${label}</button>
+      </div>
       `
     },
   }

@@ -29,7 +29,7 @@ export default function (data) {
       <form>
         <fieldset>
           <template x-for="(field, i) in fields" :key="field.name+i"> 
-            <label x-html="renderField(field)"></label>
+            <label x-html="renderField(field)"x-show="!field.hidden"></label>
           </template>
         </fieldset>
         <input type="submit" value="Submit"/>
