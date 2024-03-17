@@ -1,6 +1,4 @@
 
-//import { generator } from '../_generator.js'
-
 function ahref(href, text) {
   return `<a href="${href}">${text}</a>`
 }
@@ -21,7 +19,7 @@ export default function navbar(data) {
     return {
       init() {
         const header = `<ul>${li(`<strong>${data.title}</strong>`)}</ul>`;
-        let links = list(data.links)
+        let links = list(data.items)
         this.$root.innerHTML = `
           <nav>
             ${header}

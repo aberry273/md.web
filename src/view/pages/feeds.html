@@ -25,6 +25,21 @@
         <button class="material-icons flat">add</button>
       </ul>
     </nav>
+    <div x-data="formAjax({
+      feed: $store.feedFilters.current,
+      postbackUrl: 'https://localhost:7220/api/contentpost',
+      postbackType: 'POST',
+      fields: [
+        {
+          name: 'Update',
+          type: 'textarea',
+          placeholder: 'Whats your update?',
+          autocomplete: null,
+          ariaInvalid: true,
+          helper: ''
+        },
+        ]
+    })"></div>
     <!--Feed-->
     <div x-data="$store.feedFilters">
       <div x-data="feed({

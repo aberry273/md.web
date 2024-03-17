@@ -1,7 +1,10 @@
+import input from './fields/input.js'
+
 export default function (data) {
 	return {
     // PROPERTIES
     loading: false,
+    fields: [],
     // INIT
     init() {
       this.setHtml(data)
@@ -14,34 +17,22 @@ export default function (data) {
       this.filtered = this.$store.feeds.items.filter(x => x.feed == feed);
       this.loading = false;
     },
+    renderField(field) {
+      if(field.type == 'textarea') return textarea(field)
+      
+      return input(field)
+    },
     setHtml(data) {
       // make ajax request
+      this.fields = data.fields || []
       this.$root.innerHTML = `
       <form>
         <fieldset>
-          <label>
-            First name
-            <input
-              name="first_name"
-              placeholder="First name"
-              autocomplete="given-name"
-            />
-          </label>
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              autocomplete="email"
-            />
-          </label>
+          <template x-for="(field, i) in fields" :key="field.name+i"> 
+            <label x-html="renderField(field)"></label>
+          </template>
         </fieldset>
-      
-        <input
-          type="submit"
-          value="Subscribe"
-        />
+        <input type="submit" value="Submit"/>
       </form>
       `
     },
