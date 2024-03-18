@@ -10,7 +10,7 @@ function li(el) {
 function list(links) {
   let link = ''
   if (links != null && links.length > 0) {
-    link = `<ul>${ links.map(x => li(ahref(x.href, x.text))).join('') }</ul>`
+    link = `${ links.map(x => li(ahref(x.href, x.text))).join('') }`
   }
   return link
 }
@@ -23,7 +23,26 @@ export default function navbar(data) {
         this.$root.innerHTML = `
           <nav>
             ${header}
-            ${links}
+            <ul>
+              ${links}
+                <li>
+                <details class="dropdown no-chevron">
+                  <summary role="button" class="flat round xsmall material-icons">
+                    <template x-if="!$store.darkmode.isDark">
+                      <i>dark_mode</i>
+                    </template>
+                    <template x-if="$store.darkmode.isDark">
+                      <i>light_mode</i>
+                    </template> 
+                  </summary>
+                  <ul>
+                    <li><a href="#" data-theme-switcher="auto">Auto</a></li>
+                    <li><a href="#" data-theme-switcher="light">Light</a></li>
+                    <li><a href="#" data-theme-switcher="dark">Dark</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
           </nav>
         `;
       }

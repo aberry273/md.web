@@ -7,9 +7,12 @@ export default function (data) {
     loading: false,
     fields: [],
     label: 'Submit',
+    loading: false,
+    event: null,
     // INIT
     init() {
       this.label = data.label;
+      this.event = data.event;
       this.setHtml(data)
     },
     // METHODS
@@ -26,13 +29,17 @@ export default function (data) {
       return input(field)
     },
     async submit(fields) {
+      this.loading = true;
       const payload = {}
       fields.map(x => {
         payload[x.name] = x.value
         return payload
       })
-      this.$fetch.POST(data.postbackUrl, payload);
-      console.log(payload)
+      const response = this.$fetch.POST(data.postbackUrl, payload);
+      if(this.event) {
+        this.$dispatch(this.event, response)
+      }
+      this.loading = false;
     },
     setHtml(data) {
       // make ajax request
@@ -40,12 +47,13 @@ export default function (data) {
       this.fields = data.fields || []
       this.$root.innerHTML = `
       <div>
+        <progress x-show="loading"></progress>
         <fieldset>
           <template x-for="(field, i) in fields" :key="field.name+i"> 
             <label x-html="renderField(field)" x-show="!field.hidden"></label>
           </template>
         </fieldset>
-        <button @click="await submit(fields)">${label}</button>
+        <button @click="await submit(fields)" :disabled="loading">${label}</button>
       </div>
       `
     },

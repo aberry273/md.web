@@ -5,6 +5,7 @@ export default function (data) {
     // PROPERTIES
     loading: false,
     fields: [],
+    method: data.method,
     // INIT
     init() {
       this.setHtml(data)
@@ -26,7 +27,7 @@ export default function (data) {
       // make ajax request
       this.fields = data.fields || []
       this.$root.innerHTML = `
-      <form>
+      <form method="${this.method}">
         <fieldset>
           <template x-for="(field, i) in fields" :key="field.name+i"> 
             <label x-html="renderField(field)"x-show="!field.hidden"></label>

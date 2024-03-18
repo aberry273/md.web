@@ -1,7 +1,5 @@
-<div class="grid">
-  <!-- Feed panel -->
-  <div>
-
+ <div class="grid container">
+  <div class="panel center-vertical">
     <nav>
       <ul>
         <header>
@@ -12,7 +10,10 @@
       </ul> 
     </nav>
     <!--Feed-->
-    <div>
+    <article>
+      <template x-if="false">
+        <strong><i>Form error</i></strong>
+      </template>
       <div x-data="formPostback({
         feed: $store.feedFilters.current,
         fields: [
@@ -34,10 +35,6 @@
           }
         ]
       })"></div>
-    </div>
-  </div>
-  <!-- Other panel -->
-  <div>
-
+    </article> 
   </div>
 </div>

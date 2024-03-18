@@ -31,16 +31,8 @@
 
 <body class="container">
     <!-- Header -->
-    <div x-ref="navbar" x-data="_html('navbar', '/src/view/shared/navbar.html')"></div>
-
-    <details class="dropdown">
-      <summary role="button" class="secondary">Theme</summary>
-      <ul>
-        <li><a href="#" data-theme-switcher="auto">Auto</a></li>
-        <li><a href="#" data-theme-switcher="light">Light</a></li>
-        <li><a href="#" data-theme-switcher="dark">Dark</a></li>
-      </ul>
-    </details>
+    <div x-data="navbar(navData)"></div>
+   
     
   <script>
     const tabs = [
@@ -81,7 +73,7 @@
       </main>
     </div>    
   <!-- ./ Main -->
-
+  <div x-data="snackbar({text: 'dwqdqwdwq', show: true})"></div>
   <!-- Footer -->
   <footer>
     <small
