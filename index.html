@@ -71,9 +71,9 @@
       <main x-transition x-show="'sandbox' == $store.tabs.current">
         <div x-ref="sandbox" x-data="_html('sandbox', `/src/view/pages/sandbox.html`)"></div>
       </main>
-    </div>    
+  </div>    
   <!-- ./ Main -->
-  <div x-data="snackbar({text: 'dwqdqwdwq', show: true})"></div>
+  <div x-data="snackbar({event: $store.wss_contentPost.event })" x-on:show:alert.window="show"></div>
   <!-- Footer -->
   <footer>
     <small

@@ -3,6 +3,19 @@
 
 import alpinejs from 'https://cdn.skypack.dev/alpinejs';
 
+// Load webSockets components
+/*
+import * as sockets from './websockets/index.js';
+Object.keys(sockets).forEach(socket => {
+    alpinejs.data(socket, sockets[socket]);
+});
+*/
+import * as sockets from './websockets/index.js';
+Object.keys(sockets).forEach(socket => {
+    let data = sockets[socket]();
+    alpinejs.store('wss_'+socket, data);
+});
+
 // Load rendering components
 import * as components from './components/index.js';
 Object.keys(components).forEach(component => {

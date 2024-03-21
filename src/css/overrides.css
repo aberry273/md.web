@@ -47,6 +47,9 @@
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome, Edge, Opera and Firefox */
   }
+  .fit-content {
+    min-width: max-content;
+  }
 
   /*GRID*/
   .grid .panel {
