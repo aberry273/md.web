@@ -6,5 +6,5 @@ import html from './html.js'
 export {
     dropdown,
     formData,
-    html
+    html,
 }

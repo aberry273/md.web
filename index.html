@@ -74,6 +74,7 @@
   </div>    
   <!-- ./ Main -->
   <div x-data="snackbar({event: $store.wss_contentPost.event })" x-on:show:alert.window="show"></div>
+
   <!-- Footer -->
   <footer>
     <small
@@ -85,24 +86,6 @@
   </footer>
   <!-- ./ Footer -->
 
-  <!-- Modal example -->
-  <dialog id="modalExample">
-    <article>
-      <header>
-        <button aria-label="Close" rel="prev" onclick="modalExample.close()"></button>
-        <h3>Confirm your action!</h3>
-      </header>
-      <p>
-        Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
-        pellentesque. Nullam finibus risus non semper euismod.
-      </p>
-      <footer>
-        <button role="button" onclick="modalExample.close()">Cancel</button
-        ><button autofocus role="button" onclick="modalExample.close()">Confirm</button>
-      </footer>
-    </article>
-  </dialog>
-    
     <!-- JS Libraries -->
     <!-- For componentizing and lazy loading Alpine -->
      

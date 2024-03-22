@@ -13,6 +13,9 @@ export default function (data) {
       init() {
         this.load(data)
       },
+      performAction(action) {
+        this.$events.emit('edit-post', { target: 'modal-example1' })
+      },
       load(data) {
         // Turn into object as it returns reactive Proxy
         //const data = JSON.parse(JSON.stringify(payload))
@@ -22,7 +25,7 @@ export default function (data) {
             <nav>
               <ul>
                 <li>
-                  <button class="round primary img">
+                  <button class="round small primary img">
                     <img
                     class="circular"
                     src="${data.profile}"
@@ -37,13 +40,13 @@ export default function (data) {
               </ul>
               <ul>
                 <li>
-                  <details class="dropdown flat">
+                  <details class="dropdown flat no-chevron">
                     <summary role="outline">
                       <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
                     </summary>
                     <ul dir="rtl">
-                      <li><a class="click" @click="console.log('Edit')")>Edit</a></li>
-                      <li><a class="click" @click="console.log('Remove')")>Remove</a></li>
+                      <li><a class="click" @click="testFunction('edit')">Edit</a></li>
+                      <li><a class="click" @click="performAction('remove')">Remove</a></li>
                     </ul>
                   </details>
                 </li>

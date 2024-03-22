@@ -39,11 +39,14 @@ export default function (data) {
       })
       this.filtered = items;
     },
+    testFunction() {
+      console.log('test');
+    },
     setHtml(data) {
       // make ajax request
       this.$root.innerHTML = `
-        <div x-data="$data.feed" x-on:post:created.window="await fetchItems" class="container feed" x-transition>
-          <template x-for="(post, i) in filtered" :key="post.id+''+i">
+        <div x-on:post:created.window="await fetchItems" class="container feed" x-transition>
+        <template x-for="(post, i) in filtered" :key="post.id+''+i">
             <div x-data="card(post)"></div>
           </template>
           <template x-if="filtered.length == 0">

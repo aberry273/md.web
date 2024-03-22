@@ -39,7 +39,13 @@ export default function (data) {
       if(this.event) {
         this.$dispatch(this.event, response)
       }
+      this.resetValues(fields);
       this.loading = false;
+    },
+    resetValues(fields) {
+      for(var i = 0; i < fields.length; i++) {
+        fields[i].value = null;
+      }
     },
     setHtml(data) {
       // make ajax request
