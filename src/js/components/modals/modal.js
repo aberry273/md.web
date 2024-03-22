@@ -20,11 +20,19 @@ export default function (data = {}) {
       text: '',
       id: '',
       event: '',
+      // data
+      title: '',
+      text: '',
       init() {
         this.show = data.show;
         // either use id, event for separate targets, or use the target property to simplify
         this.id = data.id || data.target
         this.event = data.event || data.target;
+        // view data
+        this.title = data.title;
+        this.text = data.text;
+
+        
         this.load(data);
         const self = this;
         /*
@@ -36,6 +44,7 @@ export default function (data = {}) {
         // Listen for the event.
         window.addEventListener(this.event,
           (ev) => {
+            console.log(ev)
             self.toggle()
           }, false,
         );
@@ -89,12 +98,9 @@ export default function (data = {}) {
                   data-target="modal-example"
                   @click="close"
                 ></button>
-                <h3>Confirm your action!</h3>
+                <h3 x-text="title"></h3>
               </header>
-              <p>
-                Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
-                pellentesque. Nullam finibus risus non semper euismod.
-              </p>
+              <p x-text="text"></p>
               <footer>
                 <button
                   role="button"
