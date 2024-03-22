@@ -10,15 +10,19 @@ const defaults = {
 }
 export default function (data) {
 	return {
+      data: null,
       init() {
-        this.load(data)
+        this.data = data;
+        const self = this;
+        this.$nextTick(() => {
+          this.load(self.data)
+        })
       },
       performAction(action) {
-        this.$events.emit('edit-post', { target: 'modal-example1' })
+        const modal = `${action}-post`;
+        this.$events.emit(modal)
       },
       load(data) {
-        // Turn into object as it returns reactive Proxy
-        //const data = JSON.parse(JSON.stringify(payload))
         this.$root.innerHTML = `
         <article>
           <header class="dense">
@@ -45,7 +49,7 @@ export default function (data) {
                       <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
                     </summary>
                     <ul dir="rtl">
-                      <li><a class="click" @click="testFunction('edit')">Edit</a></li>
+                      <li><a class="click" @click="performAction('edit')">Edit</a></li>
                       <li><a class="click" @click="performAction('remove')">Remove</a></li>
                     </ul>
                   </details>
@@ -59,22 +63,19 @@ export default function (data) {
               <ul>
                 <li>
                   <!--Agree-->
-                  <i aria-label="Agree" class="icon material-icons icon-click" rel="prev">expand_less</i>
+                  <i aria-label="Agree" @click="performAction('agree')" class="icon material-icons icon-click" rel="prev">expand_less</i>
                   <sup class="noselect" rel="prev">${data.agree}</sup>
                   <!--Disagree-->
-                  <i aria-label="Disagree" class="icon material-icons icon-click" rel="prev">expand_more</i>
+                  <i aria-label="Disagree" @click="performAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
                   <sup class="noselect" rel="prev">${data.disagree}</sup> 
                 </li> 
               </ul>
               <ul>
                 <li>
-                  <i aria-label="Reply" class="icon material-icons icon-click" rel="prev">reply</i>
+                  <i aria-label="Reply" @click="performAction('reply')" class="icon material-icons icon-click" rel="prev">reply</i>
                   <!--Liked-->
-                  ${
-                    data.liked 
-                    ? '<i x-if="data.liked" aria-label="Liked" class="primary icon material-icons icon-click" rel="prev">favorite</i>'
-                    : '<i x-if="data.liked" aria-label="Noy liked" class="icon material-icons icon-click" rel="prev">favorite</i>'
-                  }
+                  <i x-show="data.liked" @click="performAction('like')" aria-label="Liked" class="primary icon material-icons icon-click" rel="prev">favorite</i>
+                  <i x-show="!data.liked" @click="performAction('unlike')" aria-label="Noy liked" class="icon material-icons icon-click" rel="prev">favorite</i>
                 </li>
               </ul>
             </nav>

@@ -45,20 +45,22 @@ export default function (data) {
     setHtml(data) {
       // make ajax request
       this.$root.innerHTML = `
-        <div x-on:post:created.window="await fetchItems" class="container feed" x-transition>
+      <!--<div x-cloak x-on:post:created.window="await fetchItems" class="container feed" x-transition>
+        -->  
+      <div>
         <template x-for="(post, i) in filtered" :key="post.id+''+i">
-            <div x-data="card(post)"></div>
-          </template>
-          <template x-if="filtered.length == 0">
-            <article>
-              <header><strong>No results!</strong></header>
-              No posts could be found
-            </article>
-          </template>
-          <template x-if="loading">
-            <article aria-busy="true"></article>
-          </template>
-        </div>
+          <div x-cloak x-data="card(post)"></div>
+        </template> 
+        <template x-if="filtered.length == 0">
+          <article>
+            <header><strong>No results!</strong></header>
+            No posts could be found
+          </article>
+        </template>
+        <template x-if="loading">
+          <article aria-busy="true"></article>
+        </template>
+      </div>
       `
     },
   }

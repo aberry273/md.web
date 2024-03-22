@@ -18,11 +18,13 @@ export default function (data = {}) {
 	return {
       show: false,
       text: '',
-      id: 'modal-example1',
+      id: '',
+      event: '',
       init() {
         this.show = data.show;
-        this.id = data.id || 'modal-example'
-        console.log(this.id)
+        // either use id, event for separate targets, or use the target property to simplify
+        this.id = data.id || data.target
+        this.event = data.event || data.target;
         this.load(data);
         const self = this;
         /*
@@ -32,7 +34,7 @@ export default function (data = {}) {
         })
         */
         // Listen for the event.
-        window.addEventListener(data.event || "modal",
+        window.addEventListener(this.event,
           (ev) => {
             self.toggle()
           }, false,

@@ -1,7 +1,10 @@
 <div class="grid">
   <!-- Feed panel -->
   <div>
+    <div x-data="modal({event: 'example-modal1', id: 'example-modal1' })"></div>
 
+    <button x-data @click="$dispatch('example-modal1', { target: 'example-modal1' })"
+      >Open</button>
     <nav>
       <ul>
         <header>
@@ -12,6 +15,7 @@
         </header>
       </ul>
       <ul>
+        
       <!--Filters-->
         <details class="dropdown">
           <summary role="button" class="outline" x-text="$store.feedFilters.current">
@@ -71,10 +75,10 @@
 
 <!-- Modals -->
 <!-- Edit post -->
-<div x-data="modal({event: 'edit-post', id: 'edit-post' })"></div>
+<div x-data="modal({target: 'edit-post' })"></div>
 
 <!-- Delete post -->
-<div x-data="modal({event: 'delete-post', id: 'delete-post' })"></div>
+<div x-data="modal({target: 'remove-post' })"></div>
 
 <!-- Share post -->
-<div x-data="modal({event: 'delete-post', id: 'delete-post' })"></div>
+<div x-data="modal({target: 'reply-post' })"></div>
