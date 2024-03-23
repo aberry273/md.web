@@ -20,7 +20,7 @@ export default function (data) {
       },
       performAction(action) {
         const modal = `${action}-post`;
-        this.$events.emit(modal)
+        this.$events.emit(modal, this.data)
       },
       load(data) {
         this.$root.innerHTML = `
@@ -72,7 +72,8 @@ export default function (data) {
               </ul>
               <ul>
                 <li>
-                  <i aria-label="Reply" @click="performAction('reply')" class="icon material-icons icon-click" rel="prev">reply</i>
+                <i aria-label="Reply" @click="performAction('reply')" class="icon material-icons icon-click" rel="prev">reply</i>
+                  <i aria-label="Reply" @click="performAction('share')" class="icon material-icons icon-click" rel="prev">share</i>
                   <!--Liked-->
                   <i x-show="data.liked" @click="performAction('like')" aria-label="Liked" class="primary icon material-icons icon-click" rel="prev">favorite</i>
                   <i x-show="!data.liked" @click="performAction('unlike')" aria-label="Noy liked" class="icon material-icons icon-click" rel="prev">favorite</i>

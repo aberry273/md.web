@@ -22,14 +22,17 @@ export default function (data) {
     },
     async fetchItems() {
       const results = await this.$fetch.GET(this.sourceUrl);
+      console.log(results);
+      
       const items = results.map(x => {
         return {
           id: x.id,
-          username: x.userId,
+          userId: x.userId,
+          username: 'null',
           profile: 'https://placehold.co/150x150',
           handle: `@${x.userId}`,
           updated: '5 minutes ago',
-          content: `<p>${x.content}</p>`,
+          content: x.content,
           feed: '',
           liked: false,
           agree: 0,

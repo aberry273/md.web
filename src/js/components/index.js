@@ -11,6 +11,7 @@ import formAjax from './forms/ajax.js'
 import snackbar from './alerts/snackbar.js'
 // MODALS
 import modal from './modals/modal.js'
+import modalForm from './modals/modalForm.js'
 // LISTS
 import feed from './lists/feed.js'
 
@@ -21,7 +22,10 @@ export {
     navbar,
     footer,
     snackbar,
+    
     modal,
+    modalForm,
+
     formPostback,
     formAjax,
 }

@@ -9,10 +9,12 @@ export default function (data) {
     label: 'Submit',
     loading: false,
     event: null,
+    postbackType: 'POST',
     // INIT
     init() {
       this.label = data.label;
       this.event = data.event;
+      this.postbackType = data.postbackType
       this.setHtml(data)
     },
     // METHODS
@@ -35,7 +37,27 @@ export default function (data) {
         payload[x.name] = x.value
         return payload
       })
-      const response = this.$fetch.POST(data.postbackUrl, payload);
+      let response = null;
+      switch (this.postbackType) {
+        case 'POST':
+          response = this.$fetch.POST(data.postbackUrl, payload);
+          break;
+        case 'PUT':
+          response = this.$fetch.PUT(data.postbackUrl, payload);
+          // Expected output: "Mangoes and papayas are $2.79 a pound."
+          break;
+        case 'GET':
+          response = this.$fetch.GET(data.postbackUrl, payload);
+          // Expected output: "Mangoes and papayas are $2.79 a pound."
+          break;
+        case 'DELETE':
+          response = this.$fetch.DELETE(data.postbackUrl, payload);
+          // Expected output: "Mangoes and papayas are $2.79 a pound."
+          break;
+        default:
+          response = null;
+      }
+
       if(this.event) {
         this.$dispatch(this.event, response)
       }
