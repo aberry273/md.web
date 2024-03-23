@@ -20,7 +20,7 @@ export default function (data) {
       },
       performAction(action) {
         const modal = `${action}-post`;
-        this.$events.emit(modal)
+        this.$events.emit(modal, this.data)
       },
       load(data) {
         this.$root.innerHTML = `

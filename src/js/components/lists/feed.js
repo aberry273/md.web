@@ -21,23 +21,42 @@ export default function (data) {
       this.loading = false;
     },
     async fetchItems() {
-      const results = await this.$fetch.GET(this.sourceUrl);
-      const items = results.map(x => {
-        return {
-          id: x.id,
-          username: x.userId,
-          profile: 'https://placehold.co/150x150',
-          handle: `@${x.userId}`,
-          updated: '5 minutes ago',
-          content: `<p>${x.content}</p>`,
-          feed: '',
-          liked: false,
-          agree: 0,
-          disagree: 0,
-          footer: 'footer',
-        }
-      })
-      this.filtered = items;
+      try{
+        const results = await this.$fetch.GET(this.sourceUrl);
+        const items = results.map(x => {
+          return {
+            id: x.id,
+            username: x.userId,
+            profile: 'https://placehold.co/150x150',
+            handle: `@${x.userId}`,
+            updated: '5 minutes ago',
+            content: `<p>${x.content}</p>`,
+            feed: '',
+            liked: false,
+            agree: 0,
+            disagree: 0,
+            footer: 'footer',
+          }
+        })
+        this.filtered = items;
+      }catch (e) {
+        const items = [
+          {
+            id: 'x.id',
+            username: 'x.userId',
+            profile: 'https://placehold.co/150x150',
+            handle: `@{x.userId}`,
+            updated: '5 minutes ago',
+            content: `{x.content}</p>`,
+            feed: '',
+            liked: false,
+            agree: 0,
+            disagree: 0,
+            footer: 'footer',
+          }
+        ]
+        this.filtered = items;
+      }
     },
     testFunction() {
       console.log('test');

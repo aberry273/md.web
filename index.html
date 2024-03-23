@@ -73,8 +73,10 @@
       </main>
   </div>    
   <!-- ./ Main -->
+  <div x-data="snackbar({event: 'success' })" x-on:show:alert.window="show"></div>
+  <div x-data="snackbar({event: 'error' })" x-on:show:alert.window="show"></div>
+  <div x-data="snackbar({event: 'information' })" x-on:show:alert.window="show"></div>
   <div x-data="snackbar({event: $store.wss_contentPost.event })" x-on:show:alert.window="show"></div>
-
   <!-- Footer -->
   <footer>
     <small
@@ -82,7 +84,7 @@
       <a href="https://github.com/picocss/examples/blob/master/v2-html-classless/index.html"
         >Source code</a
       ></small
-    >
+    > 
   </footer>
   <!-- ./ Footer -->
 
