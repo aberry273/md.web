@@ -5,8 +5,8 @@ import header from './content/header.js'
 import navbar from './navigation/navbar.js'
 import footer from './navigation/footer.js'
 // FORMS
-import formPostback from './forms/postback.js'
-import formAjax from './forms/ajax.js'
+import formPostback from './forms/formPostback.js'
+import formAjax from './forms/formAjax.js'
 // ALERTS
 import snackbar from './alerts/snackbar.js'
 // MODALS
