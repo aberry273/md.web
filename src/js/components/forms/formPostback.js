@@ -15,7 +15,7 @@ export default function (data) {
     },
     filterPosts(feed) {
       this.loading = true;
-      this.filtered = this.$store.feeds.items.filter(x => x.feed == feed);
+      this.filtered = this.$store.content.items.filter(x => x.feed == feed);
       this.loading = false;
     },
     renderField(field) {

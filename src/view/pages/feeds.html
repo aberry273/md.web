@@ -3,8 +3,6 @@
   <div>
     <div x-data="modal({event: 'example-modal1', id: 'example-modal1' })"></div>
 
-    <button x-data @click="$dispatch('example-modal1', { target: 'example-modal1' })"
-      >Open</button>
     <nav>
       <ul>
         <header>
@@ -29,7 +27,7 @@
         <button class="material-icons flat">add</button>
       </ul>
     </nav>
-    <div x-data="formAjax({
+    <div style="padding-bottom:12px;" x-data="formAjax({
       feed: $store.feedFilters.current,
       postbackUrl: 'https://localhost:7220/api/contentpost',
       postbackType: 'POST',
@@ -54,14 +52,16 @@
           helper: '',
           value: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
         },
-        ]
+      ]
     })"></div>
     <!--Feed-->
-    <div x-data="$store.feedFilters">
-      <div x-data="feed({
+    <div x-data="$store.feedFilters" x-cloak>
+      <div x-data="appFeed({
         feed: $store.feedFilters.current,
         sourceUrl: 'https://localhost:7220/api/contentpost',
         event: 'post:created',
+        items: $store.content.items,
+        expandable: true,
       })"
       x-init="await fetchItems()"
       x-watch="this.$watch(this.$store.feedFilters.current, value => console.log(value))"></div>
@@ -75,7 +75,7 @@
 
 <!-- Modals -->
 <!-- Edit post -->
-<div x-data="modal({target: 'edit-post', title: 'Edit post', text: 'test 123'  })"></div>
+<div x-data="modalForm({target: 'edit-post', title: 'Edit post', text: 'test 123'  })"></div>
 
 <!-- Delete post -->
 <div x-data="modal({target: 'remove-post', title: 'Remove post', text: 'test 123' })"></div>

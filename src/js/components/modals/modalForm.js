@@ -1,9 +1,39 @@
 import { open, close, toggle, isOpenClass, openingClass, closingClass, scrollbarWidthCssVar, animationDuration } from './utilities.js'
+const form = {
+    postbackUrl: 'https://localhost:7220/api/contentpost',
+    postbackType: 'PUT',
+    event: 'post:updated',
+    fields: [
+      {
+        name: 'Content',
+        type: 'textarea',
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        ariaInvalid: false,
+        helper: ''
+      },
+      {
+        name: 'Id',
+        type: 'input',
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        disabled: true,
+        hidden: true,
+      },
+      {
+        name: 'UserId',
+        type: 'input',
+        disabled: true,
+        hidden: true,
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        ariaInvalid: false,
+        helper: '',
+        value: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+      },
+    ]
+};
 
-const defaults = {
-  ms: 500,
-  text: '',
-}
 export default function (data = {}) {
 	return {
       show: false,
@@ -21,20 +51,20 @@ export default function (data = {}) {
         // view data
         this.title = data.title;
         this.text = data.text;
+        this.formData = form;
 
 
         this.load(data);
         const self = this;
-        /*
-        this.$events.on(data.event, (payload) =>{
-          console.log('event payload');
-          console.log(payload);
-        })
-        */
         // Listen for the event.
         window.addEventListener(this.event,
           (ev) => {
-            console.log(ev)
+            const payload = ev.detail;
+            console.log(payload)
+            self.formData.postbackUrl += '/'+payload.id;
+            self.formData.fields[0].value = payload.content;
+            self.formData.fields[1].value = payload.id;
+            self.formData.fields[2].value = payload.userId;
             self.toggle()
           }, false,
         );
@@ -56,19 +86,7 @@ export default function (data = {}) {
                 ></button>
                 <h3 x-text="title"></h3>
               </header>
-              <p x-text="text"></p>
-              <footer>
-                <button
-                  role="button"
-                  class="secondary"
-                  data-target="modal-example"
-                  @click="toggle"
-                >
-                  Cancel</button
-                ><button autofocus data-target="modal-example" @click="toggle">
-                  Confirm
-                </button>
-              </footer>
+              <div x-data="formAjax(formData)"></div>
             </article>
           </dialog>
             `

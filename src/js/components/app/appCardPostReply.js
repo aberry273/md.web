@@ -11,16 +11,25 @@ const defaults = {
 export default function (data) {
 	return {
       data: null,
+      expanded: false,
       init() {
-        this.data = data;
+        this.data = data.item;
+        this.expandable = data.expandable;
         const self = this;
         this.$nextTick(() => {
           this.load(self.data)
         })
       },
       quickAction(action) {
-        const ev = `submit-${action}`;
+        if(action == 'reply') {
+          this.expanded = true;
+        }
+        if(action == 'close') {
+          this.expanded = false;
+        }
+        const ev = `action-${action}`;
         this.$events.emit(ev, this.data)
+        //this.$events.emit(action, this.data)
       },
       redirectAction(action) {
         const ev = `redirect-${action}`;
@@ -32,8 +41,8 @@ export default function (data) {
       },
       load(data) {
         this.$root.innerHTML = `
-        <article class="dense">
-          <header >
+        <article class="dense padless">
+          <header>
             <nav>
               <ul>
                 <li>
@@ -46,8 +55,7 @@ export default function (data) {
                   </button>
                 </li>
                 <aside class="dense">
-                  <li><strong>${data.username}</strong></li>
-                  <li><a class="secondary disabled"><small>${data.handle}</small></a></li>
+                  <li class="secondary"><strong>${data.username}</strong></li>
                 </aside>
               </ul>
               <ul>
@@ -66,6 +74,9 @@ export default function (data) {
               </ul>
             </nav>
           </header> 
+          <blockquote class="dense">
+            <a>@johndeere</a>
+          </blockquote>
           ${data.content}
           <footer>
             <nav>
@@ -78,7 +89,13 @@ export default function (data) {
                   <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
                   <sup class="noselect" rel="prev">${data.disagree}</sup> 
 
-                  <i aria-label="Reply" @click="redirectAction('reply')" class="icon material-icons icon-click" rel="prev">unfold_more</i>
+                  <template x-if="expanded">
+                   <i aria-label="Reply" @click="quickAction('close')" class="icon material-icons icon-click" rel="prev">close</i>
+                  </template>
+
+                  <template x-if="!expanded">
+                   <i aria-label="Reply" @click="quickAction('reply')" class="icon material-icons icon-click" rel="prev">reply</i>
+                  </template>
                 </li> 
               </ul>
               <ul>
@@ -90,7 +107,8 @@ export default function (data) {
               </ul>
             </nav>
           </footer>
-        </article>`
+        </article>
+        `
       },
       defaults() {
         this.load(defaults)

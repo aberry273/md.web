@@ -12,7 +12,7 @@ export default function (data) {
 	return {
       data: null,
       init() {
-        this.data = data;
+        this.data = data.item;
         const self = this;
         this.$nextTick(() => {
           this.load(self.data)
@@ -21,6 +21,7 @@ export default function (data) {
       quickAction(action) {
         const ev = `submit-${action}`;
         this.$events.emit(ev, this.data)
+        this.$events.emit(action, this.data)
       },
       redirectAction(action) {
         const ev = `redirect-${action}`;
@@ -32,7 +33,7 @@ export default function (data) {
       },
       load(data) {
         this.$root.innerHTML = `
-        <article class="dense">
+        <article class="dense padless">
           <header >
             <nav>
               <ul>
@@ -46,8 +47,7 @@ export default function (data) {
                   </button>
                 </li>
                 <aside class="dense">
-                  <li><strong>${data.username}</strong></li>
-                  <li><a class="secondary disabled"><small>${data.handle}</small></a></li>
+                  <li class="secondary"><strong>${data.username}</strong></li>
                 </aside>
               </ul>
               <ul>
@@ -77,8 +77,8 @@ export default function (data) {
                   <!--Disagree-->
                   <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
                   <sup class="noselect" rel="prev">${data.disagree}</sup> 
-
-                  <i aria-label="Reply" @click="redirectAction('reply')" class="icon material-icons icon-click" rel="prev">unfold_more</i>
+                
+                  <i aria-label="Reply" @click="quickAction('close')" class="icon material-icons icon-click" rel="prev">unfold_more</i>
                 </li> 
               </ul>
               <ul>
