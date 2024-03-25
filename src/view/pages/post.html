@@ -4,3 +4,14 @@
     item: $store.content.items[0]
   })"></div>
 </div>
+
+
+<!-- Modals -->
+<!-- Edit post -->
+<div x-data="modalForm({target: 'modal-edit-post', title: 'Edit post', text: 'test 123'  })"></div>
+
+<!-- Delete post -->
+<div x-data="modal({target: 'modal-remove-post', title: 'Remove post', text: 'test 123' })"></div>
+
+<!-- Share post -->
+<div x-data="modal({target: 'modal-share-post', title: 'Share post', text: 'test 123'  })"></div>

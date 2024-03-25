@@ -23,18 +23,15 @@ export default function (data) {
         await this.filterPosts(val)
       })
 
-      // Listen for the event.
-      window.addEventListener('action-reply',
-        (e) => {
-          const item = e.detail;
-          console.log(item)
-          self.selected = item;
-        }, false);
-
-      window.addEventListener('action-close',
-        (e) => {
-          self.selected = null;
-      }, false);
+      this.$events.on('action-reply', (item) => {
+        self.selected = item;
+      })
+      this.$events.on('action-close', (item) => {
+        self.selected = null;
+      })
+    },
+    isSelected(item) {
+      return (this.selected != null && this.selected.id == item.id)
     },
     async filterPosts(feed) {
       this.loading = true;
@@ -77,14 +74,23 @@ export default function (data) {
           <div x-cloak x-data="appCardPostReply(
             {
               item: post,
-              expanded: (selected != null && selected.id == post.id)
             })"></div>
             <template x-if="selected != null && selected.id == post.id">
-              <article x-data="appFormReply({
-                postbackUrl: 'https://localhost:7220/api/contentpost',
-                postbackType: 'POST',
-                event: 'post:created',
-              })"></article>
+              <article class="dense padless">
+                <nav>
+                  <ul>
+                    <li>
+                      <i aria-label="Cancel" @click="selected = null" class="icon material-icons icon-click" rel="prev">close</i>
+                    </li>
+                  </ul>
+                </nav>
+                <div x-data="appFormResponse({
+                  postbackUrl: 'https://localhost:7220/api/contentpost',
+                  postbackType: 'POST',
+                  event: 'post:created',
+                })">
+                </div>
+              </article>
             </template>
             </div>
           </template>

@@ -14,6 +14,7 @@ export default function (data) {
       expanded: false,
       init() {
         this.data = data.item;
+        this.expanded = data.expanded;
         this.expandable = data.expandable;
         const self = this;
         this.$nextTick(() => {
@@ -21,12 +22,6 @@ export default function (data) {
         })
       },
       quickAction(action) {
-        if(action == 'reply') {
-          this.expanded = true;
-        }
-        if(action == 'close') {
-          this.expanded = false;
-        }
         const ev = `action-${action}`;
         this.$events.emit(ev, this.data)
         //this.$events.emit(action, this.data)
@@ -36,7 +31,7 @@ export default function (data) {
         this.$events.emit(ev, this.data)
       },
       modalAction(action) {
-        const ev = `${action}-post`;
+        const ev = `modal-${action}-post`;
         this.$events.emit(ev, this.data)
       },
       load(data) {
@@ -96,13 +91,15 @@ export default function (data) {
                   <template x-if="!expanded">
                    <i aria-label="Reply" @click="quickAction('reply')" class="icon material-icons icon-click" rel="prev">reply</i>
                   </template>
+                   <sup class="noselect" rel="prev">${data.replies || 0}</sup> 
+                
                 </li> 
               </ul>
               <ul>
                 <li>
                   <!--Liked-->
                   <i x-show="data.liked" @click="quickAction('like')" aria-label="Liked" class="primary icon material-icons icon-click" rel="prev">favorite</i>
-                  <i x-show="!data.liked" @click="quickAction('unlike')" aria-label="Noy liked" class="icon material-icons icon-click" rel="prev">favorite</i>
+                  <i x-show="!data.liked" @click="quickAction('like')" aria-label="Unliked" class="icon material-icons icon-click" rel="prev">favorite</i>
                 </li>
               </ul>
             </nav>

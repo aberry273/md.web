@@ -7,14 +7,60 @@ export default () => ({
     replies: defaultsReplies,
     reviews: defaultsReviews,
     createReview(post) {
-
+        this.reviews.push({
+            id: 91,
+            parentId: post.id,
+            userId: 0,
+            profile: 'https://placehold.co/150x150',
+            updated: '5 minutes ago',
+            agree: false,
+            disagree: false,
+            like: false,
+        })
     },
     createReply(post){
-        
+        this.replies.push({
+            id: this.items.length+'post',
+            userId: 0,
+            parentId: post.id,
+            username: 'John deere',
+            profile: 'https://placehold.co/150x150',
+            handle: '@jdeerer',
+            updated: '5 minutes ago',
+            content: '<p><strong>title</strong></p><p>this is a new test of a auto-formatted markdown</p>',
+            feed: 'Recipes',
+            liked: false,
+            agree: 22,
+            disagree: 1,
+        })
     },
     createPost(post){
-        
-    }
+        this.items.push({
+            id: this.items.length+'post',
+            userId: 0,
+            username: 'John deere',
+            profile: 'https://placehold.co/150x150',
+            handle: '@jdeerer',
+            updated: '5 minutes ago',
+            content: '<p><strong>title</strong></p><p>this is a new test of a auto-formatted markdown</p>',
+            feed: 'Recipes',
+            liked: false,
+            agree: 22,
+            disagree: 1,
+        })
+    },
+    likePost(post){
+        console.log('like');
+        this.createPost(post);
+    },
+    disagreePost(post){
+        console.log('disagree');
+        this.createReply(post);
+    },
+    agreePost(post){
+        console.log('agree');
+        this.createReply(post);
+    },
 })
 
 const defaultsPosts = [

@@ -8,20 +8,22 @@ export default function (data) {
     init() {
       data.item.expanded = true;
       this.item = data.item;
-      
-      // Listen for the event.
-      window.addEventListener('action-reply',
-        (e) => {
-          const item = e.detail;
-          self.selectedId = item.id;
-        }, false);
-
-      window.addEventListener('action-close',
-        (e) => {
-          console.log('close')
-          self.selected = null;
-      }, false);
-
+      //Events
+      this.$events.on('action-reply', (item) => {
+        self.selectedId = item.id;
+      })
+      this.$events.on('action-close', (item) => {
+        self.selected = null;
+      })
+      this.$events.on('action-like', (item) => {
+        this.$store.content.likePost(item)
+      })
+      this.$events.on('action-agree', (item) => {
+        this.$store.content.agreePost(item)
+      })
+      this.$events.on('action-disagree', (item) => {
+        this.$store.content.disagreePost(item)
+      })
       this.setHtml(data);
     },
     testFunction() {
@@ -45,14 +47,14 @@ export default function (data) {
             expandable: false,
           })"></div>
           
-          <template x-if="selectedId == item.id">
-            <article x-data="appFormReply({
+          <article>
+            <div x-data="appFormResponse({
               postbackUrl: 'https://localhost:7220/api/contentpost',
               postbackType: 'POST',
               event: 'post:created',
-            })"></article>
-          </template>
-
+            })"></div>
+          </article>
+          
           <!--Feed-->
           <div>
           <nav>

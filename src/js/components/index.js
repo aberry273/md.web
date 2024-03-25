@@ -14,7 +14,7 @@ import modal from './modals/modal.js'
 import modalForm from './modals/modalForm.js'
 // LISTS
 // APP
-import appFormReply from './app/appFormReply.js'
+import appFormResponse from './app/appFormResponse.js'
 import appCardPost from './app/appCardPost.js'
 import appCardPostReply from './app/appCardPostReply.js'
 import appCardPostThread from './app/appCardPostThread.js'
@@ -39,5 +39,5 @@ export {
     appCardPost,
     appCardPostReply,
     appCardPostThread,
-    appFormReply,
+    appFormResponse,
 }

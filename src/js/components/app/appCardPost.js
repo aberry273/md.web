@@ -19,7 +19,7 @@ export default function (data) {
         })
       },
       quickAction(action) {
-        const ev = `submit-${action}`;
+        const ev = `action-${action}`;
         this.$events.emit(ev, this.data)
         this.$events.emit(action, this.data)
       },
@@ -28,7 +28,7 @@ export default function (data) {
         this.$events.emit(ev, this.data)
       },
       modalAction(action) {
-        const ev = `${action}-post`;
+        const ev = `modal-${action}-post`;
         this.$events.emit(ev, this.data)
       },
       load(data) {
@@ -78,7 +78,9 @@ export default function (data) {
                   <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
                   <sup class="noselect" rel="prev">${data.disagree}</sup> 
                 
-                  <i aria-label="Reply" @click="quickAction('close')" class="icon material-icons icon-click" rel="prev">unfold_more</i>
+                  <i aria-label="Reply" @click="quickAction('comment')" class="icon material-icons icon-click" rel="prev">chat</i>
+                  <sup class="noselect" rel="prev">${data.replies || 0}</sup> 
+                
                 </li> 
               </ul>
               <ul>

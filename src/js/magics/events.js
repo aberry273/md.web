@@ -10,7 +10,7 @@ export default () => {
             // Listen for the event.
             window.addEventListener(
                 ev,
-                ((e) => console.log(e.detail))
+                ((e) => cb(e.detail))
             );
         },
     }
