@@ -11,14 +11,16 @@ const defaults = {
 export default function (data) {
 	return {
       data: null,
+      threadUrl: null,
       expanded: false,
       init() {
         this.data = data.item;
+        this.threadUrl = data.threadUrl;
         this.expanded = data.expanded;
         this.expandable = data.expandable;
         const self = this;
         this.$nextTick(() => {
-          this.load(self.data)
+          this.load(self.data.item)
         })
       },
       quickAction(action) {
@@ -32,23 +34,37 @@ export default function (data) {
       },
       modalAction(action) {
         const ev = `modal-${action}-post`;
-        this.$events.emit(ev, this.data)
+        const payload = {
+          // route to append to postbackUrl 
+          postbackUrlRoute: this.data.id,
+          // postback type
+          postbackType: 'PUT',
+          // content post item
+          item: this.data,
+        }
+        this.$events.emit(ev, payload)
+      },
+      getThreadUrl(id) {
+        return `${threadUrl}/${id}`;
       },
       load(data) {
-        this.$root.innerHTML = `
-        <article class="dense padless">
+        console.log(data);
+        const html = `
+        <article class="dense" :id="data.referenceId">
           <header>
             <nav>
               <ul>
-                <li>
-                  <button class="round small primary img">
-                    <img
-                    class="circular"
-                    src="${data.profile}"
-                    alt="username_profile"
-                  />
-                  </button>
-                </li>
+                <template x-if="data.profile != null">
+                    <li> 
+                      <button class="round small primary img">
+                        <img
+                        class="circular"
+                        src="${data.profile}"
+                        alt="${data.username}"
+                      />
+                      </button>
+                    </li>
+                </template>
                 <aside class="dense">
                   <li class="secondary"><strong>${data.username}</strong></li>
                 </aside>
@@ -62,16 +78,18 @@ export default function (data) {
                     <ul dir="rtl">
                       <li><a class="click" @click="modalAction('share')">Share</a></li>
                       <li><a class="click" @click="modalAction('edit')">Edit</a></li>
-                      <li><a class="click" @click="modalAction('remove')">Remove</a></li>
+                      <li><a class="click" @click="modalAction('delete')">Delete</a></li>
                     </ul>
                   </details>
                 </li>
               </ul>
             </nav>
-          </header> 
-          <blockquote class="dense">
-            <a>@johndeere</a>
-          </blockquote>
+          </header>
+          <template x-if="data.targetThread != null">
+            <blockquote class="dense">
+              <a :href="'#'+data.targetThread" x-text="data.targetThread"></a>
+            </blockquote>
+          </template>
           ${data.content}
           <footer>
             <nav>
@@ -79,19 +97,17 @@ export default function (data) {
                 <li>
                   <!--Agree-->
                   <i aria-label="Agree" @click="quickAction('agree')" class="icon material-icons icon-click" rel="prev">expand_less</i>
-                  <sup class="noselect" rel="prev">${data.agree}</sup>
+                  <sup class="noselect" rel="prev">${data.agree || 0}</sup>
                   <!--Disagree-->
                   <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
-                  <sup class="noselect" rel="prev">${data.disagree}</sup> 
-
+                  <sup class="noselect" rel="prev">${data.disagree || 0}</sup> 
+    
                   <template x-if="expanded">
-                   <i aria-label="Reply" @click="quickAction('close')" class="icon material-icons icon-click" rel="prev">close</i>
+                    <i aria-label="Reply" @click="quickAction('close')" class="icon material-icons icon-click" rel="prev">close</i>
                   </template>
-
-                  <template x-if="!expanded">
-                   <i aria-label="Reply" @click="quickAction('reply')" class="icon material-icons icon-click" rel="prev">reply</i>
-                  </template>
-                   <sup class="noselect" rel="prev">${data.replies || 0}</sup> 
+    
+                  <i aria-label="Reply" @click="quickAction('reply')" class="icon material-icons icon-click" rel="prev">reply_all</i>
+                  <sup class="noselect" rel="prev">${data.replies || 0}</sup> 
                 
                 </li> 
               </ul>
@@ -106,6 +122,9 @@ export default function (data) {
           </footer>
         </article>
         `
+        this.$nextTick(() => {
+            this.$root.innerHTML = html
+        });
       },
       defaults() {
         this.load(defaults)

@@ -44,6 +44,7 @@ export default function (wssPath){
                 const user = message.arguments[0];
                 const payload = message.arguments[1];
                 window.dispatchEvent(new CustomEvent(self.event, { detail: payload }));
+                window.dispatchEvent(new CustomEvent('snackbar-success', { detail: { target: 'New post created!' } }));
             };
         };
 

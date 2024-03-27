@@ -1,7 +1,13 @@
 export default () => ({
     // PROPERTIES
     // INIT
-    init() {},
+    init() {
+        /*
+        this.$events.on('action-reply', (item) => {
+          self.selected = item;
+        })
+        */
+    },
     // METHODS
     items: defaultsPosts,
     replies: defaultsReplies,
@@ -18,21 +24,23 @@ export default () => ({
             like: false,
         })
     },
-    createReply(post){
+    createReply(reply){
         this.replies.push({
             id: this.items.length+'post',
             userId: 0,
-            parentId: post.id,
+            parentId: reply.parentId,
             username: 'John deere',
             profile: 'https://placehold.co/150x150',
             handle: '@jdeerer',
             updated: '5 minutes ago',
-            content: '<p><strong>title</strong></p><p>this is a new test of a auto-formatted markdown</p>',
+            content: reply.content,
             feed: 'Recipes',
             liked: false,
             agree: 22,
             disagree: 1,
         })
+        console.log(this.replies)
+        console.log('reply created');
     },
     createPost(post){
         this.items.push({
@@ -50,7 +58,6 @@ export default () => ({
         })
     },
     likePost(post){
-        console.log('like');
         this.createPost(post);
     },
     disagreePost(post){
@@ -160,14 +167,26 @@ const defaultsReplies = [
         disagree: 15,
     },
     {
-        id: 14,
+        id: 553,
         userId: 0,
         profile: 'https://placehold.co/150x150',
-        username: 'tommy1989',
-        handle: '@tommy1989',
-        updated: '3 days ago',
-        content: '<img src="https://placehold.co/2000x2000" alt="username_profile" />',
-        liked: false,
+        username: 'jokarr',
+        handle: '@johndoker',
+        updated: '15 minutes ago',
+        content: 'What do we do when we want to write more than to do what',
+        liked: true,
+        agree: 16,
+        disagree: 15,
+    },
+    {
+        id: 122,
+        userId: 0,
+        profile: 'https://placehold.co/150x150',
+        username: 'jokarr',
+        handle: '@johndoker',
+        updated: '15 minutes ago',
+        content: 'What do we do when we want to write more than to do what',
+        liked: true,
         agree: 16,
         disagree: 15,
     },

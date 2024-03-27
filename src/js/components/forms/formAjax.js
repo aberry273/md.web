@@ -10,21 +10,29 @@ export default function (data) {
     loading: false,
     event: null,
     postbackType: 'POST',
+    localEvent: '__formAjax:completed',
     // INIT
     init() {
       this.label = data.label;
       this.event = data.event;
       this.postbackType = data.postbackType
       this.setHtml(data)
+      this.localEvent += new Date().toISOString()
+      // Response
+      this.$events.on(this.localEvent, (data) => {
+        console.log(data)
+        if (data.statusCode == 200) {
+          //
+        }
+        if (data.statusCode >= 400 && data.statusCode <= 500) {
+          //this.resetValues(fields);
+        }
+        if (data.statusCode >= 500 && data.statusCode <= 600) {
+         // this.resetValues(fields);
+        }
+      })
     },
     // METHODS
-    submitForm() {
-    },
-    filterPosts(feed) {
-      this.loading = true;
-      this.filtered = this.$store.content.items.filter(x => x.feed == feed);
-      this.loading = false;
-    },
     renderField(field) {
       if(field.type == 'textarea') return textarea(field)
       
@@ -40,19 +48,16 @@ export default function (data) {
       let response = null;
       switch (this.postbackType) {
         case 'POST':
-          response = this.$fetch.POST(data.postbackUrl, payload);
+          response = await this.$fetch.POST(data.postbackUrl, payload);
           break;
         case 'PUT':
-          response = this.$fetch.PUT(data.postbackUrl, payload);
-          // Expected output: "Mangoes and papayas are $2.79 a pound."
+          response = await this.$fetch.PUT(data.postbackUrl, payload);
           break;
         case 'GET':
-          response = this.$fetch.GET(data.postbackUrl, payload);
-          // Expected output: "Mangoes and papayas are $2.79 a pound."
+          response = await this.$fetch.GET(data.postbackUrl, payload);
           break;
         case 'DELETE':
-          response = this.$fetch.DELETE(data.postbackUrl, payload);
-          // Expected output: "Mangoes and papayas are $2.79 a pound."
+          response = await this.$fetch.DELETE(data.postbackUrl);
           break;
         default:
           response = null;
@@ -61,7 +66,7 @@ export default function (data) {
       if(this.event) {
         this.$dispatch(this.event, response)
       }
-      this.resetValues(fields);
+      this.$dispatch(this.localEvent, response)
       this.loading = false;
     },
     resetValues(fields) {
@@ -73,17 +78,18 @@ export default function (data) {
       // make ajax request
       const label = data.label || 'Submit'
       this.fields = data.fields || []
-      this.$root.innerHTML = `
+      const html =  `
         <div>
           <progress x-show="loading"></progress>
-          <fieldset>
-            <template x-for="(field, i) in fields" :key="field.name+i"> 
-              <label x-html="renderField(field)" x-show="!field.hidden"></label>
-            </template>
-          </fieldset>
-          <button @click="await submit(fields)" :disabled="loading">${label}</button>
+          <fieldset x-data="formFields({fields})"></fieldset>
+          <footer align="right">
+            <button class="small" @click="await submit(fields)" :disabled="loading">${label}</button>
+          </footer>
         </div>
       `
+      this.$nextTick(() => {
+          this.$root.innerHTML = html;
+      })
     },
   }
 }

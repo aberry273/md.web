@@ -51,29 +51,44 @@ export default function (data = {}) {
         // view data
         this.title = data.title;
         this.text = data.text;
-        this.formData = form;
+        this.form = data.form;
 
 
         this.load(data);
         const self = this;
-        // Listen for the event.
-        window.addEventListener(this.event,
-          (ev) => {
-            const payload = ev.detail;
-            console.log(payload)
-            self.formData.postbackUrl += '/'+payload.id;
-            self.formData.fields[0].value = payload.content;
-            self.formData.fields[1].value = payload.id;
-            self.formData.fields[2].value = payload.userId;
-            self.toggle()
-          }, false,
-        );
+        // If the modal event is triggered, and data is passed in { key: val }
+        // Update the form.fields[].value to equal the associated data property
+        this.$events.on(this.event, (data) => {
+          const postbackType = data.postbackType;
+          if(postbackType != null) {
+            self.form.postbackType = postbackType;
+          }
+          // hacky solution to append id to route, really should create a bespoke form for content posts
+          const postbackUrlRoute = data.postbackUrlRoute;
+          if(postbackUrlRoute != null) {
+            self.form.postbackUrl += "/" + postbackUrlRoute
+          }
+          if(self.form == null || self.form.fields == null) return;
+          for(var i = 0; i < self.form.fields.length; i++) {
+            const field = self.form.fields[i].name;
+            if(data.item[field] != null) { 
+              self.form.fields[i].value = data.item[field]
+            }
+          }
+          self.toggle()
+        })
+        this.$events.on(this.form.event, (data) => {
+            if (data.statusCode == 200) {
+                
+            }
+            self.toggle();
+        })
       },
       toggle() {
         toggle(this.id)
       },
       load(data) {
-        this.$root.innerHTML = `
+        const html = `
           <!-- Edit post -->
           <dialog id="${this.id}">
             <article>
@@ -86,10 +101,13 @@ export default function (data = {}) {
                 ></button>
                 <h3 x-text="title"></h3>
               </header>
-              <div x-data="formAjax(formData)"></div>
+              <div x-data="formAjax(form)"></div>
             </article>
           </dialog>
             `
+          this.$nextTick(() => { 
+            this.$root.innerHTML = html
+          })
       },
       defaults() {
         this.load(defaults)

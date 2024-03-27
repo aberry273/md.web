@@ -1,6 +1,6 @@
 
-import contentPost from './contentPost.js'
+import contentPosts from './contentPosts.js'
 
 export {
-    contentPost,
+    contentPosts,
 }

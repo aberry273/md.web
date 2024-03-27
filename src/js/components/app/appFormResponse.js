@@ -4,50 +4,137 @@ export default function (data) {
     // PROPERTIES
     loading: false,
     fields: [],
+    item: null,
     label: 'Submit',
     // INIT
     init() {
       this.label = data.label;
       this.event = data.event;
+      this.item = data.item;
       this.postbackType = data.postbackType
-      this.fields = this.setFields()
+      this.fields = data.fields,
       this.setHtml(data)
     },
-    setFields() {
+    setFields(inputName, inputPlaceholder) {
       return [
           {
-            name: 'Content',
+            name: inputName || 'Content',
             type: 'textarea',
-            placeholder: 'Whats your update?',
+            placeholder: inputPlaceholder || 'Whats your update?',
             autocomplete: null,
-            ariaInvalid: true,
-            helper: ''
+            helper: '',
+            clearOnSubmit: true,
           },
           {
-            name: 'UserId',
+            name: 'parentId',
             type: 'input',
             disabled: true,
             hidden: true,
-            placeholder: 'Whats your update?',
             autocomplete: null,
-            ariaInvalid: true,
             helper: '',
-            value: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+            value: this.item.id,
+          },
+          {
+            name: 'status',
+            type: 'input',
+            disabled: true,
+            hidden: true,
+            autocomplete: null,
+            helper: '',
+            value: this.item.status,
+          },
+          {
+            name: 'channelId',
+            type: 'input',
+            disabled: true,
+            hidden: true,
+            autocomplete: null,
+            helper: '',
+            value: this.item.channelId,
+          },
+          {
+            name: 'threadId',
+            type: 'input',
+            disabled: true,
+            hidden: true,
+            autocomplete: null,
+            helper: '',
+            value: this.item.threadId,
+          },
+          {
+            name: 'tags',
+            type: 'input',
+            disabled: true,
+            hidden: true,
+            autocomplete: null,
+            helper: '',
+            value: this.item.tags,
+          },
+          {
+            name: 'category',
+            type: 'input',
+            disabled: true,
+            hidden: true,
+            autocomplete: null,
+            helper: '',
+            value: this.item.category,
+          },
+          {
+            name: 'userId',
+            type: 'input',
+            disabled: true,
+            hidden: true,
+            autocomplete: null,
+            helper: '',
+            value: this.item.userId,
           },
         ]
     },
+    
+    async submit(fields) {
+      this.loading = true;
+      const payload = {}
+      fields.map(x => {
+        payload[x.name] = x.value
+        return payload
+      })
+      let response = this.$fetch.POST(data.postbackUrl, payload);
+      if(this.event) {
+        this.$dispatch(this.event, response)
+      }
+      this.resetValues(fields);
+      this.loading = false;
+    },
+    resetValues(fields) {
+      for(var i = 0; i < fields.length; i++) {
+        if(fields[i].clearOnSubmit)
+          fields[i].value = null;
+      }
+    },
+    format(type) {
+
+    },
     setHtml(data) {
+      // make ajax request
+      const label = data.label || 'Submit'
       const html = `
-        <div style="padding-bottom:12px;" x-data="formAjax({
-          feed: $store.feedFilters.current,
-          postbackUrl: 'https://localhost:7220/api/contentpostreply',
-          postbackType: 'POST',
-          event: 'post:created',
-          fields: fields
-          })"></div>`
-        this.$nextTick(() => { 
-          this.$root.innerHTML = html
-        })
+        <div>
+          <progress x-show="loading"></progress>
+          <fieldset x-data="formFields({fields})"></fieldset>
+          <footer align="right" style="text-align:right">
+          <!--
+            <fieldset role="group">
+              <input name="Tag" type="text" placeholder="#tags" autocomplete="email" />
+              <button class="small" @click="await submit(fields)" :disabled="loading">${label}</button>
+            </fieldset>
+            -->
+            <button class="small" @click="await submit(fields)" :disabled="loading">${label}</button>
+          </footer>
+        </div>
+      `
+      this.$nextTick(() => {
+        this.$root.innerHTML = html
+      });
     },
   }
 }

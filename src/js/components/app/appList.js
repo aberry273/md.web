@@ -8,10 +8,12 @@ export default function (data) {
     sourceUrl: '#',
     expandable: true,
     items: [],
+    threadUrl: '/',
     init() {
       this.expandable = data.expandable;
       this.filterId = data.feed;
       this.sourceUrl = data.sourceUrl;
+      this.threadUrl = data.threadUrl;
       //this.selectFeed(data.feed);
       this.setHtml(data);
       const self = this;
@@ -23,15 +25,17 @@ export default function (data) {
         await this.filterPosts(val)
       })
 
-      this.$events.on('action-reply', (item) => {
-        self.selected = item;
-      })
-      this.$events.on('action-close', (item) => {
-        self.selected = null;
-      })
-    },
-    isSelected(item) {
-      return (this.selected != null && this.selected.id == item.id)
+      // Listen for the event.
+      window.addEventListener('expand',
+        (e) => {
+          const item = e.detail;
+          self.selected = item;
+        }, false);
+
+      window.addEventListener('close',
+        (e) => {
+          self.selected = null;
+      }, false);
     },
     async filterPosts(feed) {
       this.loading = true;
@@ -70,31 +74,12 @@ export default function (data) {
         -->  
       <div>
         <template x-for="(post, i) in filtered" :key="post.id+''+i">
-          <div>
-          <div x-cloak x-data="appCardPostReply(
+          <div x-cloak x-data="appCardPost(
             {
               item: post,
+              threadUrl: threadUrl,
             })"></div>
-            <template x-if="selected != null && selected.id == post.id">
-              <article class="dense padless">
-                <nav>
-                  <ul>
-                    <li>
-                      <i aria-label="Cancel" @click="selected = null" class="icon material-icons icon-click" rel="prev">close</i>
-                    </li>
-                  </ul>
-                </nav>
-                <div x-data="appFormResponse({
-                  postbackUrl: 'https://localhost:7220/api/contentpost',
-                  postbackType: 'POST',
-                  event: 'post:created',
-                })">
-                </div>
-              </article>
-            </template>
-            </div>
-          </template>
-       
+        </template> 
         <template x-if="filtered.length == 0">
           <article>
             <header><strong>No results!</strong></header>

@@ -11,8 +11,10 @@ const defaults = {
 export default function (data) {
 	return {
       data: null,
+      threadUrl: null,
       init() {
         this.data = data.item;
+        this.threadUrl = data.threadUrl;
         const self = this;
         this.$nextTick(() => {
           this.load(self.data)
@@ -29,23 +31,36 @@ export default function (data) {
       },
       modalAction(action) {
         const ev = `modal-${action}-post`;
-        this.$events.emit(ev, this.data)
+        const payload = {
+          // route to append to postbackUrl 
+          postbackUrlRoute: this.data.id,
+          // postback type
+          postbackType: 'PUT',
+          // content post item
+          item: this.data,
+        }
+        this.$events.emit(ev, payload)
+      },
+      getThreadUrl(id) {
+        return `${threadUrl}/${id}`;
       },
       load(data) {
         this.$root.innerHTML = `
-        <article class="dense padless">
+        <article class="dense" :id="data.referenceId">
           <header >
             <nav>
               <ul>
-                <li>
-                  <button class="round small primary img">
-                    <img
-                    class="circular"
-                    src="${data.profile}"
-                    alt="username_profile"
-                  />
-                  </button>
-                </li>
+                <template x-if="data.profile != null">
+                  <li> 
+                    <button class="round small primary img">
+                      <img
+                      class="circular"
+                      src="${data.profile}"
+                      alt="${data.username}"
+                    />
+                    </button>
+                  </li>
+                </template>
                 <aside class="dense">
                   <li class="secondary"><strong>${data.username}</strong></li>
                 </aside>
@@ -59,7 +74,7 @@ export default function (data) {
                     <ul dir="rtl">
                       <li><a class="click" @click="modalAction('share')">Share</a></li>
                       <li><a class="click" @click="modalAction('edit')">Edit</a></li>
-                      <li><a class="click" @click="modalAction('remove')">Remove</a></li>
+                      <li><a class="click" @click="modalAction('delete')">Delete</a></li>
                     </ul>
                   </details>
                 </li>
@@ -77,10 +92,9 @@ export default function (data) {
                   <!--Disagree-->
                   <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
                   <sup class="noselect" rel="prev">${data.disagree}</sup> 
-                
-                  <i aria-label="Reply" @click="quickAction('comment')" class="icon material-icons icon-click" rel="prev">chat</i>
-                  <sup class="noselect" rel="prev">${data.replies || 0}</sup> 
-                
+
+                  <a class="" href="${this.getThreadUrl(data.id)}"><i aria-label="Reply" @click="quickAction('comment')" class="icon material-icons icon-click" rel="prev">forum</i></a>
+                  <sup class="noselect" rel="prev">${data.replies || 0}</sup>      
                 </li> 
               </ul>
               <ul>

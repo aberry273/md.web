@@ -140,7 +140,7 @@
     border-top: none;
   }
   article.padless {
-
+    padding: 0;
   }
   article blockquote {
     margin-top: calc(var(--pico-block-spacing-vertical)* -.5);
@@ -151,7 +151,7 @@
   article.dense header, article header.dense {
     margin-top: calc(var(--pico-block-spacing-vertical)* -1);
     margin-bottom: 0;
-    padding: calc(var(--pico-block-spacing-vertical)* .33) var(--pico-block-spacing-horizontal);
+    padding: calc(var(--pico-block-spacing-vertical)* 0) var(--pico-block-spacing-horizontal);
   }
   article.dense p {
     margin-top: 0;
@@ -160,7 +160,7 @@
   article.dense footer, article footer.dense {
     margin-top: 0;
     margin-bottom: calc(var(--pico-block-spacing-vertical)* -1.5);
-    padding: calc(var(--pico-block-spacing-vertical)* .33) var(--pico-block-spacing-horizontal);
+    padding: calc(var(--pico-block-spacing-vertical)* 0) var(--pico-block-spacing-horizontal);
   }
   /* ALERTS */
   article.snackbar {
@@ -200,6 +200,86 @@
     color: #FFF;
     margin-bottom: 0;
     padding: 0 var(--pico-block-spacing-horizontal);
+  }
+
+  /*FORMS*/
+  form footer {
+    margin:  0;
+    padding: 0;
+    padding-top: calc(var(--pico-block-spacing-vertical)* .33);
+    text-align: right;
+  }
+  fieldset {
+    margin-bottom: 0;
+  }
+
+  
+  label[for="Content"] {
+    margin-bottom: calc(var(--pico-spacing) * -0.25);
+    text-align: center;
+  }
+
+  textarea[name="Content"] {
+    margin: 0;
+    border: none;
+    padding: 4px;;
+    background: none;
+    box-shadow: none;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    /*text-align: center;
+*/
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:is(:active, :focus) {
+      color: var(--pico-secondary);
+    }
+  }
+
+  input[name="Tag"] {
+    margin: 0;
+    border: none;
+    padding: 4px;;
+    background: none;
+    box-shadow: none;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+   
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:is(:active, :focus) {
+      color: var(--pico-secondary);
+    }
+
+  }
+
+  input[name="Thread"] {
+    margin: 0;
+    border: none;
+    padding: 4px;;
+    background: none;
+    box-shadow: none;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+   
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:is(:active, :focus) {
+      color: var(--pico-primary);
+    }
+
   }
 
 /* RESPONSIVE GRID*/
