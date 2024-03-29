@@ -9,11 +9,13 @@ export default function (data) {
     expandable: true,
     items: [],
     threadUrl: '/',
+    targetThread: null,
     init() {
       this.expandable = data.expandable;
       this.filterId = data.feed;
       this.sourceUrl = data.sourceUrl;
       this.threadUrl = data.threadUrl;
+      this.targetThread = data.targetThread;
       //this.selectFeed(data.feed);
       this.setHtml(data);
       const self = this;
@@ -81,6 +83,7 @@ export default function (data) {
               {
                 item: post,
                 threadUrl: threadUrl,
+                targetThread: targetThread,
               })"></div>
               <template x-if="selected != null && selected.id == post.id">
                 <article>

@@ -1,17 +1,20 @@
 export default () => ({
     // PROPERTIES
+    posts: [],
+    replies: [],
+    reviews: [],
     // INIT
     init() {
-        /*
-        this.$events.on('action-reply', (item) => {
-          self.selected = item;
-        })
-        */
+        this.posts = defaultsPosts;
+        this.replies = defaultsReplies;
+    },
+    addPosts(posts) {
+        this.posts.concat(posts);
+    },
+    addPost(post) {
+        this.posts.push(post);
     },
     // METHODS
-    items: defaultsPosts,
-    replies: defaultsReplies,
-    reviews: defaultsReviews,
     createReview(post) {
         this.reviews.push({
             id: 91,

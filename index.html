@@ -30,6 +30,7 @@
 </head>
 
 <body class="container">
+    <span x-data="_authManager({sourceUrl: 'https://localhost:7220/api/accountuser'})"></span>
     <!-- Header -->
     <div x-data="navbar(navData)"></div>
    
@@ -45,7 +46,7 @@
       "error",
       "sandbox"
     ]
-</script>
+  </script>
 
   <div x-data>
     <template x-for="tab in tabs" x-init="$store.tabs.setTab(tabs[0])">
@@ -78,7 +79,8 @@
   </div>
 
   <!-- ./ Main -->
-  <div x-data="snackbar({event: $store.wss_contentPost.event })" x-on:show:alert.window="show"></div>
+  
+  
   <!-- Footer -->
   <footer>
     <small
@@ -89,6 +91,11 @@
     > 
   </footer>
   <!-- ./ Footer -->
+
+  <!-- Alerts -->
+ <div x-data="snackbar({event: 'snackbar-success', type: 'success' })" x-on:show:alert.window="show"></div>
+ <div x-data="snackbar({event: 'snackbar-error', type: 'error' })" x-on:show:alert.window="show"></div>
+ <div x-data="snackbar({event: 'snackbar-information', type: 'information' })" x-on:show:alert.window="show"></div>
 
     <!-- JS Libraries -->
     <!-- For componentizing and lazy loading Alpine -->
@@ -103,6 +110,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
       -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
     <script type="module" src="/src/js/init.js"></script> 
 
@@ -111,8 +119,21 @@
 
     <!-- DATA -->
     <script>
+        let wssSettings = {
+          user: {
+            id: 'AA20E580-B222-4B44-516D-08DC47846AB6',
+          },
+          wssContentPosts: {
+            //standard websockets
+            //url: "wss://localhost:7220/ContentPosts",
+            event: 'wss:contentPosts',
+            url: "https://localhost:7220/ContentPosts",
+          }
+        };
+    </script>
+    <script>
         let navData = {
-            title: 'markdown.web',
+            title: 'parrot',
             items: [
                 {
                     href: '#',
@@ -129,7 +150,7 @@
             ]
         }
         let headerData = {
-            title: 'markdown.web',
+            title: 'parrot',
             subtitle: 'A tiny front-end library to build simple sites',
             text: 'Total project size is < 20kb gzipped'
         }

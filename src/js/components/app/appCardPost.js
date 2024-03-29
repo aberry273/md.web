@@ -21,7 +21,7 @@ export default function (data) {
         })
       },
       quickAction(action) {
-        const ev = `action-${action}`;
+        const ev = `action-${action}-post`;
         this.$events.emit(ev, this.data)
         this.$events.emit(action, this.data)
       },
@@ -42,24 +42,24 @@ export default function (data) {
         this.$events.emit(ev, payload)
       },
       getThreadUrl(id) {
-        return `${threadUrl}/${id}`;
+        return `${this.threadUrl}/${id}`;
       },
       load(data) {
-        this.$root.innerHTML = `
-        <article class="dense" :id="data.referenceId">
-          <header >
+        const html = `
+        <article class="dense">
+          <header>
             <nav>
               <ul>
                 <template x-if="data.profile != null">
-                  <li> 
-                    <button class="round small primary img">
-                      <img
-                      class="circular"
-                      src="${data.profile}"
-                      alt="${data.username}"
-                    />
-                    </button>
-                  </li>
+                    <li>
+                      <button class="round small primary img">
+                        <img
+                        class="circular"
+                        src="${data.profile}"
+                        alt="${data.username}"
+                      />
+                      </button>
+                    </li>
                 </template>
                 <aside class="dense">
                   <li class="secondary"><strong>${data.username}</strong></li>
@@ -88,10 +88,10 @@ export default function (data) {
                 <li>
                   <!--Agree-->
                   <i aria-label="Agree" @click="quickAction('agree')" class="icon material-icons icon-click" rel="prev">expand_less</i>
-                  <sup class="noselect" rel="prev">${data.agree}</sup>
+                  <sup class="noselect" rel="prev">${data.agree || 0}</sup>
                   <!--Disagree-->
                   <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
-                  <sup class="noselect" rel="prev">${data.disagree}</sup> 
+                  <sup class="noselect" rel="prev">${data.disagree || 0}</sup> 
 
                   <a class="" href="${this.getThreadUrl(data.id)}"><i aria-label="Reply" @click="quickAction('comment')" class="icon material-icons icon-click" rel="prev">forum</i></a>
                   <sup class="noselect" rel="prev">${data.replies || 0}</sup>      
@@ -107,6 +107,9 @@ export default function (data) {
             </nav>
           </footer>
         </article>`
+        this.$nextTick(() => {
+            this.$root.innerHTML = html
+        });
       },
       defaults() {
         this.load(defaults)

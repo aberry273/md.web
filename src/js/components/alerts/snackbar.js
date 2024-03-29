@@ -25,22 +25,21 @@ export default function (data = {}) {
         this.load(data);
         const self = this;
         
-        // Listen for the event.
-        window.addEventListener(data.event || "snackbar:open",
-          (e) => {
-            console.log(e.detail)
-            const data = {
-              text: 'New post created!',
+        
+        // Listen for the websocket event.
+        this.$events.on(data.event || "snackbar:open", (payload) => {
+          const data = {
+              text: payload.text,
               success: true
-            }
-            self.load(data)
-            self.show = true;
-            // if a timer is set
-            if (self.ms && self.ms > 0)
-            setTimeout(function () {
-              self.show = false
-            }, self.ms);
-          }, false);
+          }
+          self.load(data)
+          self.show = true;
+          // if a timer is set
+          if (self.ms && self.ms > 0)
+              setTimeout(function () {
+                  self.show = false
+              }, self.ms);
+        });
       },
       show() {
         this.show = true;
