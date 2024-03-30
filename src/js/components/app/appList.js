@@ -6,6 +6,7 @@ export default function (data) {
     filtered: [],
     loading: false,
     sourceUrl: '#',
+    searchUrl: '#',
     expandable: true,
     threadUrl: '/',
     initialItems: [],
@@ -17,6 +18,7 @@ export default function (data) {
       this.userId = data.userId;
       this.channel = data.channel;
       this.threadUrl = data.threadUrl;
+      this.searchUrl = data.searchUrl;
       this.initialItems = data.items;
       //this.selectFeed(data.feed);
       this.setHtml(data);
@@ -39,7 +41,8 @@ export default function (data) {
       <div x-data="_contentPosts({
           items: initialItems,
           sourceUrl: sourceUrl,
-          channel: channel
+          channel: channel,
+          searchUrl: searchUrl,
         })">
         <template x-for="(post, i) in posts" :key="post.id+post.updatedOn" >
           <div x-data="appCardPost(

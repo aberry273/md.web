@@ -55,6 +55,8 @@
     <div x-data="appListReplies({
       sourceUrl: 'https://localhost:7220/api/contentpost',
       threadUrl: 'https://localhost:7220/content/thread',
+      searchUrl: 'https://localhost:7220/api/contentsearch',
+      userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
       targetThread: $store.content.posts[0].threadId,
       event: 'post:created',
       items: items,
