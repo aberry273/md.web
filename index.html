@@ -93,9 +93,34 @@
   <!-- ./ Footer -->
 
   <!-- Alerts -->
+  <!---->
  <div x-data="snackbar({event: 'snackbar-success', type: 'success' })" x-on:show:alert.window="show"></div>
  <div x-data="snackbar({event: 'snackbar-error', type: 'error' })" x-on:show:alert.window="show"></div>
  <div x-data="snackbar({event: 'snackbar-information', type: 'information' })" x-on:show:alert.window="show"></div>
+
+<div x-data="{
+  init(){
+    
+  },
+  showSnackbar(data) {
+      const snackbarType = (data.code == 200) ? 'success' : 'error';
+      const wasSuccess = (data.code == 200) ? 'successfully' : 'failed';
+      const message = `${data.update} post ${wasSuccess}`
+      const event = `snackbar-${snackbarType}`;
+      this.$events.emit(event, { type: 'success', code: data.code, text: data.message });
+  },
+  addSnackbar(data) { 
+      this.$events.emit('snackbar-add', data);
+  },
+}"
+>
+  <button @click="showSnackbar({code: 200, message: 'lol'})">success</button>
+  <button @click="addSnackbar({type: 'success', code: 200, text: 'success d qdwqd qwdwqdwqd qwqwdqwd '})">success</button>
+  <button @click="addSnackbar({type: 'information', code: 500, text: 'information'})">information</button>
+  <button @click="addSnackbar({type: 'error', code: 500, text: 'error'})">error</button>
+</div>
+
+<div x-data="snackbarList({event: 'snackbar-add', limit: 5 })" x-on:show:alert.window="show"></div>
 
     <!-- JS Libraries -->
     <!-- For componentizing and lazy loading Alpine -->
@@ -112,25 +137,13 @@
       -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
+    <!-- DATA -->
+    <script src="/src/js/config.js"></script>
     <script type="module" src="/src/js/init.js"></script> 
 
     <!-- Minimal theme switcher -->
     <script src="/src/js/minimal-theme-switcher.js"></script>
 
-    <!-- DATA -->
-    <script>
-        let wssSettings = {
-          user: {
-            id: 'AA20E580-B222-4B44-516D-08DC47846AB6',
-          },
-          wssContentPosts: {
-            //standard websockets
-            //url: "wss://localhost:7220/ContentPosts",
-            event: 'wss:contentPosts',
-            url: "https://localhost:7220/ContentPosts",
-          }
-        };
-    </script>
     <script>
         let navData = {
             title: 'parrot',

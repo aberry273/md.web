@@ -75,7 +75,7 @@ export default () => ({
 
 const defaultsPosts = [
     {
-        id: 0,
+        id: "22194d7e-1d46-4d00-9899-5d3ca3186e08",
         userId: 0,
         username: 'John deere',
         profile: 'https://placehold.co/150x150',

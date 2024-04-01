@@ -1,3 +1,4 @@
+import { getIcon } from './utilities.js'
 const defaults = {
   ms: 3000,
   type: '',
@@ -11,17 +12,10 @@ export default function (data = {}) {
       ms: data.ms || defaults.ms,
       type: data.type || defaults.type,
       icon: data.icon || defaults.icon,
+      standalone: true,
       init() {
         this.show = data.show;
-        if(data.type == 'success') {
-          this.icon = 'check_circle'
-        }
-        if(data.type == 'information') {
-          this.icon = 'warning'
-        }
-        if(data.type == 'error') {
-          this.icon = 'error'
-        }
+        this.icon = getIcon(data)
         this.load(data);
         const self = this;
         
@@ -50,12 +44,13 @@ export default function (data = {}) {
         const icon = this.icon;
         const html = `
         <template x-if="show">
-          <article class="is-fixed dense page-modal snackbar" :class="type" x-transition>
+          <article class="is-fixed dense page-modal snackbar standalone" :class="type" x-transition>
             <nav>
               <i class="material-icons">${icon}</i>
               <p>${data.text}</p>
               <i class="flat click material-icons" aria-label="Close" @click="show = false" rel="prev">close</i>
-          </nav>
+            </nav>
+          </article>
         </template>`
         this.$nextTick(() => { 
           this.$root.innerHTML = html

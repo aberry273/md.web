@@ -12,18 +12,26 @@ export default function (data) {
 	return {
       data: null,
       threadUrl: null,
+      userId: null,
       init() {
         this.data = data.item;
+        this.userId = data.userId;
         this.threadUrl = data.threadUrl;
         const self = this;
         this.$nextTick(() => {
           this.load(self.data)
         })
       },
-      quickAction(action) {
-        const ev = `action-${action}-post`;
-        this.$events.emit(ev, this.data)
-        this.$events.emit(action, this.data)
+      action(action) {
+        const ev = `action:post`;
+        const payload = {
+          // postback type
+          action: action,
+          // content post item
+          item: this.data,
+          userId: this.userId,
+        }
+        this.$events.emit(ev, payload) 
       },
       redirectAction(action) {
         const ev = `redirect-${action}`;
@@ -81,27 +89,31 @@ export default function (data) {
               </ul>
             </nav>
           </header> 
+          <template x-if="data.targetThread">
+              <blockquote class="dense">
+                <a :href="'#'+data.targetThread" x-text="'#'+data.targetThread"></a>
+              </blockquote>
+          </template>
           ${data.content}
           <footer>
             <nav>
               <ul>
                 <li>
                   <!--Agree-->
-                  <i aria-label="Agree" @click="quickAction('agree')" class="icon material-icons icon-click" rel="prev">expand_less</i>
-                  <sup class="noselect" rel="prev">${data.agree || 0}</sup>
+                  <i aria-label="Agree" @click="action('agree')" :class="agrees(data) ? '': 'primary'" class="icon material-icons icon-click" rel="prev">expand_less</i>
+                  <sup class="noselect" rel="prev" x-text="data.agrees || 0"></sup>
                   <!--Disagree-->
-                  <i aria-label="Disagree" @click="quickAction('disagree')" class="icon material-icons icon-click" rel="prev">expand_more</i>
-                  <sup class="noselect" rel="prev">${data.disagree || 0}</sup> 
-
-                  <a class="" href="${this.getThreadUrl(data.id)}"><i aria-label="Reply" @click="quickAction('comment')" class="icon material-icons icon-click" rel="prev">forum</i></a>
-                  <sup class="noselect" rel="prev">${data.replies || 0}</sup>      
+                  <i aria-label="Disagree" @click="action('disagree')" :class="disagrees(data) ? '': 'primary'" class="icon material-icons icon-click" rel="prev">expand_more</i>
+                  <sup class="noselect" rel="prev"x-text="data.disagrees || 0"></sup> 
+              
+                  <a class="" href="${this.getThreadUrl(data.id)}"><i aria-label="Reply" @click="quickAction('comment')" :class="agrees(data) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">forum</i></a>
+                  <sup class="noselect" rel="prev" x-text="data.replies || 0"></sup>      
                 </li> 
               </ul>
               <ul>
                 <li>
-                  <!--Liked-->
-                  <i x-show="data.liked" @click="quickAction('like')" aria-label="Liked" class="primary icon material-icons icon-click" rel="prev">favorite</i>
-                  <i x-show="!data.liked" @click="quickAction('unlike')" aria-label="Noy liked" class="icon material-icons icon-click" rel="prev">favorite</i>
+                  <i @click="action('like')" aria-label="Liked" :class="likes(data) ? 'primary': ''" class=" icon material-icons icon-click" rel="prev">favorite</i>
+                  <sup class="noselect" rel="prev" x-text="data.likes || 0 "></sup> 
                 </li>
               </ul>
             </nav>

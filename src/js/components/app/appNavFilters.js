@@ -65,6 +65,18 @@ export default function (data) {
                   </ul>
                 </details>
               </li>
+              <li>
+                <details class="dropdown">
+                  <summary class="flat">
+                    Content
+                  </summary>
+                  <ul>
+                    <li><a href="#">Text</a></li>
+                    <li><a href="#">Images</a></li>
+                    <li><a href="#">Videos</a></li>
+                  </ul>
+                </details>
+              </li>
               <!--Sort-->
               <li>
                 <details class="dropdown">
