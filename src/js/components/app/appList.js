@@ -16,6 +16,7 @@ export default function (data) {
     sourceUrl: '#',
     fetchPostsUrl: '#',
     fetchReviewsUrl: '#',
+    targetThread: null,
     expandable: true,
     threadUrl: '/',
     initialItems: [],
@@ -28,6 +29,7 @@ export default function (data) {
       this.channel = data.channel;
       this.reviewUrl = data.reviewUrl;
       this.threadUrl = data.threadUrl;
+      this.targetThread = data.targetThread;
       this.fetchPostsUrl = data.fetchPostsUrl;
       this.fetchReviewsUrl = data.fetchReviewsUrl;
       this.initialItems = data.items;
@@ -55,6 +57,7 @@ export default function (data) {
             sourceUrl: sourceUrl,
             channel: channel,
             userId: userId,
+            targetThread: targetThread,
             fetchPostsUrl: fetchPostsUrl,
             fetchReviewsUrl: fetchReviewsUrl,
           })">

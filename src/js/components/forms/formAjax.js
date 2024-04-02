@@ -20,7 +20,6 @@ export default function (data) {
       this.localEvent += new Date().toISOString()
       // Response
       this.$events.on(this.localEvent, (data) => {
-        console.log(data)
         if (data.status == 200) {
             // Okay, do nothing from FE
         }

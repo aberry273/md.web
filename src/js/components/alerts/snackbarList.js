@@ -22,7 +22,6 @@ export default function (data = {}) {
           
           // Listen for the websocket event.
           this.$events.on(data.event || "snackbar:add", (payload) => {
-            console.log(payload);
             var icon = getIcon(data)
 
             this.snackbars.push({

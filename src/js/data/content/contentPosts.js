@@ -36,7 +36,7 @@ export default function (data) {
             // On updates from the websocket
             this.$events.on(this.$store.wssContentPosts.getMessageEvent(), async (e) => {
                 const data = e.data;
-                this.sendAlert(data);
+                if (data.alert) this.sendAlert(data);
                 this.updatePostItems(data);
             })
         },
@@ -55,16 +55,18 @@ export default function (data) {
             // On updates from the websocket
             this.$events.on(this.$store.wssContentPostReviews.getMessageEvent(), async (e) => {
                 const data = e.data;
-                console.log('handle item review');
-                console.log(data);
-                //this.sendAlert(data);
+                if (data.alert) this.sendAlert(data);
                 this.updateReviewItems(data);
             })
         },
         updatePostItems(wssMessage) {
             const item = wssMessage.data;
-            if (wssMessage.update == 'Created')
-                this.postItems.push(item);
+            if (this.postItems == null) this.postItems = [];
+            if (wssMessage.update == 'Created') {
+                const index = this.postItems.map(x => x.id).indexOf(item.id);
+                if (index == -1) this.postItems.push(item);
+                else this.postItems[index] = item
+            }
             if (wssMessage.update == 'Updated') {
                 const index = this.postItems.map(x => x.id).indexOf(item.id);
                 this.postItems[index] = item
@@ -76,8 +78,12 @@ export default function (data) {
         },
         updateReviewItems(wssMessage) {
             const item = wssMessage.data;
-            if (wssMessage.update == 'Created')
-                this.reviewItems.push(item);
+            if (this.reviewItems == null) this.reviewItems = [];
+            if (wssMessage.update == 'Created') {
+                const index = this.reviewItems.map(x => x.id).indexOf(item.id);
+                if (index == -1) this.reviewItems.push(item);
+                else this.reviewItems[index] = item
+            }
             if (wssMessage.update == 'Updated') {
                 const index = this.reviewItems.map(x => x.id).indexOf(item.id);
                 this.reviewItems[index] = item
@@ -91,20 +97,21 @@ export default function (data) {
         get reviews() { return this.reviewItems },
         agrees(post) {
             if (!this.reviews || this.reviews.length == 0) return false;
-            const review = this.reviewItems.filter(x => x.userId == this.userId)[0];
-            if(!review) return false;
+            const review = this.reviews.filter(x => x.userId == this.userId && x.contentPostId == post.id)[0];
+            if (!review) return false;
+            if (review.agree == null) return false
             return review.agree != null && review.agree == true;
         },
         disagrees(post) {
-            if (!this.reviews || this.reviews.length == 0) return false;
-            const review = this.reviewItems.filter(x => x.userId == this.userId)[0];
-            if(!review) return false;
+            if (!this.reviewItems || this.reviewItems.length == 0) return false;
+            const review = this.reviewItems.filter(x => x.userId == this.userId && x.contentPostId == post.id)[0];
+            if (!review) return false;
             return review.disagree != null && review.disagree == true;
         },
         likes(post) {
-            if (!this.reviews || this.reviews.length == 0) return false;
-            const review = this.reviewItems.filter(x => x.userId == this.userId)[0];
-            if(!review) return false;
+            if (!this.reviewItems || this.reviewItems.length == 0) return false;
+            const review = this.reviewItems.filter(x => x.userId == this.userId && x.contentPostId == post.id)[0];
+            if (!review) return false;
             return review.like != null && review.like == true;
         },
         sendAlert(data) {
@@ -131,6 +138,7 @@ export default function (data) {
             return payload;
         },
         async fetchPosts(query) {
+            if (!this.fetchPostsUrl || !query) return;
             const results = await this.$fetch.POST(this.fetchPostsUrl, query);
             this.postItems = results;
         },
@@ -148,6 +156,7 @@ export default function (data) {
             return payload;
         },
         async fetchReviews(query) {
+            if (!this.fetchReviewsUrl || !query) return;
             const results = await this.$fetch.POST(this.fetchReviewsUrl, query);
             this.reviewItems = results;
         },
