@@ -1,26 +1,45 @@
 
 <!-- Feed panel -->
 
+
+
 <div x-data="{
-  item: $store.content.posts[0],
-  items: $store.content.replies,
-  init() {
-      this.$events.on('action-reply', (item) => {
-        self.selectedId = item.id;
-      })
-      this.$events.on('action-close', (item) => {
-        self.selected = null;
-      })
-      this.$events.on('action-like', (item) => {
-        this.$store.content.likePost(item)
-      })
-      this.$events.on('action-agree', (item) => {
-        this.$store.content.agreePost(item)
-      })
-      this.$events.on('action-disagree', (item) => {
-        this.$store.content.disagreePost(item)
-      })
+    item: $store.content.getDummyThread(),
+    items: $store.content.replies,
+    targetThreadId: $store.content.getDummyThread().threadId,
+    threadItem: $store.content.getDummyThread(),
+    filterData: [
+    {
+      name: 'Reviews',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Select',
+    },
+    {
+      name: 'Threads',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Tags',
+      values: ['C#'],
+      selected: 'C#',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Content',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Sort',
+      values: ['Created', 'Updated', 'Ratings'],
+      selected: 'All',
+      type: 'Radio',
     }
+  ]
   }">
   <nav>
     <ul>
@@ -30,43 +49,48 @@
     </ul>
   </nav>
 
-  <!-- Original post -->
-  <div x-data="appCardPost({
-    item,
-    expandable: false,
-  })"></div>
-
-  <!--Feed-->
-  <div x-data="appNavFilters({})"></div>
-  
-  <!-- Response Form -->
-  <article>
-    <div x-data="appFormResponse({
-      postbackUrl: 'https://localhost:7220/api/contentpost',
-      postbackType: 'POST',
-      event: 'post:created',
-      fieldPlaceholder: 'Write a reply',
-      label: 'Reply'
-    })"></div>
-  </article>
-  
-  <!--Responses-->
-  <main x-transition>
-    <div x-data="appListReplies({
+  <div x-data="_contentPostsManager({
       sourceUrl: 'https://localhost:7220/api/contentpost',
       threadUrl: 'https://localhost:7220/content/thread',
       fetchPostsUrl: 'https://localhost:7220/api/contentsearch/posts',
       fetchReviewsUrl: 'https://localhost:7220/api/contentsearch/reviews',
       reviewUrl: 'https://localhost:7220/api/contentpostreview',
       userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      targetThread: $store.content.posts[0].threadId,
+      targetThread: targetThreadId,
       event: 'post:created',
-      items: items,
-      channel: $store.content.posts[0].threadId,
+      items: [],
+      channel: null,
+    })">
+    <!-- Original post -->
+      <div x-data="appCardPost({
+        item: threadItem
+      })"></div>
+    </div>
+
+    <!--Feed-->
+    <div x-data="appNavFilters({
+      filters: filterData
     })"></div>
+    
+    <!-- Response Form -->
+    <article>
+      <div x-data="appFormResponse({
+        postbackUrl: 'https://localhost:7220/api/contentpost',
+        postbackType: 'POST',
+        event: 'post:created',
+        fieldPlaceholder: 'Write a reply',
+        label: 'Reply'
+      })"></div>
+    </article>
+    
+    <!--Responses-->
+    <main x-transition>
+      <div x-data="appListPost"></div>
     </main>
+  </div>
 </div>
 
+</div>
 <!-- Modals -->
 <!-- Edit post -->
 <div x-data="modalForm({target: 'modal-edit-post', title: 'Edit post', text: 'test 123',
@@ -92,7 +116,7 @@ form: {
         hidden: true,
         autocomplete: null,
         helper: '',
-        value: $store.content.posts[0].id,
+        value: '$store.content.posts[0].id',
       },
       {
         name: 'Status',
@@ -110,7 +134,7 @@ form: {
         hidden: true,
         autocomplete: null,
         helper: '',
-        value: $store.content.posts[0].channelId,
+        value: '$store.content.posts[0].channelId',
       },
       {
         name: 'ThreadId',
@@ -119,7 +143,7 @@ form: {
         hidden: true,
         autocomplete: null,
         helper: '',
-        value: $store.content.posts[0].threadId,
+        value: '$store.content.posts[0].threadId',
       },
       {
         name: 'Tags',
@@ -128,7 +152,7 @@ form: {
         hidden: true,
         autocomplete: null,
         helper: '',
-        value: $store.content.posts[0].tags,
+        value: '$store.content.posts[0].tags',
       },
       {
         name: 'Category',
@@ -137,7 +161,7 @@ form: {
         hidden: true,
         autocomplete: null,
         helper: '',
-        value: $store.content.posts[0].category,
+        value: '$store.content.posts[0].category',
       },
       {
         name: 'UserId',
@@ -146,7 +170,7 @@ form: {
         hidden: true,
         autocomplete: null,
         helper: '',
-        value: $store.content.posts[0].userId,
+        value: '$store.content.posts[0].userId',
       },
     ]
 }  })"></div>
