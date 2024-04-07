@@ -36,16 +36,13 @@ export default function (data) {
             await this.setupPostWebsockets();
             await this.setupReviewWebsockets();
 
-            var postData = (data.targetThread) 
-                ? { targetThread: [data.targetThread] }
-                : {};
-            const postQuery = this.createQueryRequest(postData);
+            let queryData = this.getPageQueryFilters(data);
+            const postQuery = this.createQueryRequest(queryData);
             if (postQuery != null)
                 await this.fetchPosts(postQuery);
             
             if(data.userId) {
-                var reviewData = { userId: [data.userId] };
-                const reviewQuery = this.createQueryRequest(reviewData);
+                const reviewQuery = this.createQueryRequest({ userId: [data.userId] });
                 if (reviewQuery != null)
                     await this.fetchReviews(reviewQuery);
             }
@@ -55,9 +52,15 @@ export default function (data) {
                 await this.handleAction(e);
             })
             this.$events.on('filter:posts', async (e) => {
-                const postQuery = this.createQueryRequest(e);
+                const filterKeys = Object.keys(e);
+                let queryData = this.getPageQueryFilters(data);
+                for (var i = 0; i < filterKeys.length; i++) {
+                    const key = filterKeys[i];
+                    queryData[key] = e[key];
+                }
+                const postQuery = this.createQueryRequest(queryData);
                 if (postQuery != null)
-                    await this.fetchPosts(postQuery); 
+                    await this.fetchPosts(postQuery);
             })
         },
         // Getters
@@ -144,6 +147,12 @@ export default function (data) {
         },
         
         // API Data methods
+        getPageQueryFilters(data) {
+            let queryData = {}
+            if (data.targetThread) queryData.targetThread = [data.targetThread]
+            if (data.targetChannel) queryData.targetChannel = [data.targetChannel]
+            return queryData;
+        },
         createQueryRequest(data) {
             if (!data) return;
             let filters = [];
@@ -155,7 +164,8 @@ export default function (data) {
                     name: key,
                     //Equals, NotEquals, Null, NotNull, GreaterThan, LessThan
                     Operator: 'Equals',
-                    Values: data[key]
+                    Values: data[key],
+                    Condition: 'Filter',
                 }
                 filters.push(filter)
             }
