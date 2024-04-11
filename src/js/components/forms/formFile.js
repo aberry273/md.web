@@ -7,14 +7,15 @@ export default function (data) {
     loading: false,
     fields: [],
     label: 'Submit',
+    loading: false,
     event: null,
+    file: null,
     postbackType: 'POST',
     localEvent: '__formAjax:completed',
     // INIT
     init() {
       this.label = data.label;
       this.event = data.event;
-      this.loading = false;
       this.postbackType = data.postbackType
       this.setHtml(data)
       this.localEvent += new Date().toISOString()
@@ -32,6 +33,12 @@ export default function (data) {
         this.resetValues(this.fields);
     })
     },
+    onFieldChange(field, value) {
+      field.value = value;
+    },
+    getFilePreview(file) {
+      return typeof file == 'string' ? file : URL.createObjectURL(file)
+    },
     // METHODS
     renderField(field) {
       if(field.type == 'textarea') return textarea(field)
@@ -39,34 +46,18 @@ export default function (data) {
       return input(field)
     },
     async submit(fields) {
+      const payload = this._mxForm_GetFileFormData( { fields: fields }  ) 
+     
       this.loading = true;
-      const payload = {}
-      fields.map(x => {
-        payload[x.name] = x.value
-        return payload
-      })
-      let response = null;
-      switch (this.postbackType) {
-        case 'POST':
-          response = await this.$fetch.POST(data.postbackUrl, payload);
-          break;
-        case 'PUT':
-          response = await this.$fetch.PUT(data.postbackUrl, payload);
-          break;
-        case 'GET':
-          response = await this.$fetch.GET(data.postbackUrl, payload);
-          break;
-        case 'DELETE':
-          response = await this.$fetch.DELETE(data.postbackUrl);
-          break;
-        default:
-          response = null;
-      }
+      const config = this.mxForm_HeadersMultiPart; 
+      const isJson = false
+      let response = await this._mxForm_SubmitAjaxRequest(data.postbackUrl, payload, config, isJson);
 
       if(this.event) {
         this.$dispatch(this.event, response)
       }
       this.$dispatch(this.localEvent, response)
+
       this.loading = false;
     },
     resetValues(fields) {
@@ -80,7 +71,7 @@ export default function (data) {
       const label = data.label || 'Submit'
       this.fields = data.fields || []
       const html =  `
-        <div>
+        <div x-data="mxForm">
           <progress x-show="loading"></progress>
           <fieldset x-data="formFields({fields})"></fieldset>
           <footer align="right">

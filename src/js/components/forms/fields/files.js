@@ -11,6 +11,7 @@ export default function (data) {
                 :read-only="field.readonly"
                 :role="field.role"
                 :checked="field.checked"
+                x-on:change="field.value = Object.values($event.target.files)"
                 :placeholder="field.placeholder"
                 :autocomplete="field.autocomplete"
                 :aria-invalid="field.ariaInvalid == true"
@@ -19,5 +20,6 @@ export default function (data) {
             <small 
                 x-show="field.helper != null && field.helper.length > 0"
                 :id="field.id || field.name+i" x-text="field.helper"></small>
+       
         `
 }
