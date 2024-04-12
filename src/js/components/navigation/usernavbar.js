@@ -1,16 +1,17 @@
 
-function ahref(href, text) {
-  return `<a href="${href}">${text}</a>`
+function ahref(x) {
+  return `<a href="${x.href}" >${x.text}</a>`
 }
 
-function li(el) {
-  return `<li>${el}</li>`
+function li(x) {
+  if(x.disabled) return `<li>${x.text}</li>`
+  return `<li>${ ahref(x) }</li>`
 }
 
 function list(links) {
   let link = ''
   if (links != null && links.length > 0) {
-      link = `${links.map(x => li(ahref(x.href, x.text))).join('')}`
+    link = `${links.map(x => li(x)).join('')}`
   }
   return link
 }
@@ -20,7 +21,7 @@ export default function navbar(data) {
       data: null,
       init() {
           this.data = data;
-          const header = `<ul>${li(`<strong>${data.title}</strong>`)}</ul>`;
+          const header = `<ul><li><strong><a href="${data.href}">${data.title}</a></strong></li></ul>`;
           let links = list(data.items)
           let dropdownLinks = list(data.dropdown.items || [])
           var html = `
