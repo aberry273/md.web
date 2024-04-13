@@ -1,32 +1,31 @@
 let component = `
-    <div x-data="appCardPost(
+    <div x-data="cardPost(
     {
-        item: post,
-        userId: userId,
-        threadUrl: threadUrl,
+      item: item,
     })"></div>
 `
 export default function (data) {
   return {
     // PROPERTIES
+    items: [],
     async init() {
       const self = this;
       data = data != null ? data : {}
+      this.items = data.items;
       component = data.component || component
       this.setHtml(data);
     },
     setHtml(data) {
       // make ajax request 
       const html = `
-        <div x-transition>
-        <!-- :key="post.id+':'+post.updatedOn"-->
-          <template x-for="(post, i) in posts" :key="post.id" >
+        <div x-transition x-data="mxList">
+          <template x-for="(item, i) in items" :key="item.id || i" >
             ${component}
           </template>
-          <template x-if="posts == null || posts.length == 0">
+          <template x-if="items == null || items.length == 0">
             <article>
               <header><strong>No results!</strong></header>
-              No posts could be found
+              No results could be found
             </article>
           </template>
         </div>

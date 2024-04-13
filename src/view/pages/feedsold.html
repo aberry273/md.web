@@ -2,7 +2,7 @@
   <div x-data="modal({event: 'example-modal1', id: 'example-modal1' })"></div>
 <div x-data="{
   init(){
-    this.$store.content.getDummyPosts()
+    this.$store.content.setDummyPosts()
   } 
 }">
   <nav>
@@ -56,6 +56,25 @@
     })"></div>
 </article>
   <!--Feed-->
+  <!--
+  <div x-data="_contentPostsManager({
+    feed: $store.feedFilters.current,
+    sourceUrl: 'https://localhost:7220/api/contentpost',
+    threadUrl: 'https://localhost:7220/content/thread',
+    fetchPostsUrl: 'https://localhost:7220/api/contentsearch/posts',
+    fetchReviewsUrl: 'https://localhost:7220/api/contentsearch/reviews',
+    reviewUrl: 'https://localhost:7220/api/contentpostreview',
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    channel: 'all',
+    event: 'post:created',
+    items: $store.content.items,
+  })">
+    <div x-data="appListPost({
+      items: posts
+    })"></div>
+  </div>
+</div>
+-->
 <div x-data="listCards({ items: $store.content.getDummyPosts() })"></div>
    
 <!-- Modals -->
