@@ -9,42 +9,38 @@
     targetThreadId: $store.content.getDummyThread().threadId,
     parentId: $store.content.getDummyThread().id,
     threadItem: $store.content.getDummyThread(),
-    
-    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    filterEvent: 'onFilterChange',
-    actionEvent: 'action:post',
     filterData: [
-      {
-        name: 'Reviews',
-        values: ['All', 'Agrees', 'Disagrees'],
-        selected: 'All',
-        type: 'Select',
-      },
-      {
-        name: 'Threads',
-        values: ['All', 'Agrees', 'Disagrees'],
-        selected: 'All',
-        type: 'Checkbox',
-      },
-      {
-        name: 'Tags',
-        values: ['C#'],
-        selected: 'C#',
-        type: 'Checkbox',
-      },
-      {
-        name: 'Content',
-        values: ['All', 'Agrees', 'Disagrees'],
-        selected: 'All',
-        type: 'Checkbox',
-      },
-      {
-        name: 'Sort',
-        values: ['Created', 'Updated', 'Ratings'],
-        selected: 'All',
-        type: 'Radio',
-      }
-    ]
+    {
+      name: 'Reviews',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Select',
+    },
+    {
+      name: 'Threads',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Tags',
+      values: ['C#'],
+      selected: 'C#',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Content',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Sort',
+      values: ['Created', 'Updated', 'Ratings'],
+      selected: 'All',
+      type: 'Radio',
+    }
+  ]
   }">
   <nav>
     <ul>
@@ -54,41 +50,6 @@
     </ul>
   </nav>
 
-  <!-- Original Post -->
-  <div x-data="cardPost({
-    item: threadItem,
-    userId: userId, 
-  })"></div>
-
-  <!-- Response Form -->
-  <article>
-    <div x-data="appFormResponse({
-      postbackUrl: 'https://localhost:7220/api/contentpost',
-      postbackType: 'POST',
-      event: 'post:created',
-      fieldPlaceholder: 'Write a reply',
-      label: 'Reply'
-    })"></div>
-  </article>
-
-  <!-- Filters -->
-  <div x-data="appNavFilters({
-    filters: filterData
-  })"></div>
-
-  <!-- Replies -->
-  <div x-data="listCards( {
-      postbackUrl: 'https://localhost:7220/api/contentpostreview',
-      searchUrl: 'https://localhost:7220/api/contentsearch/posts',
-      searchEvent: filterEvent,
-      actionEvent: actionEvent,
-      itemEvent: $store.wssContentPosts.getMessageEvent(),
-      targetThread: targetThreadId,
-      parentId: targetThreadId
-    })">
-  </div>
-    
-  <!--
   <div x-data="_contentPostsManager({
       sourceUrl: 'https://localhost:7220/api/contentpost',
       threadUrl: 'https://localhost:7220/content/thread',
@@ -102,18 +63,18 @@
       items: [],
       channel: null,
     })">
-    <!- Original post ->
+    <!-- Original post -->
       <div x-data="appCardPost({
         item: threadItem
       })"></div>
     </div>
 
-    <!-Feed->
+    <!--Feed-->
     <div x-data="appNavFilters({
       filters: filterData
     })"></div>
     
-    <!-Response Form->
+    <!-- Response Form -->
     <article>
       <div x-data="appFormResponse({
         postbackUrl: 'https://localhost:7220/api/contentpost',
@@ -124,12 +85,11 @@
       })"></div>
     </article>
     
-    <!-Responses->
+    <!--Responses-->
     <main x-transition>
       <div x-data="appListPost"></div>
     </main>
   </div>
--->
 </div>
 
 </div>

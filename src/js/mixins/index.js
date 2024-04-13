@@ -5,7 +5,7 @@ import mxModal from './mxModal.js'
 import mxList from './mxList.js'
 import mxAction from './mxAction.js'
 import mxWebsockets from './mxWebsockets.js'
-
+import mxAlert from './mxAlert.js'
 
 export {
     mxForm,
@@ -13,4 +13,5 @@ export {
     mxList,
     mxAction,
     mxWebsockets,
+    mxAlert,
 }

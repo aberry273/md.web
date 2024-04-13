@@ -29,7 +29,7 @@ export default function (data) {
       // Set tags
       fields.tags = this.tags.join(',')
 
-      let response = this.$fetch.POST(data.postbackUrl, payload);
+      let response = await this.$fetch.POST(data.postbackUrl, payload);
       if(this.event) {
         this.$dispatch(this.event, response)
       }

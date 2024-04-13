@@ -34,20 +34,6 @@ export default function (data){
                     await wssService.connectChannel(userId, targetChannel);
                 }
             })
-            // On updates from the websocket
-            this.$events.on(wssService.getMessageEvent(), async (e) => {
-                const data = e.data;
-                if (!data) return;
-                if (data.alert) this._mxWebsockets_SendAlert(data);
-                this.$events.emit(wssService.getMessageEvent(), data.data);
-            })
-        },
-        _mxWebsockets_SendAlert(data) {
-            const snackbarType = (data.code == 200) ? 'success' : 'error';
-            const wasSuccess = (data.code == 200) ? 'successfully' : 'failed';
-            const message = `${data.update} post ${wasSuccess}`
-            const event = 'snackbar-add';//`snackbar-${snackbarType}`;
-            this.$events.emit(event, { code: data.code, type: snackbarType, text: message });
         },
     }
 }
