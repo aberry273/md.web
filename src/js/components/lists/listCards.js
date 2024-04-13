@@ -14,6 +14,20 @@ export default function (data) {
       this.items = data.items;
       component = data.component || component
       this.setHtml(data);
+
+      this.$events.on(this.mxList_OnFilterChange, (updates) => {
+        //console.log(updates);
+      })
+
+      this.$events.on('filter:posts', async (filterUpdates) => {
+        let query = this._mxList_GetFilters(filterUpdates);
+        
+        const postQuery = this._mxSearch_CreateSearchQuery(query);
+        if (postQuery == null) return;
+        
+        await this._mxSearch_CreateSearchQuery(postQuery);
+      })
+
     },
     setHtml(data) {
       // make ajax request 
