@@ -26,12 +26,14 @@
       <button class="material-icon flat primary" @click="$events.emit('modal-create-channel', { target: '@Model.ModalCreateChannel.Target' })">Add Channel</button>
     </ul>
   </nav>
+  <!-- Response Form -->
   <article>
-    <div style="padding-bottom:12px;" x-data="formAjax({
-      feed: $store.feedFilters.current,
+    <div x-data="appFormResponse({
       postbackUrl: 'https://localhost:7220/api/contentpost',
       postbackType: 'POST',
       event: 'post:created',
+      fieldPlaceholder: 'Whats your update?',
+      label: 'Post',
       fields: [
         {
           name: 'Content',
@@ -54,7 +56,7 @@
         },
       ]
     })"></div>
-</article>
+  </article>
   <!--Feed-->
 <div x-data="listCards({ items: $store.content.getDummyPosts() })"></div>
    
