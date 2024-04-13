@@ -6,8 +6,8 @@ export default function (data) {
         currentPage: 0,
         thread: [],
         item: null,
-        threadUrl: null,
         userId: null,
+        updateEvent: '',
         actionEvent: 'action:post',
         modalEvent: 'action:post',
         redirectEvent: 'action:post',
@@ -15,15 +15,14 @@ export default function (data) {
         init() {
             this.item = data.item;
             this.userId = data.userId;
-            this.threadUrl = data.threadUrl;
-
+            this.updateEvent = data.updateEvent,
             this.thread = this.setThreadItems(data.item);
 
             const self = this;
             this.$nextTick(() => {
                 this.load(self.data)
             })
-            this.$events.on('content-post-updated', (item) => {
+            this.$events.on(this.updateEvent, (item) => {
                 if (item.id != this.item.id) return;
                 this.item = item;
                 this.thread = this.setThreadItems(item);
@@ -33,10 +32,6 @@ export default function (data) {
         setThreadItems(op) {
             // flatten parent and child hierarchy into single array
             let thread = [op].concat((op.threads == null) ? [] : op.threads)
-            thread = thread.map(x => {
-                x.threadUrl = this.getThreadUrl(x);
-                return x;
-            })
             return thread;
         },
         action(action) {
@@ -80,9 +75,6 @@ export default function (data) {
         get totalLikes() {
             return this.thread.reduce((sum, item) => sum + item.likes, 0);
         },
-        getThreadUrl(post) {
-            return `${this.threadUrl}/${post.id}`;
-        },
         renderPost(post) {
             if (post.type == 'image') return cardRenderingText(post)
             if (post.type == 'video') return cardRenderingText(post)
@@ -90,10 +82,13 @@ export default function (data) {
             if (post.type == 'text') return cardRenderingText(post)
             return cardRenderingText(post)
         },
+        userAction(item, action) {
+            return false;
+        },
         load(data) {
             const html = `
           <div>
-            <article class="dense padless" :id="item.id">
+            <article class="dense padless" :id="selectedPost.id">
               <!--Header-->
               <header class="padded">
                 <nav>
@@ -166,13 +161,13 @@ export default function (data) {
                       <ul>
                         <li>
                             <!--Agree-->
-                            <i aria-label="Agree" :href="selectedPost.id" @click="action('agree')" :class="agrees(selectedPost) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">expand_less</i>
+                            <i aria-label="Agree" :href="selectedPost.id" @click="action('agree')" :class="userAction('agree', selectedPost) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">expand_less</i>
                             <sup class="noselect" rel="prev" x-text="selectedPost.agrees || 0"></sup>
                             <!--Disagree-->
-                            <i aria-label="Disagree" @click="action('disagree')" :class="disagrees(selectedPost) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">expand_more</i>
+                            <i aria-label="Disagree" @click="action('disagree')" :class="userAction('disagree', selectedPost) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">expand_more</i>
                             <sup class="noselect" rel="prev"x-text="selectedPost.disagrees || 0"></sup>
                             <!--Replies-->
-                            <a class="" :href="selectedPost.threadUrl"><i aria-label="Reply" @click="quickAction('comment')" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">chat</i></a>
+                            <a class="" :href="selectedPost.href"><i aria-label="Reply" @click="quickAction('comment')" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">chat</i></a>
                             <sup class="noselect" rel="prev" x-text="selectedPost.replies || 0"></sup>
                             <!--Show more-->
                             <i aria-label="Show More" x-show="!showTags && selectedPost.tags != null && selectedPost.tags.length > 0" @click="showTags = !showTags" :class="selectedPost.tags != null ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_more</i>
@@ -181,7 +176,7 @@ export default function (data) {
                       </ul> 
                       <ul>
                         <li>
-                            <i @click="action('like')" aria-label="Liked" :class="likes(selectedPost) ? 'primary': ''" class=" icon material-icons icon-click" rel="prev">favorite</i>
+                            <i @click="action('like')" aria-label="Liked" :class="userAction('like', selectedPost) ? 'primary': ''" class=" icon material-icons icon-click" rel="prev">favorite</i>
                             <sup class="noselect" rel="prev" x-text="selectedPost.likes || 0 "></sup> 
                         </li>
                       </ul>

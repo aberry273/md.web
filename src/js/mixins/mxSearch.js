@@ -37,7 +37,7 @@ export default function (data){
             return payload;
         },
 
-        async _mxSearch_Fetch(fetchUrl, searchQuery) {
+        async _mxSearch_Post(fetchUrl, searchQuery) {
             if (!fetchUrl || !searchQuery) return;
             return await this.$fetch.POST(fetchUrl, searchQuery);
         },
