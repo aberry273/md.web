@@ -3,7 +3,41 @@
 <div x-data="{
   init(){
     this.$store.content.getDummyPosts()
-  } 
+  },
+  filterEvent: 'onFilterChange',
+  actionEvent: 'action:post',
+  filterData: [
+    {
+      name: 'Reviews',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Select',
+    },
+    {
+      name: 'Threads',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Tags',
+      values: ['C#'],
+      selected: 'C#',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Content',
+      values: ['All', 'Agrees', 'Disagrees'],
+      selected: 'All',
+      type: 'Checkbox',
+    },
+    {
+      name: 'Sort',
+      values: ['Created', 'Updated', 'Ratings'],
+      selected: 'All',
+      type: 'Radio',
+    }
+  ]
 }">
   <nav>
     <ul>
@@ -56,9 +90,26 @@
         },
       ]
     })"></div>
-  </article>
+</article>
+  
+
+
   <!--Feed-->
-<div x-data="listCards({ items: $store.content.getDummyPosts() })"></div>
+  <div x-data="appNavFilters({
+    filters: filterData,
+    event: filterEvent
+  })"></div>
+  
+<!--Feed-->
+  <!--$store.content.getDummyPosts()-->
+<div x-data="listCards( {
+    postbackUrl: 'https://localhost:7220/api/contentpostreview',
+    searchUrl: 'https://localhost:7220/api/contentsearch/posts',
+    searchEvent: filterEvent,
+    actionEvent: actionEvent,
+    itemEvent: $store.wssContentPosts.getMessageEvent(),
+  })">
+</div>
    
 <!-- Modals -->
 <!-- Edit post -->
@@ -66,7 +117,7 @@
   form: {
     postbackUrl: 'https://localhost:7220/api/contentpost',
     postbackType: 'POST',
-    event: 'post:created',
+    event: 'post:updated',
     fieldPlaceholder: 'Write a reply',
     label: 'Reply',
       fields: [
@@ -157,7 +208,7 @@
   form: {
     postbackUrl: 'https://localhost:7220/api/contentpost',
     postbackType: 'POST',
-    event: 'post:created',
+    event: 'channel:created',
     fieldPlaceholder: 'Write a reply',
     label: 'Reply',
       fields: [
