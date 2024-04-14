@@ -12,9 +12,9 @@ export default function (data) {
         modalEvent: 'action:post',
         redirectEvent: 'action:post',
         showTags: false,
-        class: '',
+        articleClass: '',
         init() {
-            this.class = data.class;
+            this.articleClass = data.class;
             this.item = data.item;
             this.userId = data.userId;
             this.updateEvent = data.updateEvent,
@@ -89,7 +89,7 @@ export default function (data) {
         },
         load(data) {
             const html = `
-            <article class="dense padless" :class="class" :id="selectedPost.id">
+            <article class="dense padless" :class="articleClass" :id="selectedPost.id">
               <!--Header-->
               <header class="padded">
                 <nav>
