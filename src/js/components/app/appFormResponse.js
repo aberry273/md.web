@@ -6,6 +6,7 @@ export default function (data) {
     fields: [],
     item: null,
     label: 'Submit',
+    quoteEvent: 'quote:post',
     tagStr: null,
     tags: [],
     showTags: false,
@@ -32,6 +33,15 @@ export default function (data) {
         payload[x.name] = x.value
         return payload
       })
+      // If an item.action quote event is pressed, add quote to reply
+      this.$events.on(this.quoteEvent, async (item) => {
+        for(var i = 0; i < fields.length; i++) {
+          if(fields[i].name == 'Content')
+            fields[i].value = item.id;
+        }
+        console.log('appResponseForm.onQuote');
+      })
+
       // Set tags
       fields.tags = this.tags.join(',')
 

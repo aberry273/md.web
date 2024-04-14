@@ -158,16 +158,21 @@ export default function (data) {
                             <!--Disagree-->
                             <i aria-label="Disagree" @click="action('disagree')" :class="userAction('disagree', selectedPost) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">expand_more</i>
                             <sup class="noselect" rel="prev"x-text="selectedPost.disagrees || 0"></sup>
+                            <!--Quotes-->
+                            <i aria-label="Quote" @click="action('quote')" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">format_quote</i>
+                            <sup class="noselect" rel="prev" x-text="selectedPost.quotes || 0"></sup>
                             <!--Replies-->
-                            <a class="" :href="'/Content/thread/'+selectedPost.id"><i aria-label="Reply" @click="quickAction('comment')" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">chat</i></a>
-                            <sup class="noselect" rel="prev" x-text="selectedPost.replies || 0"></sup>
-                            <!--Show more-->
-                            <i aria-label="Show More" x-show="!showTags && selectedPost.tags != null && selectedPost.tags.length > 0" @click="showTags = !showTags" :class="selectedPost.tags != null ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_more</i>
-                            <i aria-label="Show Less" x-show="showTags" @click="showTags = !showTags" :class="selectedPost.tags != null ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_less</i>
+                            <template x-if="selectedPost.parentId == null">
+                                <a class="" :href="'/Content/thread/'+selectedPost.id"><sup>Browse</sup></a>
+                            </template>
                         </li>
                       </ul> 
                       <ul>
                         <li>
+                            <!--Show more-->
+                            <i aria-label="Show More" x-show="!showTags && selectedPost.tags != null && selectedPost.tags.length > 0" @click="showTags = !showTags" :class="selectedPost.tags != null ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_more</i>
+                            <i aria-label="Show Less" x-show="showTags" @click="showTags = !showTags" :class="selectedPost.tags != null ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_less</i>
+                        
                             <i @click="action('like')" aria-label="Liked" :class="userAction('like', selectedPost) ? 'primary': ''" class=" icon material-icons icon-click" rel="prev">favorite</i>
                             <sup class="noselect" rel="prev" x-text="selectedPost.likes || 0 "></sup> 
                         </li>

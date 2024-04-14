@@ -5,7 +5,7 @@
 
 <div x-data="{
     item: $store.content.getDummyThread(),
-    items: $store.content.replies,
+    items: $store.content.getDummyPosts(),
     targetThreadId: $store.content.getDummyThread().threadId,
     parentId: $store.content.getDummyThread().id,
     threadItem: $store.content.getDummyThread(),
@@ -13,6 +13,7 @@
     userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     filterEvent: 'onFilterChange',
     actionEvent: 'action:post',
+    quoteEvent: 'quote:post',
     filterData: [
       {
         name: 'Rated',
@@ -21,7 +22,7 @@
         type: 'Select',
       },
       {
-        name: 'Threads',
+        name: 'Quotes',
         values: ['All', 'Agrees', 'Disagrees'],
         selected: 'All',
         type: 'Checkbox',
@@ -33,14 +34,14 @@
         type: 'Checkbox',
       },
       {
-        name: 'Content',
-        values: ['All', 'Agrees', 'Disagrees'],
+        name: 'Type',
+        values: ['All', 'Text', 'Image', 'Video'],
         selected: 'All',
         type: 'Checkbox',
       },
       {
         name: 'Sort',
-        values: ['Created', 'Updated', 'Ratings'],
+        values: ['Created', 'Updated', 'Top Rated', 'Bottom Rating'],
         selected: 'All',
         type: 'Radio',
       }
@@ -48,18 +49,14 @@
   }">
 
   <!-- Parent thread -->
-
+  <!--
   <div x-data="listAccordionCard({ items: $store.content.getDummyPosts() })"></div>
-
-  <div class="blockquote dense">
-    <i class="material-icons">arrow_forward</i>
-    <strong x-text="item.threadId"></strong> 
-    <!-- Original Post -->
-    <div x-data="cardPost({
-      item: threadItem,
-      userId: userId, 
-    })"></div>
-  </div>
+  -->
+  <!-- Original Post -->
+  <div x-data="cardPost({
+    item: threadItem,
+    userId: userId, 
+  })"></div> 
 
   <!-- Response Form -->
   <article class="padless">
@@ -77,16 +74,20 @@
     filters: filterData
   })"></div>
 
-  <!-- Replies -->
-  <div x-data="listCards( {
-      actionUrl: 'https://localhost:7220/api/contentpostactivity',
-      searchUrl: 'https://localhost:7220/api/contentsearch/posts',
-      filterEvent: filterEvent,
-      actionEvent: actionEvent,
-      itemEvent: $store.wssContentPosts.getMessageEvent(),
-      targetThread: targetThreadId,
-      parentId: targetThreadId
-    })">
+  <div class="blockquote dense">
+    <!-- Replies -->
+    <div x-data="listCards( {
+        actionUrl: 'https://localhost:7220/api/contentpostactivity',
+        searchUrl: 'https://localhost:7220/api/contentsearch/posts',
+        filterEvent: filterEvent,
+        actionEvent: actionEvent,
+        quoteEvent: quoteEvent,
+        itemEvent: $store.wssContentPosts.getMessageEvent(),
+        targetThread: targetThreadId,
+        parentId: targetThreadId,
+        items: items
+      })">
+    </div>
   </div>
     
   <!--

@@ -26,6 +26,7 @@ export default function (data) {
         filterEvent: '',
         actionEvent: '',
         itemEvent: '',
+        quoteEvent: '',
 
         async init() {
             const self = this;
@@ -38,6 +39,7 @@ export default function (data) {
             this.userId = data.userId;
             this.targetThread = data.targetThread;
             this.targetChannel = data.targetChannel;
+            this.quoteEvent = data.quoteEvent;
 
             component = data.component || component
              
@@ -65,8 +67,13 @@ export default function (data) {
 
             // On updates from cards
             this.$events.on(this.actionEvent, async (request) => {
+              if(request.action == 'quote') {
+                this.$events.on(this.quoteEvent, request.item);
+              }
+              else {
                 const payload = this.CreatePostActivity(request);
                 await this._mxAction_HandleActionPost(payload);
+              }
             })
 
             // On updates from filter
@@ -74,14 +81,16 @@ export default function (data) {
                 await this.search(filterUpdates);
             })
 
-            let queryData = {}
-            if (data.parentId) queryData.parentId = [data.parentId]
-            if (data.targetChannel) queryData.targetChannel = [data.targetChannel]
-
-            await this.search(queryData);
-
             this.setHtml(data);
         },
+        async initSearch() {
+          let queryData = {}
+          if (data.parentId) queryData.parentId = [data.parentId]
+          if (data.targetChannel) queryData.targetChannel = [data.targetChannel]
+
+          await this.search(queryData);
+        },
+
         // METHODS
         async search(filters) {
             let query = this._mxList_GetFilters(filters);
