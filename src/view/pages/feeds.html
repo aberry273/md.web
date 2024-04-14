@@ -63,7 +63,7 @@
   <!-- Response Form -->
   <article>
     <div x-data="appFormResponse({
-      postbackUrl: 'https://localhost:7220/api/contentpost',
+      actionUrl: 'https://localhost:7220/api/contentpostactivity',
       postbackType: 'POST',
       event: 'post:created',
       fieldPlaceholder: 'Whats your update?',
@@ -105,7 +105,7 @@
 <div x-data="listCards( {
     postbackUrl: 'https://localhost:7220/api/contentpostreview',
     searchUrl: 'https://localhost:7220/api/contentsearch/posts',
-    searchEvent: filterEvent,
+    filterEvent: filterEvent,
     actionEvent: actionEvent,
     itemEvent: $store.wssContentPosts.getMessageEvent(),
   })">

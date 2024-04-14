@@ -66,7 +66,7 @@ export default function (data) {
       const html = `
         <div>
           <progress x-show="loading"></progress>
-          <fieldset role="search" x-data="formFields({fields})"></fieldset>
+          <fieldset x-data="formFields({fields})"></fieldset>
          
             <div >
               <!-- Tags visible -->

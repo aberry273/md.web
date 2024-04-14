@@ -21,6 +21,7 @@ import modal from './modals/modal.js'
 import modalForm from './modals/modalForm.js'
 // LISTS
 import listCards from './lists/listCards.js'
+import listAccordionCard from './lists/listAccordionCard.js'
 // CUSTOM
 import appFormResponse from './app/appFormResponse.js'
 import appListPost from './app/appListPost.js'
@@ -52,6 +53,7 @@ export {
 
     // LISTS
     listCards,
+    listAccordionCard,
 
     // FORMS
     formFields,

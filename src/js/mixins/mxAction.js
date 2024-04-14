@@ -1,7 +1,7 @@
 export default function (data){
     return {
         // PROPERTIES
-        postbackUrl: '/',
+        actionUrl: '/',
         mxSearch_Open: false,
         
         // GETTERS
@@ -9,26 +9,24 @@ export default function (data){
 
         init() {
             this.$watch('mxSearch_Open', () => { })
-            this.postbackUrl = data.postbackUrl;
+            this.actionUrl = data.actionUrl;
         },
         
         // METHODS
         _mxAction_Init() {
             this.init();
         },
-        async _mxAction_HandleAction(request) {
-            const payload = this._mxAction_CreateActionPayload(request);
-            const url = `${data.postbackUrl}/${request.action}`
+        async _mxAction_HandleActionPost(payload) {
+            const url = `${data.actionUrl}`
             await this.$fetch.POST(url, payload);
         },
-        _mxAction_CreateActionPayload(request) {
-            return {
-                userId: request.userId,
-                contentPostId: request.item.id,
-                agree: null,
-                disagree: null,
-                like: null,
-            }
+        async _mxAction_HandleActionPut(payload) {
+            const url = `${data.actionUrl}`
+            await this.$fetch.PUT(url, payload);
+        },
+        async _mxAction_HandleActionDelete(payload) {
+            const url = `${data.actionUrl}`
+            await this.$fetch.DELETE(url, payload);
         },
     }
 }

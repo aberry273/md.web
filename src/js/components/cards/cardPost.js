@@ -12,7 +12,9 @@ export default function (data) {
         modalEvent: 'action:post',
         redirectEvent: 'action:post',
         showTags: false,
+        class: '',
         init() {
+            this.class = data.class;
             this.item = data.item;
             this.userId = data.userId;
             this.updateEvent = data.updateEvent,
@@ -87,8 +89,7 @@ export default function (data) {
         },
         load(data) {
             const html = `
-          <div>
-            <article class="dense padless" :id="selectedPost.id">
+            <article class="dense padless" :class="class" :id="selectedPost.id">
               <!--Header-->
               <header class="padded">
                 <nav>
@@ -107,36 +108,27 @@ export default function (data) {
                         <aside class="dense">
                             <li class="secondary">
                                 <strong x-text="selectedPost.username"></strong> 
-                                <button class="tag outline" disabled>Games</button>
                             </li> 
                         </aside>
                     </ul>
                     <ul>
                         <li>
                             <details class="dropdown flat no-chevron">
-                            <summary role="outline">
-                                <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
-                            </summary>
-                            <ul dir="rtl">
-                                <li><a class="click" @click="modalAction('share')">Share</a></li>
-                                <li><a class="click" @click="modalAction('edit')">Edit</a></li>
-                                <li><a class="click" @click="modalAction('delete')">Delete</a></li>
-                            </ul>
+                                <summary role="outline">
+                                    <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
+                                </summary>
+                                <ul dir="rtl">
+                                    <li><a class="click" @click="modalAction('share')">Share</a></li>
+                                    <li><a class="click" @click="modalAction('edit')">Edit</a></li>
+                                    <li><a class="click" @click="modalAction('delete')">Delete</a></li>
+                                </ul>
                             </details>
                         </li>
                     </ul>
                 </nav>
               </header> 
               <!--End Header-->
-
-              <!--Quote-->
-              <template x-if="selectedPost.targetThread && currentPage == 0">
-                  <blockquote class="dense">
-                    <a :href="'#'+selectedPost.targetThread" x-text="'@'+selectedPost.targetThread"></a>
-                  </blockquote>
-              </template>
-              <!-- End Quote-->
-              
+  
               <!--Content-->
               <template x-for="(post, i) in thread" :key="i"> 
                 <div class="content" x-show="i == currentPage" x-html="renderPost(post, i)" ></div>
@@ -167,7 +159,7 @@ export default function (data) {
                             <i aria-label="Disagree" @click="action('disagree')" :class="userAction('disagree', selectedPost) ? 'primary': ''" class="icon material-icons icon-click" rel="prev">expand_more</i>
                             <sup class="noselect" rel="prev"x-text="selectedPost.disagrees || 0"></sup>
                             <!--Replies-->
-                            <a class="" :href="selectedPost.href"><i aria-label="Reply" @click="quickAction('comment')" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">chat</i></a>
+                            <a class="" :href="'/Content/thread/'+selectedPost.id"><i aria-label="Reply" @click="quickAction('comment')" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">chat</i></a>
                             <sup class="noselect" rel="prev" x-text="selectedPost.replies || 0"></sup>
                             <!--Show more-->
                             <i aria-label="Show More" x-show="!showTags && selectedPost.tags != null && selectedPost.tags.length > 0" @click="showTags = !showTags" :class="selectedPost.tags != null ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_more</i>
@@ -195,7 +187,6 @@ export default function (data) {
               </footer>
               <!--End Ratings-->
           </article> 
-        </div>
         `
             this.$nextTick(() => {
                 this.$root.innerHTML = html

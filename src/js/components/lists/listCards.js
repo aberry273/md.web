@@ -23,7 +23,7 @@ export default function (data) {
         items: [],
         userId: '',
         searchUrl: '',
-        searchEvent: '',
+        filterEvent: '',
         actionEvent: '',
         itemEvent: '',
 
@@ -31,7 +31,7 @@ export default function (data) {
             const self = this;
             data = data != null ? data : {}
             this.items = data.items;
-            this.searchEvent = data.searchEvent;
+            this.filterEvent = data.filterEvent;
             this.actionEvent = data.actionEvent;
             this.itemEvent = data.itemEvent;
             this.searchUrl = data.searchUrl;
@@ -64,12 +64,13 @@ export default function (data) {
             })
 
             // On updates from cards
-            this.$events.on(this.actionEvent, async (e) => {
-                await this._mxAction_HandleAction(e);
+            this.$events.on(this.actionEvent, async (request) => {
+                const payload = this.CreatePostActivity(request);
+                await this._mxAction_HandleActionPost(payload);
             })
 
             // On updates from filter
-            this.$events.on(this.searchEvent, async (filterUpdates) => {
+            this.$events.on(this.filterEvent, async (filterUpdates) => {
                 await this.search(filterUpdates);
             })
 
@@ -87,6 +88,15 @@ export default function (data) {
             const postQuery = this._mxSearch_CreateSearchQuery(query);
             if (postQuery == null) return;
             this.items = await this._mxSearch_Post(this.searchUrl, postQuery);
+        },
+
+        CreatePostActivity(request) {
+            return {
+                userId: request.userId,
+                contentPostId: request.item.id,
+                action: request.action,
+                value: null,
+            }
         },
 
         updateItemUpdate(wssMessage) {
@@ -115,7 +125,7 @@ export default function (data) {
                 <div x-data="cardPost({
                   item: item,
                   userId: userId,
-                  updateEvent: itemEvent,
+                  updateEvent: actionEvent,
                 })"></div>
               </template>
               <template x-if="items == null || items.length == 0">

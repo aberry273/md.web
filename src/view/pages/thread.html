@@ -15,8 +15,8 @@
     actionEvent: 'action:post',
     filterData: [
       {
-        name: 'Reviews',
-        values: ['All', 'Agrees', 'Disagrees'],
+        name: 'Rated',
+        values: ['All', 'Agreed', 'Disagreed'],
         selected: 'All',
         type: 'Select',
       },
@@ -46,22 +46,23 @@
       }
     ]
   }">
-  <nav>
-    <ul>
-      <li>
-        <i aria-label="Agree" @click="back" class="icon material-icons icon-click" rel="prev">chevron_left</i>
-      </li>
-    </ul>
-  </nav>
 
-  <!-- Original Post -->
-  <div x-data="cardPost({
-    item: threadItem,
-    userId: userId, 
-  })"></div>
+  <!-- Parent thread -->
+
+  <div x-data="listAccordionCard({ items: $store.content.getDummyPosts() })"></div>
+
+  <div class="blockquote dense">
+    <i class="material-icons">arrow_forward</i>
+    <strong x-text="item.threadId"></strong> 
+    <!-- Original Post -->
+    <div x-data="cardPost({
+      item: threadItem,
+      userId: userId, 
+    })"></div>
+  </div>
 
   <!-- Response Form -->
-  <article>
+  <article class="padless">
     <div x-data="appFormResponse({
       postbackUrl: 'https://localhost:7220/api/contentpost',
       postbackType: 'POST',
@@ -78,9 +79,9 @@
 
   <!-- Replies -->
   <div x-data="listCards( {
-      postbackUrl: 'https://localhost:7220/api/contentpostreview',
+      actionUrl: 'https://localhost:7220/api/contentpostactivity',
       searchUrl: 'https://localhost:7220/api/contentsearch/posts',
-      searchEvent: filterEvent,
+      filterEvent: filterEvent,
       actionEvent: actionEvent,
       itemEvent: $store.wssContentPosts.getMessageEvent(),
       targetThread: targetThreadId,
