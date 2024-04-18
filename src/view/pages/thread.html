@@ -9,7 +9,6 @@
     targetThreadId: $store.content.getDummyThread().threadId,
     parentId: $store.content.getDummyThread().id,
     threadItem: $store.content.getDummyThread(),
-    
     userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     filterEvent: 'onFilterChange',
     actionEvent: 'action:post',
@@ -45,7 +44,55 @@
         selected: 'All',
         type: 'Radio',
       }
-    ]
+    ],
+    fields: [
+      {
+        name: 'QuoteIds',
+        type: 'list',
+        class: 'flat',
+        placeholder: 'Quotes',
+        autocomplete: null,
+        ariaInvalid: true,
+        hidden: false,
+        isArray: true,
+        helper: '',
+        value: [],
+        items: [],
+      },
+      {
+        name: 'Content',
+        type: 'textarea',
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        ariaInvalid: true,
+        helper: ''
+      },
+      {
+        name: 'Tags',
+        type: 'chips',
+        placeholder: 'Tag your post',
+        autocomplete: null,
+        ariaInvalid: true,
+        isArray: false,
+        helper: '',
+        value: [],
+        items: ['tag 123', 'tag 234']
+      },
+      {
+        name: 'UserId',
+        type: 'input',
+        disabled: true,
+        hidden: true,
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        ariaInvalid: true,
+        helper: '',
+        value: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+      },
+    ],
+    init() {
+      
+    }
   }">
 
   <!-- Parent thread -->
@@ -59,15 +106,17 @@
   })"></div> 
 
   <!-- Response Form -->
-  <article class="padless">
+  <div class="py-0">
     <div x-data="appFormResponse({
-      postbackUrl: 'https://localhost:7220/api/contentpost',
+      actionUrl: 'https://localhost:7220/api/contentpostactivity',
       postbackType: 'POST',
+      actionEvent: actionEvent,
       event: 'post:created',
-      fieldPlaceholder: 'Write a reply',
-      label: 'Reply'
+      fieldPlaceholder: 'Whats your update?',
+      label: 'Post',
+      fields: fields
     })"></div>
-  </article>
+  </div>
 
   <!-- Filters -->
   <div x-data="appNavFilters({

@@ -66,12 +66,13 @@ export default function (data) {
             })
 
             // On updates from cards
+            // Move this and all content/post based logic to page level js instead
             this.$events.on(this.actionEvent, async (request) => {
               if(request.action == 'quote') {
-                this.$events.on(this.quoteEvent, request.item);
+                // Don't do anything
               }
               else {
-                const payload = this.CreatePostActivity(request);
+                const payload = this.CreatePostActivityPayload(request);
                 await this._mxAction_HandleActionPost(payload);
               }
             })
@@ -80,6 +81,7 @@ export default function (data) {
             this.$events.on(this.filterEvent, async (filterUpdates) => {
                 await this.search(filterUpdates);
             })
+            //await this.initSearch();
 
             this.setHtml(data);
         },
@@ -99,7 +101,7 @@ export default function (data) {
             this.items = await this._mxSearch_Post(this.searchUrl, postQuery);
         },
 
-        CreatePostActivity(request) {
+        CreatePostActivityPayload(request) {
             return {
                 userId: request.userId,
                 contentPostId: request.item.id,
@@ -134,7 +136,7 @@ export default function (data) {
                 <div x-data="cardPost({
                   item: item,
                   userId: userId,
-                  updateEvent: actionEvent,
+                  actionEvent: actionEvent,
                 })"></div>
               </template>
               <template x-if="items == null || items.length == 0">

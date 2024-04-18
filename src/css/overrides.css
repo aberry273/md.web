@@ -164,7 +164,7 @@
   }
   .blockquote.dense {
     margin: 0 0;
-    padding: var(--pico-spacing);
+    padding: calc(var(--pico-spacing)*0.5);
   }
   .blockquote.selected {
     border-color: var(--pico-primary);
@@ -398,6 +398,14 @@
   }
   fieldset {
     margin-bottom: 0;
+  }
+
+  fieldset.form-input {
+      margin-top: var(--pico-form-element-spacing-horizontal);
+      padding-left: var(--pico-form-element-spacing-horizontal);
+  }
+  fieldset.form-input.chips {
+    border-color: transparent;
   }
 
   
