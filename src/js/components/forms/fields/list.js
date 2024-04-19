@@ -10,7 +10,7 @@ export default function (data) {
             ></input>
 
             <template x-for="item in field.items || []">
-                <div class="dense blockquote">
+                <div class="blockquote">
                     <summary class="primary">
                         <i class="material-icons icon-click" @click="() => {
                             const index = field.items.indexOf(item);
@@ -24,7 +24,7 @@ export default function (data) {
                 </div>
             </template>
         
-        <small
+        <small 
             x-show="field.helper != null && field.helper.length > 0"
             :id="field.id || field.name+i" x-text="field.helper"></small>
         `
