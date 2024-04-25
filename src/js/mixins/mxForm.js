@@ -22,7 +22,13 @@ export default function (data){
 				form.fields.map((x) => {
 					const name = x.name.replace(/\s/g, '');
 					if(x.type == 'file'){
-						formData.append(name, x.value);
+						if(x.multiple){
+							for(var i = 0; i < x.value.length; i++) {
+								formData.append(name, x.value[i]);
+							}
+						}
+						else {
+						}
 					}
 					else
 						formData.append(name, x.value);
@@ -55,6 +61,12 @@ export default function (data){
 			}
 
 			return formData;
+		},
+		_mxForm_OnFieldChange(field, value) {
+			field.value = value;
+		},
+		_mxForm_GetFilePreview(file) {
+		  return (typeof file == 'string') ? file : URL.createObjectURL(file)
 		},
 		_mxForm_GetFormData(form, flattenPayload = false) {
 			

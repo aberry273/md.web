@@ -36,10 +36,10 @@
   
   <script>
     const tabs = [
-      "media",
+      "feeds",
       /*
       "thread",
-      "feeds",
+      "media",
       "about",
       "profile",
       "login",
@@ -54,13 +54,13 @@
     <template x-for="tab in tabs" x-init="$store.tabs.setTab(tabs[0])">
       <button @click="$store.tabs.setTab(tab)" x-text="tab"></button>
     </template> 
-    <main x-transition x-show="'media' == $store.tabs.current">
-      <div x-ref="media" x-data="_html('media', `/src/view/pages/media.html`)"></div>
-    </main> 
-    <!--
     <main x-transition x-show="'feeds' == $store.tabs.current">
       <div x-ref="feeds" x-data="_html('feeds', `/src/view/pages/feeds.html`)"></div>
     </main>
+    <!--
+    <main x-transition x-show="'media' == $store.tabs.current">
+      <div x-ref="media" x-data="_html('media', `/src/view/pages/media.html`)"></div>
+    </main> 
     <main x-transition x-show="'thread' == $store.tabs.current">
       <div x-ref="thread" x-data="_html('thread', `/src/view/pages/thread.html`)"></div>
     </main>

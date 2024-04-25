@@ -33,13 +33,7 @@ export default function (data) {
         }
         this.resetValues(this.fields);
     })
-    },
-    onFieldChange(field, value) {
-      field.value = value;
-    },
-    getFilePreview(file) {
-      return typeof file == 'string' ? file : URL.createObjectURL(file)
-    },
+    }, 
     // METHODS
     renderField(field) {
       if(field.type == 'textarea') return textarea(field)

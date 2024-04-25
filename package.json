@@ -1,6 +1,7 @@
 {
-    "name": "md.web",
+    "name": "parrot.web",
     "dependencies": {
-        "@picocss/pico": "^2.0.6"
+        "@picocss/pico": "^2.0.6",
+        "alpinejs": "^3.13.10"
     }
 }

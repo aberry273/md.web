@@ -61,36 +61,71 @@
     </ul>
   </nav>
   <!-- Response Form -->
-  <article>
-    <div x-data="appFormResponse({
-      actionUrl: 'https://localhost:7220/api/contentpostactivity',
-      postbackType: 'POST',
-      event: 'post:created',
-      fieldPlaceholder: 'Whats your update?',
-      label: 'Post',
-      fields: [
-        {
-          name: 'Content',
-          type: 'textarea',
-          placeholder: 'Whats your update?',
-          autocomplete: null,
-          ariaInvalid: true,
-          helper: ''
-        },
-        {
-          name: 'UserId',
-          type: 'input',
-          disabled: true,
-          hidden: true,
-          placeholder: 'Whats your update?',
-          autocomplete: null,
-          ariaInvalid: true,
-          helper: '',
-          value: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
-        },
-      ]
-    })"></div>
-</article>
+  <div x-data="appFormResponse({
+    actionUrl: 'https://localhost:7220/api/contentpostactivity',
+    postbackType: 'POST',
+    event: 'post:created',
+    fieldPlaceholder: 'Whats your update?',
+    label: 'Post',
+    fields: [
+      {
+        name: 'Content',
+        type: 'textarea',
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        ariaInvalid: true,
+        helper: ''
+      },
+      {
+        name: 'Images',
+        type: 'file',
+        limit: 10,
+        multiple: true,
+        label: 'Upload image',
+        placeholder: 'Upload image',
+        autocomplete: null,
+        icon: 'photo_camera',
+        hidden: true,
+        ariaInvalid: true,
+        helper: ''
+      },
+      {
+        name: 'Videos',
+        type: 'file',
+        limit: 1,
+        label: 'Upload video',
+        autocomplete: null,
+        icon: 'movie',
+        accept: '.mp4',
+        hidden: true,
+        ariaInvalid: true,
+        helper: ''
+      },
+      {
+        name: 'Tags',
+        type: 'chips',
+        placeholder: 'Tag your post',
+        autocomplete: null,
+        ariaInvalid: true,
+        isArray: false,
+        hidden: true,
+        helper: '',
+        value: [],
+        items: ['tag 123', 'tag 234']
+      },
+      {
+        name: 'UserId',
+        type: 'input',
+        disabled: true,
+        hidden: true,
+        placeholder: 'Whats your update?',
+        autocomplete: null,
+        ariaInvalid: true,
+        helper: '',
+        value: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+      },
+    ]
+  })"></div>
   
 
 
