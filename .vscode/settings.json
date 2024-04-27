@@ -14,5 +14,6 @@
   "cert": "c:\\OpenSSL\\bin\\liveserver.crt", //full path of the certificate
   "key": "c:\\OpenSSL\\bin\\liveserver.key", //full path of the private key
   "passphrase": ""
-  }
+  },
+  "compile-hero.disable-compile-files-on-did-save-code": false
 }

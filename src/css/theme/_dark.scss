@@ -6,9 +6,14 @@
 
 // https://coolors.co/114b5f-028090-e4fde1-456990-f45b69
 //$primary-color: #8800ff;
+$primary-color-green: #4bb13e;
+$primary-color-red: #d31a1a;
+$primary-color-blue: #009bb3;
+$primary-color-yellow: #ffd764;
+$primary-altblue: #CDE6F5;
 $primary-color: #f7931a;
-$secondary-color: #456990;
-$contrast-color: #E4FDE1;
+$secondary-color: #6088b3; 
+$contrast-color: #CDE6F5;
 
 // Default: Dark theme
 @mixin theme {

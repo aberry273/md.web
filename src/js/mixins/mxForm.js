@@ -1,41 +1,41 @@
-export default function (data){
-    return {
-        init() {
-            this.$watch('open', () => { })
-        },
-        // PROPERTIES
-        mxForm_Open: false,
-        // GETTERS
-        get mxForm_HeadersEmpty() { return { } },
-        get mxForm_HeadersMultiPart() { return {
-			'Accept': '*/*',
-			//'Content-Type': 'multipart/form-data'
-		 } },
-        // METHODS
-        /// form = json object representing a form
-        /// flattenPayload whether form sections and condensed into a single property or to keep their structure
-        _mxForm_GetFileFormData(form, flattenPayload = false) {
-            if (!form) return new FormData();
-			const formData = new FormData();
-			
-			if(form.fields) {
-				form.fields.map((x) => {
-					const name = x.name.replace(/\s/g, '');
-					if(x.type == 'file'){
-						if(x.multiple){
-							for(var i = 0; i < x.value.length; i++) {
-								formData.append(name, x.value[i]);
-							}
-						}
-						else {
-						}
-					}
-					else
-						formData.append(name, x.value);
-				});
+export default function (data) {
+	return {
+		init() {
+			this.$watch('open', () => { })
+		},
+		// PROPERTIES
+		mxForm_Open: false,
+		// GETTERS
+		get mxForm_HeadersEmpty() { return {} },
+		get mxForm_HeadersMultiPart() {
+			return {
+				'Accept': '*/*',
+				//'Content-Type': 'multipart/form-data'
 			}
-
-			if(!form.sections) {
+		},
+		// METHODS
+		/// form = json object representing a form
+		/// flattenPayload whether form sections and condensed into a single property or to keep their structure
+		_mxForm_GetFileFormData(form, flattenPayload = false) {
+			if (!form) return new FormData();
+			const formData = new FormData();
+			if (form.fields) { 
+				for (var i = 0; i < form.fields.length; i++) {
+					var x = form.fields[i]
+					if (x.value == null) continue;
+					const name = x.name.replace(/\s/g, '');
+					if (x.multiple) {
+						for (var j = 0; j < x.value.length; j++) {
+							formData.append(name, x.value[j]);
+						}
+						continue;
+					}
+					else {
+						formData.append(name, x.value);
+					}
+				}
+			}
+			if (!form.sections) {
 				return formData;
 			}
 			// form section fields
@@ -66,17 +66,17 @@ export default function (data){
 			field.value = value;
 		},
 		_mxForm_GetFilePreview(file) {
-		  return (typeof file == 'string') ? file : URL.createObjectURL(file)
+			return (typeof file == 'string') ? file : URL.createObjectURL(file)
 		},
 		_mxForm_GetFormData(form, flattenPayload = false) {
-			
+
 			if (!form) return {};
 			const payload = {};
 			form.fields.map((x) => {
 				const name = x.name.replace(/\s/g, '');
 				payload[name] = x.value;
 			});
-			if(!form.sections) {
+			if (!form.sections) {
 				return payload;
 			}
 			// form section fields
@@ -121,7 +121,7 @@ export default function (data){
 		_mxForm_SetField(fields, updatedField) {
 			for (var i = 0; i < fields.length; i++) {
 				const field = fields[i];
-				if(field.name == updatedField.name) {
+				if (field.name == updatedField.name) {
 					fields[i] = updatedField;
 				}
 			}
@@ -129,7 +129,7 @@ export default function (data){
 		_mxForm_GetField(fields, fieldName) {
 			for (var i = 0; i < fields.length; i++) {
 				const field = fields[i];
-				if(field.name == fieldName) {
+				if (field.name == fieldName) {
 					return field;
 				}
 			}
@@ -137,7 +137,7 @@ export default function (data){
 		_mxForm_SetFieldVisibility(fields, fieldName, val) {
 			for (var i = 0; i < fields.length; i++) {
 				const field = fields[i];
-				if(field.name == fieldName) {
+				if (field.name == fieldName) {
 					field.hidden = val;
 				}
 			}
@@ -145,28 +145,28 @@ export default function (data){
 		_mxForm_GetFieldValue(fields, fieldName) {
 			for (var i = 0; i < fields.length; i++) {
 				const field = fields[i];
-				if(field.name == fieldName) {
-				  return field.value;
+				if (field.name == fieldName) {
+					return field.value;
 				}
 			}
 		},
 		_mxForm_SetFieldValue(fields, fieldName, val) {
-			for(var i = 0; i < fields.length; i++) {
+			for (var i = 0; i < fields.length; i++) {
 				const field = fields[i];
-				if(field.name == fieldName) {
-				  field.value = val;
+				if (field.name == fieldName) {
+					field.value = val;
 				}
 			}
 		},
 		_mxForm_SetFieldItems(fields, fieldName, items) {
-			for(var i = 0; i < fields.length; i++) {
+			for (var i = 0; i < fields.length; i++) {
 				const field = fields[i];
- 				if(field.name == fieldName) {
-					if(field.items == null) field.items = [];
+				if (field.name == fieldName) {
+					if (field.items == null) field.items = [];
 					field.items = items;
 				}
 			}
 		}
-        
-    }
+
+	}
 }

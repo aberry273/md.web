@@ -30,7 +30,7 @@ export default function (data) {
             this.item = data.item;
             this.postbackType = data.postbackType
             this.fields = data.fields,
-            this.actionEvent = data.actionEvent;
+                this.actionEvent = data.actionEvent;
 
             var tagField = this._mxForm_GetField(this.fields, this.tagFieldName);
             this.showTags = tagField = null ? !tagField.hidden : null
@@ -38,7 +38,7 @@ export default function (data) {
             this.showImage = imageField != null ? !imageField.hidden : null
             var videoField = this._mxForm_GetField(this.fields, this.videoFieldName);
             this.showVideo = videoField != null ? !videoField.hidden : null
-          
+
             // On updates from cards
             // Move this and all content/post based logic to page level js instead
             this.$events.on(this.actionEvent, async (request) => {
@@ -71,31 +71,34 @@ export default function (data) {
         get tagField() { return this._mxForm_GetField(this.fields, this.tagFieldName) },
         // METHODS
         async submit(fields) {
-            this.loading = true;
-            const payload = {}
-            fields.map(x => {
-                payload[x.name] = x.value
-                //if array, join values into str delimited list
-                if (Array.isArray(x.value) && !x.isArray) {
-                    payload[x.name] = x.value.join(',')
-                }
-                return payload
-            })
+            try {
+                this.loading = true;
 
-            let response = await this.$fetch.POST(data.postbackUrl, payload);
-            if (this.event) {
-                this.$dispatch(this.event, response)
+                const payload = this._mxForm_GetFileFormData({ fields: fields })
+
+                const config = this.mxForm_HeadersMultiPart;
+                const isJson = false
+                let response = await this._mxForm_SubmitAjaxRequest(data.postbackUrl, payload, config, isJson);
+
+                if (this.event) {
+                    this.$dispatch(this.event, response)
+                }
+                this.$dispatch(this.localEvent, response)
+
+                this.resetValues(fields);
             }
-            this.resetValues(fields);
+            catch (e) {
+
+            }
             this.loading = false;
         },
         resetValues(fields) {
             for (var i = 0; i < fields.length; i++) {
-              if (fields[i].clearOnSubmit === true) {
-                fields[i].value = null;
-                fields[i].values = null;
-                fields[i].items = null;
-              }
+                if (fields[i].clearOnSubmit === true) {
+                    fields[i].value = null;
+                    fields[i].values = null;
+                    fields[i].items = null;
+                }
             }
         },
         format(type) {
@@ -130,7 +133,7 @@ export default function (data) {
             const label = data.label || 'Submit'
             const html = `
 
-            <article class="dense py-0 sticky">
+            <article class="dense sticky">
                 <progress x-show="loading"></progress>
                 <!--Quotes-->
                 <fieldset x-data="formFields({fields})"></fieldset>
@@ -152,8 +155,8 @@ export default function (data) {
                     
                     <input name="Tag" disabled type="text" placeholder="" />
                     
-                    <button x-show="showTags" class="secondary material-icons flat" @click="showTagField(!showTags)" :disabled="loading">sell</button>
-                    <button x-show="!showTags" class="secondary material-icons flat" @click="showTagField(!showTags)" :disabled="loading">cancel</button>
+                    <button x-show="showTags" class="secondary material-icons flat" @click="hideTagField(false)" :disabled="loading">sell</button>
+                    <button x-show="!showTags" class="secondary material-icons flat" @click="hideTagField(true)" :disabled="loading">cancel</button>
                     
                     <button class="" @click="await submit(fields)"  :disabled="loading">${label}</button>
 

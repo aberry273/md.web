@@ -1,29 +1,29 @@
 @use "../../node_modules/@picocss/pico/scss/pico" with (  
   $enable-semantic-container: true,
-  $enable-viewport: false,
-  $enable-classes: false,  
+  $enable-viewport: false, 
+  $enable-classes: false,    
   $modules: ( 
     // Theme  
     "themes/default": false, 
-  
+   
     // Layout   
     "layout/document": true, 
-    "layout/landmarks": true, 
+    "layout/landmarks": true,  
     "layout/section": false,
     "layout/container": false,
-    "layout/grid": false,
-    "layout/overflow-auto": false,
- 
-    // Content
-    "content/typography": true,
-    "content/link": true,
-    "content/button": true,
+    "layout/grid": false, 
+    "layout/overflow-auto": false,  
+   
+    // Content 
+    "content/typography": true,  
+    "content/link": true, 
+    "content/button": true, 
     "content/table": true,
     "content/embedded": false,
     "content/code": false,
     "content/miscs": false,
-
-    // Forms
+ 
+    // Forms 
     "forms/basics": true,
     "forms/checkbox-radio-switch": false,
     "forms/input-color": false,
@@ -36,7 +36,7 @@
     "components/accordion": false,
     "components/card": true,
     "components/dropdown": false,
-    "components/group": false,
+    "components/group": false, 
     "components/loading": false,
     "components/modal": false,
     "components/nav": false,
@@ -47,11 +47,11 @@
     "utilities/accessibility": false,
     "utilities/reduce-motion": false,
     
-    // Theme
+    // Theme   
     "colors/utilities": true,
   )
-); 
-
+);
+ 
 // Custom theme
 @use "theme/styles";
 @use "theme/schemes";
