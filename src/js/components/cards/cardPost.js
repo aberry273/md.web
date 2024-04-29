@@ -172,6 +172,11 @@ export default function (data) {
                         </ul>
                         <ul> 
                             <li>
+                                 <strong x-show="selectedPost.channelName">
+                                    <a class="py-0 primary my-0" style='text-decoration:none' :href="'/channels/'+selectedPost.targetChannel">
+                                        <sup x-text="selectedPost.channelName"></sup>
+                                    </a>
+                                </strong>
                                 <!--Show more-->
                                 <details class="dropdown flat no-chevron">
                                     <summary role="outline">
@@ -194,7 +199,6 @@ export default function (data) {
                     <!--End Text Content-->
 
                     <template x-if="selectedPost.images != null && selectedPost.images.length > 0">
-                       
                         <div x-data="gridCardMedia( {
                                 userId: '@Model.UserId',
                                 itemEvent: $store.wssContentPosts.getMessageEvent(),

@@ -33,6 +33,7 @@ export default function (data) {
         actionUrl: '',
         actionEvent: 'modal-media-action',
         modalId: 'gridCardMediaModal',
+        initSearch: false,
 
         async init() {
             const self = this;
@@ -41,6 +42,7 @@ export default function (data) {
             this.items = data.items;
             this.searchUrl = data.searchUrl;
             this.userId = data.userId;
+            this.initSearch = data.initSearch;
 
             component = data.component || component
             // init websockets
@@ -69,7 +71,8 @@ export default function (data) {
                     this._mxModal_Open(this.modalId)
                 })
             })
-            await this.initSearch();
+            if(this.initSearch)
+                await this.initSearch();
 
             this.setHtml(data);
         },
@@ -88,6 +91,7 @@ export default function (data) {
             this.selectedItem = this.items[this.selectedIndex - 1];
         },
         get selectedIndex() {
+            if (this.items == null) return -1;
             if (this.selectedItem == null) return -1;
             return this.items.map(x => x.id).indexOf(this.selectedItem.id)
         },
@@ -138,11 +142,25 @@ export default function (data) {
             if (postQuery == null) return;
             this.items = await this._mxSearch_Post(this.searchUrl, postQuery);
         },
+
+        get gridCols() {
+            if(this.items == null) return 'col-1'
+            if(this.items.length <= 1) return 'col-1'
+            if(this.items.length <= 2) return 'col-2'
+            if(this.items.length <= 3) return 'col-3'
+            return 'col-4';
+        },
+
+        get hasNext() {
+            if(this.items == null || this.items.length == 0) return false;
+            return this.selectedIndex < this.items.length -1;
+        },
+
         // METHODS
         setHtml(data) {
             // make ajax request 
             const html = `
-            <div x-transition class="grid col-4" :class="items.length == 0 ? 'col-1' : ''">
+            <div x-transition class="grid" :class="gridCols">
               <template x-for="(item, i) in items" :key="item.id+item.updatedOn || i" >
                 <div x-data="cardImage({
                   item: item,
@@ -150,12 +168,13 @@ export default function (data) {
                   modalEvent: modalEvent,
                 })"></div>
               </template>
+              <!--
               <template x-if="items == null || items.length == 0">
-                <article>
-                  <header><strong>No results!</strong></header>
-                  No results could be found
+                <article class="flat">
+                  <header><strong>No images found</strong></header>
                 </article>
               </template>
+              -->
             </div>
           
             <dialog :id="modalId">
@@ -176,11 +195,12 @@ export default function (data) {
                             rel="prev">chevron_left</i>
 
                             <i aria-label="Next" 
-                            :disabled="selectedIndex < items.length-1"
+                            :disabled="hasNext"
                             @click="browseNextMedia" 
                             class="icon material-icons icon-click" 
                             rel="prev">chevron_right</i>
 
+                            <!--
                             <details class="dropdown flat no-chevron">
                                 <summary role="outline">
                                     <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
@@ -190,18 +210,33 @@ export default function (data) {
                                     <li><a class="click" @click="deleteItem(selectedItem)">Delete</a></li>
                                 </ul>
                             </details>
+                            -->
 
                             <button aria-label="Close" rel="prev" @click="_mxModal_Close(modalId)"></button>
                         </ul>
                         </nav>
                     </header>
                     <div>
+
                        <figure>
                             <img
                             :src="selectedItem.filePath"
                             :alt="selectedItem.name"
                           /> 
-                      </figure>
+                        </figure>
+                        <button 
+                            :disabled="selectedIndex > 0"
+                            aria-label="Previous" 
+                            @click="browsePreviousMedia" 
+                            class=" material-icons floating-previous" 
+                            rel="prev">chevron_left</button>
+
+                        <button aria-label="Next" 
+                            :disabled="hasNext"
+                            @click="browseNextMedia" 
+                            class=" material-icons floating-next" 
+                            rel="next">chevron_right</button>
+    
                     </div>
                 </article>
               
