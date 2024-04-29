@@ -23,8 +23,7 @@ export default function (data) {
         })
       },
       modalAction(action, data) {
-        const ev = `${action}-modal-media`;
-        this.$events.emit(ev, data)
+        this.$events.emit(this.modalEvent, data)
       },
       load(data) {
         const html = `
@@ -32,6 +31,7 @@ export default function (data) {
           <figure>
             <img 
               :src="item.filePath"
+              onerror="this.src='/src/images/broken.jpg'"
               :alt="item.name"
             />
           </figure>

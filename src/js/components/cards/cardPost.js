@@ -203,6 +203,7 @@ export default function (data) {
                                 userId: '@Model.UserId',
                                 itemEvent: $store.wssContentPosts.getMessageEvent(),
                                 items: selectedPost.images,
+                                modalId: selectedPost.id,
                                 cols: 3
                             })">
                         </div>
