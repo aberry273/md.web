@@ -9,39 +9,47 @@ const defaults = {
   footer: 'footer'
 }
 export default function (data) {
-	return {
+  return {
       item: null,
-      data: null, 
+      data: null,
+      imageWidth: null,
       init() {
-        this.item = data.item;
-        this.data = data;
-        this.modalEvent = data.modalEvent;
-        const self = this;
-        
-        this.$nextTick(() => {
-          this.load(self.data)
-        })
+          this.item = data.item;
+          this.data = data;
+          this.imageWidth = data.imageWidth;
+          this.modalEvent = data.modalEvent;
+          const self = this;
+
+          this.$nextTick(() => {
+              this.load(self.data)
+          })
+      },
+      getImage(filePath) {
+          if (this.imageWidth) {
+              return filePath + '?w=' + this.imageWidth;
+          }
+          return filePath;
       },
       modalAction(action, data) {
-        this.$events.emit(this.modalEvent, data)
+          this.$events.emit(this.modalEvent, data)
       },
       load(data) {
-        const html = `
-        <article class="media padless flat" style="cursor: pointer" class="padless clickable" @click="modalAction('open', item)">
-          <figure>
-            <img 
-              :src="item.filePath"
-              onerror="this.src='/src/images/broken.jpg'"
-              :alt="item.name"
-            />
-          </figure>
-        </article>`
-        this.$nextTick(() => {
-            this.$root.innerHTML = html;
-        })
+          const html = `
+            <article class="media padless flat" style="cursor: pointer" class="padless clickable" @click="modalAction('open', item)">
+              <figure>
+                <img 
+                  :src="getImage(item.filePath)"
+                  onerror="this.src='/src/images/broken.jpg'"
+                  :alt="item.name"
+                />
+              </figure>
+            </article>`
+          this.$nextTick(() => {
+              this.$root.innerHTML = html;
+          })
       },
       defaults() {
-        this.load(defaults)
+          this.load(defaults)
       }
-    }
+  }
 }

@@ -61,19 +61,19 @@ export default function (data) {
                 if (!data) return;
                 if (data.alert) this._mxAlert_AddAlert(data);
                 this.updateItemUpdate(data);
-            }) 
+            })
 
             // On updates from filter
             this.$events.on(this.filterEvent, async (filterUpdates) => {
                 await this.search(filterUpdates);
             })
-            this.$events.on(this.modalId, async (item) => {                
+            this.$events.on(this.modalId, async (item) => {
                 this.$nextTick(() => {
                     this.selectedItem = item;
                     this._mxModal_Open(this.modalId)
                 })
             })
-            if(this.initSearch) await this.initSearch();
+            if (this.initSearch) await this.initSearch();
             this.setHtml(data);
         },
         async initSearch() {
@@ -91,10 +91,10 @@ export default function (data) {
         },
 
         get hasNext() {
-            return this.selectedIndex < this.items.length-1;
+            return this.selectedIndex < this.items.length - 1;
         },
         get hasPrevious() {
-            if(this.items == null || this.items.length == 0) return false;
+            if (this.items == null || this.items.length == 0) return false;
             return this.selectedIndex > 0;
         },
         get selectedIndex() {
@@ -144,18 +144,25 @@ export default function (data) {
         // METHODS
         async search(filters) {
             let query = this._mxList_GetFilters(filters);
-            const postQuery = this._mxSearch_CreateSearchQuery(query, 0, 100); 
+            const postQuery = this._mxSearch_CreateSearchQuery(query, 0, 100);
             if (postQuery == null) return;
             this.items = await this._mxSearch_Post(this.searchUrl, postQuery);
         },
 
         get gridCols() {
-            if(this.items == null) return 'col-1'
-            if(this.items.length <= 1) return 'col-1'
-            if(this.items.length <= 2) return 'col-2'
-            if(this.items.length <= 3) return 'col-3'
+            if (this.items == null) return 'col-1'
+            if (this.items.length <= 1) return 'col-1'
+            if (this.items.length <= 2) return 'col-2'
+            if (this.items.length <= 3) return 'col-3'
             return 'col-4';
         },
+        get imageWidth() {
+            if (this.items.length <= 1) return 400
+            if (this.items.length <= 2) return 300
+            if (this.items.length <= 3) return 200
+            return 200
+        },
+
 
         // METHODS
         setHtml(data) {
@@ -163,11 +170,24 @@ export default function (data) {
             const html = `
             <div x-transition class="grid" :class="gridCols">
               <template x-for="(item, i) in items" :key="item.id+item.updatedOn || i" >
-                <div x-data="cardImage({
-                  item: item,
-                  userId: userId,
-                  modalEvent: modalId,
-                })"></div>
+                <div>
+                    <template x-if="item.type == 'Video'">
+                      <div x-data="cardVideo({
+                          item: item,
+                          userId: userId,
+                          modalEvent: modalId,
+                          imageWidth: imageWidth
+                        })"></div>
+                    </template>
+                    <template x-if="item.type == 'Image'">
+                      <div x-data="cardImage({
+                          item: item,
+                          userId: userId,
+                          modalEvent: modalId,
+                          imageWidth: imageWidth
+                        })"></div>
+                    </template>
+                </div>
               </template>
               <!--
               <template x-if="items == null || items.length == 0">

@@ -22,6 +22,7 @@ export default function (data) {
         showImage: false,
         actionEvent: null,
         imageModal: 'upload-media-image-modal',
+        fixed: false,
         // INIT
         init() {
             this.tags = [];
@@ -132,8 +133,8 @@ export default function (data) {
             // make ajax request
             const label = data.label || 'Submit'
             const html = `
-
-            <article class="dense sticky">
+            <article class="dense">
+                
                 <progress x-show="loading"></progress>
                 <!--Quotes-->
                 <fieldset x-data="formFields({fields})"></fieldset>

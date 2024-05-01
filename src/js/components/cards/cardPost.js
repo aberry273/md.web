@@ -21,7 +21,7 @@ export default function (data) {
             this.item = data.item;
             this.userId = data.userId;
             this.updateEvent = data.updateEvent,
-            this.thread = this.setThreadItems(data.item);
+                this.thread = this.setThreadItems(data.item);
 
             const self = this;
             this.$nextTick(() => {
@@ -115,12 +115,12 @@ export default function (data) {
         },
         filterByThreadId(threadId) {
             const filters =
-            [
-                {
-                    name: 'Quotes',
-                    values: [threadId]
-                }
-            ]
+                [
+                    {
+                        name: 'Quotes',
+                        values: [threadId]
+                    }
+                ]
             this.$events.emit(this.filterEvent, filters)
         },
         load(data) {
@@ -152,7 +152,7 @@ export default function (data) {
                             <template x-if="selectedPost.profile.image != null">
                                 <button class="avatar small">
                                     <img 
-                                        :src="selectedPost.profile.image"
+                                        :src="selectedPost.profile.image+'?w=40'"
                                         :alt="selectedPost.profile.username"
                                     />
                                 </button>
@@ -198,11 +198,11 @@ export default function (data) {
                     </template>
                     <!--End Text Content-->
 
-                    <template x-if="selectedPost.images != null && selectedPost.images.length > 0">
+                    <template x-if="selectedPost.media != null && selectedPost.media.length > 0">
                         <div x-data="gridCardMedia( {
                                 userId: '@Model.UserId',
                                 itemEvent: $store.wssContentPosts.getMessageEvent(),
-                                items: selectedPost.images,
+                                items: selectedPost.media,
                                 modalId: selectedPost.id,
                                 cols: 3
                             })">

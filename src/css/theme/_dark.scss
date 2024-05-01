@@ -11,9 +11,14 @@ $primary-color-red: #d31a1a;
 $primary-color-blue: #009bb3;
 $primary-color-yellow: #ffd764;
 $primary-altblue: #CDE6F5;
-$primary-color: #f7931a;
-$secondary-color: #6088b3; 
+$primary-color: #ff9100;
+$secondary-color: #0096c7; 
 $contrast-color: #CDE6F5;
+
+$primary: #7209b7;
+$secondary: #f72585;
+$contrast: #ff8500;
+
 
 // Default: Dark theme
 @mixin theme {
