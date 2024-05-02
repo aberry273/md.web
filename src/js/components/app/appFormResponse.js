@@ -16,13 +16,13 @@ export default function (data) {
         tagFieldName: 'Tags',
         imageFieldName: 'Images',
         videoFieldName: 'Videos',
+        textFieldName: 'Content',
         showTags: false,
         showText: false,
         showVideo: false,
         showImage: false,
         actionEvent: null,
         imageModal: 'upload-media-image-modal',
-        fixed: false,
         // INIT
         init() {
             this.tags = [];
@@ -31,7 +31,7 @@ export default function (data) {
             this.item = data.item;
             this.postbackType = data.postbackType
             this.fields = data.fields,
-                this.actionEvent = data.actionEvent;
+            this.actionEvent = data.actionEvent;
 
             var tagField = this._mxForm_GetField(this.fields, this.tagFieldName);
             this.showTags = tagField = null ? !tagField.hidden : null
@@ -66,8 +66,25 @@ export default function (data) {
             this.setHtml(data)
         },
         // GETTERS
+        get tagField() {
+            return this._mxForm_GetField(this.fields, this.tagFieldName);
+        },
+        get imageField() {
+            return this._mxForm_GetField(this.fields, this.imageFieldName);
+        },
+        get videoField() {
+            return this._mxForm_GetField(this.fields, this.videoFieldName);
+        },
+        get textField() {
+            return this._mxForm_GetField(this.fields, this.textFieldName);
+        },
         get typeSelected() {
             return this.showImage || this.showVideo || this.showText
+        },
+        get isValid() {
+            return (this.textField.value != null && this.textField.value.length > 0)
+                || (this.videoField.value != null && this.videoField.value.length > 0)
+                || (this.imageField.value != null && this.imageField.value.length > 0)
         },
         get tagField() { return this._mxForm_GetField(this.fields, this.tagFieldName) },
         // METHODS
@@ -105,7 +122,7 @@ export default function (data) {
         format(type) {
         },
         cancelTypes() {
-            this.hideTextField(true);
+            this.hideTagField(true);
             this.hideImageField(true);
             this.hideVideoField(true);
         },
@@ -133,15 +150,17 @@ export default function (data) {
             // make ajax request
             const label = data.label || 'Submit'
             const html = `
-            <article class="dense">
-                
+
+            <article class="dense sticky">
                 <progress x-show="loading"></progress>
                 <!--Quotes-->
                 <fieldset x-data="formFields({fields})"></fieldset>
                 
                 <fieldset role="group">
                     <!--Toggle fields-->
+                    <!--
                     <button class="small secondary material-icons flat" x-show="!typeSelected" @click="hideTextField(false)" :disabled="loading">text_format</button>
+                    -->
                     <button class="small secondary material-icons flat" x-show="!typeSelected" @click="hideVideoField(false)" :disabled="loading">videocam</button>
                     <button class="small secondary material-icons flat" x-show="!typeSelected" @click="hideImageField(false)" :disabled="loading">image</button>
                     <!--Cancel-->
@@ -159,7 +178,7 @@ export default function (data) {
                     <button x-show="showTags" class="secondary material-icons flat" @click="hideTagField(false)" :disabled="loading">sell</button>
                     <button x-show="!showTags" class="secondary material-icons flat" @click="hideTagField(true)" :disabled="loading">cancel</button>
                     
-                    <button class="" @click="await submit(fields)"  :disabled="loading">${label}</button>
+                    <button class="" @click="await submit(fields)"  :disabled="loading || !isValid">${label}</button>
 
                 </fieldset> 
             </article>
