@@ -160,7 +160,31 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
     <!-- DATA -->
-    <script src="/src/js/config.js"></script>
+    
+    <script>
+        let wssSettings = {
+          wssContentChannels: {
+              event: 'wss:contentChannels',
+              url: "https://localhost:7220/ContentChannels",
+          },
+          wssContentPosts: {
+              event: 'wss:contentPosts',
+              url: "https://localhost:7220/ContentPosts",
+          },
+          wssContentPostReviews: {
+              event: 'wss:contentPostReviews',
+              url: "https://localhost:7220/ContentPostReviews",
+          },
+          wssContentPostActivities: {
+              event: 'wss:contentPostActivities',
+              url: "https://localhost:7220/ContentPostActivities",
+          },
+          wssMediaBlobs: {
+              event: 'wss:contentPostReviews',
+              url: "https://localhost:7220/MediaBlobs",
+          }
+        };
+    </script>
     <script type="module" src="/src/js/init.js"></script> 
 
     <script>

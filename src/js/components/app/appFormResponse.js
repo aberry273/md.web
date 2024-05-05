@@ -1,10 +1,12 @@
 
 import mxForm from '/src/js/mixins/mxForm.js';
 import mxModal from '/src/js/mixins/mxModal.js';
+import mxResponsive from '/src/js/mixins/mxResponsive.js';
 export default function (data) {
     return {
         ...mxForm(data),
         ...mxModal(data),
+        ...mxResponsive(data),
         // PROPERTIES
         loading: false,
         fields: [],
@@ -34,7 +36,7 @@ export default function (data) {
             this.actionEvent = data.actionEvent;
 
             var tagField = this._mxForm_GetField(this.fields, this.tagFieldName);
-            this.showTags = tagField = null ? !tagField.hidden : null
+            this.showTags = tagField = null ? !tagField.hidden : true
             var imageField = this._mxForm_GetField(this.fields, this.imageFieldName);
             this.showImage = imageField != null ? !imageField.hidden : null
             var videoField = this._mxForm_GetField(this.fields, this.videoFieldName);
@@ -154,7 +156,7 @@ export default function (data) {
             <article class="dense sticky">
                 <progress x-show="loading"></progress>
                 <!--Quotes-->
-                <fieldset x-data="formFields({fields})"></fieldset>
+                <fieldset class="pa-2" x-data="formFields({fields})"></fieldset>
                 
                 <fieldset role="group">
                     <!--Toggle fields-->
@@ -175,8 +177,8 @@ export default function (data) {
                     
                     <input name="Tag" disabled type="text" placeholder="" />
                     
-                    <button x-show="showTags" class="secondary material-icons flat" @click="hideTagField(false)" :disabled="loading">sell</button>
-                    <button x-show="!showTags" class="secondary material-icons flat" @click="hideTagField(true)" :disabled="loading">cancel</button>
+                    <button x-show="showTags == true" class="secondary material-icons flat" @click="hideTagField(false)" :disabled="loading">sell</button>
+                    <button x-show="showTags == false" class="secondary material-icons flat" @click="hideTagField(true)" :disabled="loading">cancel</button>
                     
                     <button class="" @click="await submit(fields)"  :disabled="loading || !isValid">${label}</button>
 
