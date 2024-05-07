@@ -20,7 +20,6 @@ export async function createClient(url, wssEvent ) {
         
         client.on(sendMessageRequest, (user, message) => {
             const received = `${user}: ${message}`; 
-            console.log(received);
             // Handle responses
             const payload = {
                 user: user,
@@ -32,6 +31,5 @@ export async function createClient(url, wssEvent ) {
         return client;
     } catch (err) {
         console.log(err);
-        //setTimeout(createClient(url, wssEvent), 5000);
     }
 }
