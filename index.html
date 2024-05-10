@@ -174,33 +174,36 @@
     <!-- DATA -->
     
     <script>
-        let wssSettings = {
-          wssContentChannels: {
+        let wssSettings = [
+          {
+              serviceName: 'wssContentChannels',
               userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentChannels',
               url: "https://localhost:7220/ContentChannels",
           },
-          wssContentPosts: {
+          {
+              serviceName: 'wssContentPosts',
               userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentPosts',
               url: "https://localhost:7220/ContentPosts",
+              postbackUrl: 'https://localhost:7220/api/contentposts',
+              queryUrl: 'https://localhost:7220/api/contentsearch/posts',
           },
-          wssContentPostActions: {
+          {
+              serviceName: 'wssContentPostActions',
               userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentPostActions',
               url: "https://localhost:7220/ContentPostActions",
+              postbackUrl: 'https://localhost:7220/api/contentpostactions',
+              queryUrl: 'https://localhost:7220/api/contentsearch/posts',
           },
-          wssContentPostActivities: {
-              userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
-              event: 'wss:contentPostActivities',
-              url: "https://localhost:7220/ContentPostActivities",
-          },
-          wssMediaBlobs: {
+          {
+              serviceName: 'wssMediaBlobs',
               userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentPostMedia',
               url: "https://localhost:7220/MediaBlobs",
           }
-        };
+        ];
     </script>
     <script type="module" src="/src/js/init.js"></script> 
 

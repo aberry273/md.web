@@ -1,6 +1,7 @@
 //import alpinejs from 'https://cdn.skypack.dev/alpinejs';
 import alpinejs from './alpine.esm.js'
 
+
 // Load stores
 import * as stores from './stores/index.js';
 Object.keys(stores).forEach(store => {
@@ -42,9 +43,11 @@ Object.keys(mixins).forEach(mixin => {
 // Load webSockets components
 import * as services from './services/index.js';
 Object.keys(services).forEach(svc => {
-    let settings = wssSettings[svc]
-    let data = services[svc](settings);
-    alpinejs.store(svc, data);
+    let settings = wssSettings.filter(x => x.serviceName == svc)[0]
+    if (settings != null) {
+        let data = services[svc](settings);
+        alpinejs.store(svc, data);
+    }
 });
 
 // Load rendering components
