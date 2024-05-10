@@ -176,23 +176,28 @@
     <script>
         let wssSettings = {
           wssContentChannels: {
+              userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentChannels',
               url: "https://localhost:7220/ContentChannels",
           },
           wssContentPosts: {
+              userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentPosts',
               url: "https://localhost:7220/ContentPosts",
           },
-          wssContentPostReviews: {
-              event: 'wss:contentPostReviews',
-              url: "https://localhost:7220/ContentPostReviews",
+          wssContentPostActions: {
+              userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
+              event: 'wss:contentPostActions',
+              url: "https://localhost:7220/ContentPostActions",
           },
           wssContentPostActivities: {
+              userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
               event: 'wss:contentPostActivities',
               url: "https://localhost:7220/ContentPostActivities",
           },
           wssMediaBlobs: {
-              event: 'wss:contentPostReviews',
+              userId: '738a7ed9-593c-4609-79b0-08dc67c8ba9b',
+              event: 'wss:contentPostMedia',
               url: "https://localhost:7220/MediaBlobs",
           }
         };
