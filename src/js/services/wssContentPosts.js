@@ -31,7 +31,7 @@ export default function (settings) {
             // Listen for wssContentPostActionsUpdate
             this._mxEvents_On(wssContentPostActionsUpdate, async (data) => {
                 if (!data) return;
-                this.actions.push(data);
+                this.actions = this.updateItems(this.actions, data);
             })
         },
         // Custom logic

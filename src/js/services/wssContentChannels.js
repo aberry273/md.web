@@ -1,12 +1,12 @@
 import { emit, createClient, connectedEvent, messageEvent } from './utilities.js'
 import wssService from './wssService.js'
 import {mxAlert, mxFetch, mxList, mxSearch } from '/src/js/mixins/index.js';
-const wssContentPostActionsUpdate = 'wss:post:action';
+
 export default function (settings) {
     return {
         // properties
-        postbackUrl: 'wssContentPostActions.postbackUrl',
-        queryUrl: 'wssContentPostActions.queryUrl',
+        postbackUrl: 'wssContentChannels.postbackUrl',
+        queryUrl: 'wssContentChannels.queryUrl',
         // mixins
         ...mxFetch(settings),
         ...mxAlert(settings),
@@ -21,29 +21,21 @@ export default function (settings) {
             this.userId = settings.userId;
             await this.initializeWssClient();
             await this.connectUser(settings.userId);
-            // On updates from the websocket 
             this._mxEvents_On(this.getMessageEvent(), async (e) => {
                 const data = e.data;
                 if (!data) return;
-
                 if (data.alert) this._mxAlert_AddAlert(data);
-
-                this._mxEvents_Emit(wssContentPostActionsUpdate, data);
-                // N ow use the contentService to hold actions
-                //this.items = this.updateItems(this.items, data);
+                this.items = this.updateItems(this.items, data);
             })
         },
         // Custom logic
-        async _wssContentActions_HandlePost(payload) {
-            const url = `${this.postbackUrl}`
-            const result = await this._mxFetch_Post(url, payload);
-            // if successful, push into the array for immediate response
-            // websocket will update it accordingly to remove if failure
-            // or with proper data if successful
-            if (result.status >= 200 < 300) {
-                payload.animate = true;
-                this._mxEvents_Emit(wssContentPostActionsUpdate, payload);
-            }
+        async Search(filters) {
+            let query = this._mxList_GetFilters(filters);
+            const postQuery = this._mxSearch_CreateSearchQuery(query, this.userId);
+            if (postQuery == null) return;
+            const result = await this._mxSearch_Post(this.queryUrl, postQuery);
+            this.setItems(result.posts);
+            this.actions = result.actions;
         },
     }
 }
