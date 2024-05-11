@@ -1,14 +1,15 @@
 import { emit, createClient, connectedEvent, messageEvent } from './utilities.js'
 import wssService from './wssService.js'
-import {mxAlert, mxFetch, mxList, mxSearch } from '/src/js/mixins/index.js';
+import { mxAlert, mxList, mxSearch } from '/src/js/mixins/index.js';
 const wssContentPostActionsUpdate = 'wss:post:action';
+const quoteEvent = 'action:post:quote';
 export default function (settings) {
     return {
-        // properties
-        postbackUrl: 'wssContentPostActions.postbackUrl',
-        queryUrl: 'wssContentPostActions.queryUrl',
+        postbackUrl: 'wssContentPosts.postbackUrl',
+        queryUrl: 'wssContentPosts.queryUrl',
+        actions: [],
+        quotes: [],
         // mixins
-        ...mxFetch(settings),
         ...mxAlert(settings),
         ...mxList(settings),
         ...mxSearch(settings),
@@ -21,29 +22,38 @@ export default function (settings) {
             this.userId = settings.userId;
             await this.initializeWssClient();
             await this.connectUser(settings.userId);
+
             // On updates from the websocket 
             this._mxEvents_On(this.getMessageEvent(), async (e) => {
                 const data = e.data;
                 if (!data) return;
-
                 if (data.alert) this._mxAlert_AddAlert(data);
-
-                this._mxEvents_Emit(wssContentPostActionsUpdate, data);
-                // N ow use the contentService to hold actions
-                //this.items = this.updateItems(this.items, data);
+                this.items = this.updateItems(this.items, data);
+            })
+            // Listen for wssContentPostActionsUpdate
+            this._mxEvents_On(wssContentPostActionsUpdate, async (data) => {
+                if (!data) return;
+                this.actions = this.updateItems(this.actions, data);
             })
         },
         // Custom logic
-        async _wssContentActions_HandlePost(payload) {
-            const url = `${this.postbackUrl}`
-            const result = await this._mxFetch_Post(url, payload);
-            // if successful, push into the array for immediate response
-            // websocket will update it accordingly to remove if failure
-            // or with proper data if successful
-            if (result.status >= 200 < 300) {
-                payload.animate = true;
-                this._mxEvents_Emit(wssContentPostActionsUpdate, payload);
-            }
+        async Search(filters) {
+            let query = this._mxList_GetFilters(filters);
+            const postQuery = this._mxSearch_CreateSearchQuery(query, this.userId);
+            if (postQuery == null) return;
+            const result = await this._mxSearch_Post(this.queryUrl, postQuery);
+            this.setItems(result.posts);
+            this.actions = result.actions;
+        },
+        GetPostAction(postId, userId) {
+            const actions = this.actions.filter(x => x.userId == userId && x.contentPostId == postId);
+            if (actions == null || actions.length == 0) return null;
+            return actions[0];
+        },
+        CheckUserPostAction(postId, userId, actionType) {
+            const action = this.GetPostAction(postId, userId);
+            if (action == null) return false;
+            return action[actionType] === true;
         },
     }
 }
