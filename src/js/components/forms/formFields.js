@@ -3,12 +3,12 @@ import textarea from './fields/textarea.js'
 import file from './fields/file.js'
 import select from './fields/select.js'
 import list from './fields/list.js'
+import quotes from './fields/quotes.js'
 import chips from './fields/chips.js'
-
 import mxResponsive from '/src/js/mixins/mxResponsive.js';
 
 export default function (data) {
-	return {
+    return {
     ...mxResponsive(data),
     // PROPERTIES
     loading: false,
@@ -27,6 +27,7 @@ export default function (data) {
       if(field.type == 'select') return select(field)
       if(field.type == 'list') return list(field)
       if(field.type == 'chips') return chips(field)
+      if(field.type == 'quotes') return quotes(field)
       return input(field)
     },
     setHtml(data) {
