@@ -56,8 +56,8 @@ export default function (settings) {
         // Custom logic
         async Search(filters) {
             const result = await this.SearchPosts(filters)
-            this.setItems(result.posts);
-            this.actions = result.actions;
+            this.items = this.insertOrUpdateItems(this.items, result.posts);
+            this.actions = this.insertOrUpdateItems(this.actions, result.actions);
         },
         GetPostAction(postId, userId) {
             const actions = this.actions.filter(x => x.userId == userId && x.contentPostId == postId);
