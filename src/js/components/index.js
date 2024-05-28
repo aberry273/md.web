@@ -26,6 +26,7 @@ import modalFormFile from './modals/modalFormFile.js'
 // LISTS
 import listCards from './lists/listCards.js'
 import listThreadCards from './lists/listThreadCards.js'
+import listThreadAscendantCards from './lists/listThreadAscendantCards.js'
 import listThreadRepliesCards from './lists/listThreadRepliesCards.js'
 import listAccordionCard from './lists/listAccordionCard.js'
 // Grid
@@ -66,6 +67,7 @@ export {
     // LISTS
     listCards,
     listThreadCards,
+    listThreadAscendantCards,
     listAccordionCard,
     listThreadRepliesCards,
 
