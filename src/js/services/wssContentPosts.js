@@ -8,7 +8,8 @@ export default function (settings) {
         postbackUrl: 'wssContentPosts.postbackUrl',
         queryUrl: 'wssContentPosts.queryUrl',
         actions: [],
-        quotes: [],
+        quotedPosts: [],
+        //cachedFilters: {},
         // mixins
         ...mxAlert(settings),
         ...mxList(settings),
@@ -36,6 +37,8 @@ export default function (settings) {
                 this.actions = this.updateItems(this.actions, data);
             })
             // Listen of post quoting
+            // Not used right now - to be used as state for editForm t
+            /*
             this._mxEvents_On(quoteEvent, async (item) => {
                 const threadKey = item.threadId;
                 const index = this.quotes.indexOf(threadKey);
@@ -44,25 +47,61 @@ export default function (settings) {
                     this.quotes.push(threadKey)
                 }  
             })
-
+            */
         },
         // Custom logic
-        async SearchPosts(filters) {
+        async SearchPosts(filters, searchUrl) {
             let query = this._mxList_GetFilters(filters);
             const postQuery = this._mxSearch_CreateSearchQuery(query, this.userId);
             if (postQuery == null) return;
-            return await this._mxSearch_Post(this.queryUrl, postQuery);
+            return await this._mxSearch_Post(searchUrl || this.queryUrl, postQuery);
         },
         // Custom logic
-        async Search(filters) {
+        /*
+        async Filter(filters) {
+            const key = this.CreateFilterKey(filters);
             const result = await this.SearchPosts(filters)
+            this.cachedFilters[key] = result;
+
             this.items = this.insertOrUpdateItems(this.items, result.posts);
             this.actions = this.insertOrUpdateItems(this.actions, result.actions);
+        },
+        */
+        CreateFilterKey(filters) {
+            let query = this._mxList_GetFilters(filters);
+            const postQuery = this._mxSearch_CreateSearchQuery(query, this.userId);
+            return JSON.stringify(postQuery);
+        },
+        async SearchByUrl(searchUrl, filters, replace = false) {
+            const result = await this.SearchPosts(filters, searchUrl)
+            this.setSearchResults(result, replace);
+        },
+        async Search(filters, replace = false) {
+            const result = await this.SearchPosts(filters)
+            this.setSearchResults(result, replace);
+        },
+        setSearchResults(result, replace = false) {
+            if (replace) {
+                this.items = result.posts;
+                this.quotedPosts = result.quotedPosts;
+                this.actions = result.actions;
+            }
+            else {
+                this.items = this.insertOrUpdateItems(this.items, result.posts);
+                this.quotedPosts = this.insertOrUpdateItems(this.items, result.quotedPosts);
+                this.actions = this.insertOrUpdateItems(this.actions, result.actions);
+            }
         },
         GetPostAction(postId, userId) {
             const actions = this.actions.filter(x => x.userId == userId && x.contentPostId == postId);
             if (actions == null || actions.length == 0) return null;
             return actions[0];
+        },
+        GetQuotePost(quotedPostId) {
+            return this.quotedPosts.filter(x => x.id == quotedPostId)[0];
+        },
+        FilterPostsById(postIds) {
+            return this.items.filter(x => postIds.indexOf(x.id) > -1);
         },
         CheckUserPostAction(postId, userId, actionType) {
             const action = this.GetPostAction(postId, userId);

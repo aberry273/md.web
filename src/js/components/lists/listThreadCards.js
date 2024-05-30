@@ -98,7 +98,7 @@ export default function (data) {
             <div class="list">
               <template x-for="(item, i) in threadItems" :key="item.id || i" >
                     <div>
-                        <div x-data="cardPostReply({
+                        <div x-data="cardPost({
                             item: item,
                             userId: userId,
                             actionEvent: actionEvent,

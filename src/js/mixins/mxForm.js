@@ -10,8 +10,26 @@ export default function (data) {
 		get mxForm_HeadersMultiPart() {
 			return {
 				'Accept': '*/*',
-				//'Content-Type': 'multipart/form-data'
 			}
+		},
+
+		_mxForm_SetFormDataField(formData, field) {
+			const name = field.name.replace(/\s/g, '');
+			if (field.multiple) {
+				for (var j = 0; j < x.value.length; j++) {
+					formData.append(name, x.value[j]);
+				}
+			}
+			else {
+				formData.append(name, x.value);
+			}
+		},
+		_mxForm_CheckDataType(data) {
+			var objectConstructor = ({}).constructor;
+			if (data.constructor === objectConstructor) {
+				return "object";
+			}
+			return "string";
 		},
 		// METHODS
 		/// form = json object representing a form
@@ -26,13 +44,30 @@ export default function (data) {
 					const name = x.name.replace(/\s/g, '');
 					if (x.multiple) {
 						for (var j = 0; j < x.value.length; j++) {
-							formData.append(name, x.value[j]);
+							const value = x.value[j];
+							const type = this._mxForm_CheckDataType(value);
+							if (type == 'object') {
+								//Serialize object if JSON
+								formData.append(name, JSON.stringify(value));
+							}
+							else {
+								formData.append(name, value);
+							}
 						}
 						continue;
 					}
 					else {
-						formData.append(name, x.value);
+						const value = x.value;
+						const type = this._mxForm_CheckDataType(value);
+						if (type == 'object') {
+							//Serialize object if JSON
+							formData.append(name, JSON.stringify(value));
+						}
+						else {
+							formData.append(name, value);
+						}
 					}
+					
 				}
 			}
 			if (!form.sections) {
@@ -64,6 +99,19 @@ export default function (data) {
 		},
 		_mxForm_OnFieldChange(field, value) {
 			field.value = value;
+		},
+
+		_mxForm_IsImage(file) {
+			if (file == null || file.type == null) return false;
+			return file.type.startsWith('image/');
+		},
+		_mxForm_IsVideo(file) {
+			if (file == null || file.type == null) return false;
+			return file.type.startsWith('video/');
+		},
+		_mxForm_GetFileType(file) {
+			return file.type
+			return (typeof file == 'string') ? file : URL.createObjectURL(file)
 		},
 		_mxForm_GetFilePreview(file) {
 			return (typeof file == 'string') ? file : URL.createObjectURL(file)

@@ -2,6 +2,7 @@
 import card from './cards/card.js'
 import cardPost from './cards/cardPost.js'
 import cardPostReply from './cards/cardPostReply.js'
+import cardPostQuote from './cards/cardPostQuote.js'
 import cardImage from './cards/cardImage.js'
 import cardVideo from './cards/cardVideo.js'
 // CONTENT
@@ -43,6 +44,7 @@ export {
     card,
     cardPost,
     cardPostReply,
+    cardPostQuote,
     cardImage,
     cardVideo,
     

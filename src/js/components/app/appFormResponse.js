@@ -51,22 +51,26 @@ export default function (data) {
             // On updates from cards
             // Move this and all content/post based logic to page level js instead
             this.$events.on(quoteEvent, async (item) => {
-                const field = this._mxForm_GetField(this.fields, 'QuoteIds');
+                const field = this._mxForm_GetField(this.fields, 'QuotedItems');
                 if (!field) return;
 
                 let threadIds = field.value || []
-
-                const threadKey = item.threadId;
-                const index = threadIds.indexOf(threadKey);
+                
+                const quotedItem = this.createQuoteRequestItem(item);
+                
+                const quotedIds = threadIds.map(x => x.quotedContentPostId);
+                const index = quotedIds.indexOf(item.id)
                 if (index > -1) return;
-                if (index == -1) {
-                    threadIds.push(threadKey)
-                }
+                
+                threadIds.push(quotedItem)
+                
                 field.value = threadIds;
                 field.items = threadIds;
                 this._mxForm_SetField(this.fields, field);
                 this.showFloatingPanel = false;
-                this.fixed = true;
+
+                // If form is in scrollState, show
+                if (this.isInPosition) this.fixed = true;
             })
             // On updates from cards
             // Move this and all content/post based logic to page level js instead
@@ -85,7 +89,8 @@ export default function (data) {
 
                 this._mxForm_SetField(this.fields, replyToField);
                 this.showFloatingPanel = false;
-                this.fixed = true;
+                // If form is in scrollState, show
+                if (this.isInPosition) this.fixed = true;
             })
 
             this.setHtml(data);
@@ -138,6 +143,19 @@ export default function (data) {
                 style += "bottom: 0; top: initial;";
             }
             return style;
+        },
+        createSingleLineQuotePost(item) {
+            return `@${item.shortThreadId}: ${item.content.substring(0, 64)}`
+        },
+        createQuoteRequestItem(item) {
+            const quote = {
+                partial: false,
+                preview: this.createSingleLineQuotePost(item),
+                quotedContentPostId: item.id,
+                content: null,
+                response: null
+            }
+            return quote;;
         },
         // 
         async submit(fields) {
@@ -299,39 +317,3 @@ export default function (data) {
         },
     }
 }
-/*
-                    
-            <!--Fixed-->
-            
-            <article class="dense sticky" x-ref="fixedForm">
-                <progress x-show="loading"></progress>
-                <!--Quotes-->
-                <fieldset class="padded" x-data="formFields({fields})"></fieldset>
-                
-                <fieldset role="group">
-                    <!--Toggle fields-->
-                    <!--
-                    <button class="small secondary material-icons flat" x-show="!typeSelected" @click="hideTextField(false)" :disabled="loading">text_format</button>
-                    -->
-                    <button class="small secondary material-icons flat" x-show="!typeSelected" @click="hideVideoField(false)" :disabled="loading">videocam</button>
-                    <button class="small secondary material-icons flat" x-show="!typeSelected" @click="hideImageField(false)" :disabled="loading">image</button>
-                    <!--Cancel-->
-                    <button class="small secondary material-icons flat" x-show="typeSelected" @click="cancelTypes" :disabled="loading">cancel</button>
-                    
-                    <!--Type formats-->
-                    <button class="small secondary material-icons flat small" x-show="showText" @click="showText = !showText" :disabled="loading">format_list_bulleted</button>
-                    <button class="small secondary material-icons flat small" x-show="showText" @click="showText = !showText" :disabled="loading">format_list_numbered</button>
-                    <button class="small secondary material-icons flat small" x-show="showText" @click="showText = !showText" :disabled="loading">link</button>
-                    <button class="small secondary material-icons flat small" x-show="showText" @click="showText = !showText" :disabled="loading">format_quote</button>
-                    <button class="small secondary material-icons flat small" x-show="showText" @click="showText = !showText" :disabled="loading">code</button>
-                    
-                    <input name="Tag" disabled type="text" placeholder="" />
-                    
-                    <button x-show="showTags == true" class="secondary material-icons flat" @click="hideTagField(false)" :disabled="loading">sell</button>
-                    <button x-show="showTags == false" class="secondary material-icons flat" @click="hideTagField(true)" :disabled="loading">cancel</button>
-                    
-                    <button class="" @click="await submit(fields)"  :disabled="loading || !isValid">${label}</button>
-
-                </fieldset> 
-            </article>
-            */
