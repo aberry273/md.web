@@ -49,7 +49,7 @@ export default function (data) {
                     await this.initSearch();
                 }
                 else {
-                    await this.$store.wssContentPosts.SearchByUrl(this.searchUrl, filterUpdates, true);
+                    await this.$store.wssContentPosts.SearchByUrl(this.searchUrl, filterUpdates);
                 }
                 
             })
@@ -116,14 +116,13 @@ export default function (data) {
                         })"></div>
 
                         <div x-show="item.replies > 0 && !showReplies(item)">
-                            <a class="line child click" @click="toggleReplies(item)" >
+                            <a class="line child click" @click="toggleReplies(item)">
                                 <small class="pl">
                                     <small>
                                         <span>Show <span x-text="item.replies"></span> replies</span>
                                     </small>
                                 </small>
                             </a>
-
                         </div>
 
                         <!-- Replies -->

@@ -20,6 +20,8 @@ export default function (data) {
         userId: '',
         parentId: '',
         searchUrl: '',
+        loading: false,
+        lastScrollHeight: 0,
 
         async init() {
             const self = this;
@@ -31,9 +33,14 @@ export default function (data) {
             this.searchUrl = data.searchUrl;
 
             component = data.component || component
-
             this.setHtml(data);
-            await this.initSearch();
+            this.loading = true;
+
+            if (this.items.length == 0) await this.initSearch();
+            this.$nextTick(() => {
+                this.$events.emit('ancestors-loaded')
+            })
+            this.loading = false;
         },
         orderByDate(items) {
             items.sort(function (a, b) {
@@ -46,15 +53,13 @@ export default function (data) {
             const items = this.$store.wssContentPosts.FilterPostsById(this.item.parentIds);
             this.orderByDate(items);
             this.items = items;
-            //const results = await this.$store.wssContentPosts.SearchPosts(queryData, this.searchUrl);
-            //this.items = results.posts;
         },
         // METHODS
         setHtml(data) {
             // make ajax request 
             const html = `
-            <div class="">
-                <template x-for="(item, i) in items" :key="item.id || i" >
+            <div id="ascendants">
+                <template x-for="(item, i) in items" :key="item.id || i">
                     <div>
                         <div x-data="cardPost({
                             item: item,
@@ -66,7 +71,7 @@ export default function (data) {
                             itemEvent: $store.wssContentPosts.getMessageEvent(),
                             parentId: item.id
                         })"></div>
-                        <div class="line-background"></div>
+                        <div class="line-background" :id="i == items.length-1 ? 'parentline' : null"></div>
                     </div>
                 </template>
             </div>
