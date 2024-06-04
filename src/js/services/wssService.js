@@ -1,108 +1,80 @@
 import { emit, createClient, connectedEvent, messageEvent } from './utilities.js'
-import wssService from './wssService.js'
-import { mxAlert, mxList, mxSearch } from '/src/js/mixins/index.js';
-const wssContentPostActionsUpdate = 'wss:post:action';
-const quoteEvent = 'action:post:quote';
+
+import { mxEvents } from '/src/js/mixins/index.js';
+
 export default function (settings) {
     return {
-        postbackUrl: 'wssContentPosts.postbackUrl',
-        queryUrl: 'wssContentPosts.queryUrl',
-        actions: [],
-        quotes: [],
-        //cachedFilters: {},
-        // mixins
-        ...mxAlert(settings),
-        ...mxList(settings),
-        ...mxSearch(settings),
-        // inherited
-        ...wssService(settings),
-
+        ...mxEvents(settings),
+        items: [],
+        socket: null,
+        settings: {},
+        client: null,
+        connectionId: null,
+        wssEvent: null,
         async init() {
-            this.postbackUrl = settings.postbackUrl;
-            this.queryUrl = settings.queryUrl;
-            this.userId = settings.userId;
-            await this.initializeWssClient();
-            await this.connectUser(settings.userId);
-
-            // On updates from the websocket 
-            this._mxEvents_On(this.getMessageEvent(), async (e) => {
-                const data = e.data;
-                if (!data) return;
-                if (data.alert) this._mxAlert_AddAlert(data);
-                this.items = this.updateItems(this.items, data);
-            })
-            // Listen for wssContentPostActionsUpdate
-            this._mxEvents_On(wssContentPostActionsUpdate, async (data) => {
-                if (!data) return;
-                this.actions = this.updateItems(this.actions, data);
-            })
-            // Listen of post quoting
-            // Not used right now - to be used as state for editForm t
-            /*
-            this._mxEvents_On(quoteEvent, async (item) => {
-                const threadKey = item.threadId;
-                const index = this.quotes.indexOf(threadKey);
-                if (index > -1) return;
-                if (index == -1) {
-                    this.quotes.push(threadKey)
-                }  
-            })
-            */
+            await this.initializeWssClient()
+        },
+        async initializeWssClient() {
+            this.settings = settings;
+            this.wssEvent = settings.wssEvent;
+            const self = this;
+            // Start the connection.
+            try {
+                this.client = await createClient(this.settings.url, this.wssEvent)
+                await this.client.start();
+                this.connectionId = this.client.connection.connectionId;
+                emit(this.wssEvent, connectedEvent, this.client.connection.connectionId);
+            } catch (err) {
+                console.error(err);
+                //setTimeout(createClient, 5000);
+            }
+        },
+        setItems(items) {
+            this.items = items;
+        },
+        insertOrUpdateItems(originalItems, updateitems) { 
+            const originalItemIds = originalItems.map(x => x.id) || []
+            const updateItemIds = updateitems.map(x => x.id) || []
+            for (let i = 0; i < updateItemIds.length; i++) {
+                const index = updateItemIds[i];
+                if (originalItemIds.indexOf(index) == -1) {
+                    originalItems.push(updateitems[i])
+                } 
+            }
+            return originalItems
+        },
+        updateItems(items, wssMessage) {
+            var item = wssMessage.data;
+            let emptyItems = false;
+            if (items == null) {
+                items = [];
+                emptyItems = true;
+            }
+            if (wssMessage.update == 'Created') {
+                const index = items.map(x => x.id).indexOf(item.id);
+                if (index == -1) items.unshift(item);
+                else items[index] = item
+            }
+            if (wssMessage.update == 'Updated') {
+                const index = items.map(x => x.id).indexOf(item.id);
+                items[index] = item
+                this._mxEvents_Emit(item.id, item);
+            }
+            if (wssMessage.update == 'Deleted') {
+                const index = items.map(x => x.id).indexOf(item.id);
+                items.splice(index, 1);
+            }
+            return items;
+        },
+        getMessageEvent() {
+            return `${this.wssEvent}:${messageEvent}`;
+        },
+        getConnectedEvent() {
+            return `${this.wssEvent}:${connectedEvent}`;
+        },
+        async connectUser(userId) {
+            await this.client.invoke("UserRequest", this.connectionId, userId)
         },
         // Custom logic
-        async SearchPosts(filters, searchUrl) {
-            let query = this._mxList_GetFilters(filters);
-            const postQuery = this._mxSearch_CreateSearchQuery(query, this.userId);
-            if (postQuery == null) return;
-            return await this._mxSearch_Post(searchUrl || this.queryUrl, postQuery);
-        },
-        // Custom logic
-        /*
-        async Filter(filters) {
-            const key = this.CreateFilterKey(filters);
-            const result = await this.SearchPosts(filters)
-            this.cachedFilters[key] = result;
-
-            this.items = this.insertOrUpdateItems(this.items, result.posts);
-            this.actions = this.insertOrUpdateItems(this.actions, result.actions);
-        },
-        */
-        CreateFilterKey(filters) {
-            let query = this._mxList_GetFilters(filters);
-            const postQuery = this._mxSearch_CreateSearchQuery(query, this.userId);
-            return JSON.stringify(postQuery);
-        },
-        async SearchByUrl(searchUrl, filters, replace = false) {
-            const result = await this.SearchPosts(filters, searchUrl)
-            if (replace) {
-                this.items = result.posts;
-                this.actions = result.actions;
-            }
-            else {
-                this.items = this.insertOrUpdateItems(this.items, result.posts);
-                this.actions = this.insertOrUpdateItems(this.actions, result.actions);
-            }
-        },
-        async Search(filters, replace = false) {
-            const result = await this.SearchPosts(filters)
-            if (replace) {
-                this.items = result.posts;
-                this.actions = result.actions;
-            }
-            else {
-                this.items = this.insertOrUpdateItems(this.items, result.posts);
-                this.actions = this.insertOrUpdateItems(this.actions, result.actions);
-            }
-        },
-        GetPostAction(postId, userId) {
-            const actions = this.actions.filter(x => x.userId == userId && x.contentPostId == postId);
-            if (actions == null || actions.length == 0) return null;
-            return actions[0];
-        },
-        CheckUserPostAction(postId, userId, actionType) {
-            const action = this.GetPostAction(postId, userId);
-            if (action == null) return false;
-            return action[actionType] === true;
-        },
     }
 }
