@@ -1,14 +1,18 @@
+
+ 
 export default function (data) {
     return ` 
         <div x-data="{
+            linkEvent: 'form:input:link',
+            showElementEditor: false,
             showEditor: true,
             rawValue: '',
             processedValue: '',
             timer: null,
             init() {
-                this.rawValue = field.value || '';
-                this.processedValue = _mxForm_ProcessHtml(this.rawValue);
-                this.showEditor = true;
+                //this.rawValue = field.value || '';
+                //this.processedValue = _mxForm_ProcessHtml(this.rawValue);
+                //this.showEditor = true;
             },
         }">
             <span x-text="field.label"></span>
@@ -30,27 +34,34 @@ export default function (data) {
                 ></input>
             <div
                 x-show="showEditor"
-                @click.outside="() => {
-                    _mxForm_OnFieldChange(field, processedValue);
-                }"
-                @keydown.tab="() => {
-                    _mxForm_OnFieldChange(field, processedValue);
-                }"
-                @input.debounce.1000ms="() => {
-                    _mxForm_OnFieldChange(field, processedValue);
+                @keyup.@="() => {
+                    this.showElementEditor = true;
                 }"
                 @keyup="($event) => {
-                    //if (!parsed) return;
-                    const parsed = _mxForm_ProcessHtml($event.target.innerText);
-                    processedValue = parsed;
+                    const value = $event.target.innerText;
+                    field.value = value;
+                }"
+                @keyup.debounce="() => {
+                    const hasUrl = _mxForm_ValueHasUrl($event.target.innerText)
+                    if (hasUrl) {
+                        const value = _mxForm_ValueGetUrl($event.target.innerText);
+                        _mxEvents_Emit(linkEvent, value)
+                    }
                 }"
                 contenteditable
                 class="wysiwyg"
                 x-html="rawValue">
             </div>
 
+            <!--Mentions, etc-->
             <div
-                @click="showEditor = !showEditor"
+                x-show="showElementEditor"
+                style="z-index: 11111;">
+                <input name="elementEditor" />
+            </div>
+
+            <div
+                style="z-index: 1111;"
                 x-show="!showEditor"
                 class="wysiwyg"
                 x-html="processedValue"></div>
