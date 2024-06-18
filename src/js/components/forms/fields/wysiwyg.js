@@ -2,17 +2,33 @@
  
 export default function (data) {
     return ` 
-        <div x-data="{
+        <div display="position:relative;" x-data="{
             linkEvent: 'form:input:link',
-            showElementEditor: false,
-            showEditor: true,
-            rawValue: '',
-            processedValue: '',
-            timer: null,
+            showRender: false,
+            value: '',
+            wysiwyg: null,
             init() {
-                //this.rawValue = field.value || '';
-                //this.processedValue = _mxForm_ProcessHtml(this.rawValue);
-                //this.showEditor = true;
+                //On aclDropDown user selecting an option
+                this.$events.on('editor-wisyiwyg-plaintext', (val) => {
+                    field.value = val;
+                })
+                this.$events.on(mxCardPost.formatsEvent, (val) => {
+                    field.items = val;
+                })
+                this.$watch('field.value', (newVal) => {
+                    if(!newVal) {
+                        this.$events.emit('wysiwyg:clear')
+                    }
+                })
+            },  
+            addLinkCard(text) {
+                this.showRender = true;
+                const hasUrl = _mxForm_ValueHasUrl(text)
+                if (hasUrl) {
+                    const value = _mxForm_ValueGetUrl(text);
+                    _mxEvents_Emit(this.linkEvent, value)
+                } 
+               this.showRender = true; 
             },
         }">
             <span x-text="field.label"></span>
@@ -31,45 +47,14 @@ export default function (data) {
                 :autocomplete="field.autocomplete"
                 :aria-invalid="field.ariaInvalid == true"
                 :aria-describedby="field.id || field.name+i"
-                ></input>
-            <div
-                x-show="showEditor"
-                @keyup.@="() => {
-                    this.showElementEditor = true;
-                }"
-                @keyup="($event) => {
-                    const value = $event.target.innerText;
-                    field.value = value;
-                }"
-                @keyup.debounce="() => {
-                    const hasUrl = _mxForm_ValueHasUrl($event.target.innerText)
-                    if (hasUrl) {
-                        const value = _mxForm_ValueGetUrl($event.target.innerText);
-                        _mxEvents_Emit(linkEvent, value)
-                    }
-                }"
-                contenteditable
-                class="wysiwyg"
-                x-html="rawValue">
-            </div>
-
-            <!--Mentions, etc-->
-            <div
-                x-show="showElementEditor"
-                style="z-index: 11111;">
-                <input name="elementEditor" />
-            </div>
-
-            <div
-                style="z-index: 1111;"
-                x-show="!showEditor"
-                class="wysiwyg"
-                x-html="processedValue"></div>
-
-            <small
-                x-show="field.helper != null && field.helper.length > 0"
-                :id="field.id || field.name+i"  x-text="field.helper"></small>
+                ></textarea>
+          
+            <div x-data="aclContentEditorWysiwyg({
+                searchEvent: field.event,
+                showRichText: true,
+                value: value,
+                elementsEvent: mxCardPost_formatsEvent
+            })"></div>
         </div>
-      
     `
 }
