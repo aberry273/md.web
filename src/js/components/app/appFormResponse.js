@@ -3,6 +3,7 @@ import { mxForm, mxEvents, mxFetch, mxModal, mxResponsive, mxCardPost } from '/s
  
 const linkEvent = 'form:input:link';
 const wysiwygUserSearchEvent = 'form:input:user';
+const encoder = new TextEncoder();
 export default function (data) {
     return {
         ...mxFetch(data),
@@ -15,15 +16,22 @@ export default function (data) {
         // PROPERTIES
         loading: false,
         fields: [],
+        taxonomyFields: [],
+        settingsFields: [],
         item: null,
         label: 'Submit', 
         tagStr: null,
         userId: null,
         tags: [],
+        quoteFieldName: 'QuotedItems',
+        statusFieldName: 'Status',
+        categoryFieldName: 'Category',
+        charLimitFieldName: 'CharLimit',
         tagFieldName: 'Tags',
         imageFieldName: 'Images',
         videoFieldName: 'Videos',
         textFieldName: 'Content',
+        validationMessage: '',
         originalYPosition: 0,
         showTags: false,
         showText: false,
@@ -54,13 +62,15 @@ export default function (data) {
             this.actionEvent = data.actionEvent;
             this.fixTop = data.fixTop || false;
 
+            this.taxonomyFields = this.getTaxonomyFields();
+            this.settingsFields = this.getSettingsFields();
+
             var tagField = this._mxForm_GetField(this.fields, this.tagFieldName);
             this.showTags = tagField = null ? !tagField.hidden : true
             var imageField = this._mxForm_GetField(this.fields, this.imageFieldName);
             this.showImage = imageField != null ? !imageField.hidden : null
             var videoField = this._mxForm_GetField(this.fields, this.videoFieldName);
             this.showVideo = videoField != null ? !videoField.hidden : null
-
 
             const contentField = this._mxForm_GetField(this.fields, 'Content');
             this.charLimit = contentField.max || 256;
@@ -95,6 +105,18 @@ export default function (data) {
         //https://stackoverflow.com/questions/46000233/how-is-formatting-in-textarea-being-done
 
         // GETTERS
+        get taxonomyFieldNames() {
+            return [
+                this.tagFieldName,
+                this.categoryFieldName,
+            ]
+        },
+        get settingsFieldNames() {
+            return [
+                this.statusFieldName,
+                this.charLimitFieldName,
+            ]
+        },
         get tagField() {
             return this._mxForm_GetField(this.fields, this.tagFieldName);
         },
@@ -107,22 +129,49 @@ export default function (data) {
         get textField() {
             return this._mxForm_GetField(this.fields, this.textFieldName);
         },
+        get quoteField() {
+            return this._mxForm_GetField(this.fields, this.quoteFieldName);
+        },
         get typeSelected() {
             return this.showImage || this.showVideo || this.showText
         },
         get inputAmount() {
             return this.textField != null && this.textField.value != null
-                ? this.textField.value.length
+                ? encoder.encode(this.textField.value).byteLength
                 : 0;
         },
         get characterCount() {
             return `${this.inputAmount} / ${this.charLimit}`;
         },
-        get underLimit() {
+        get underTextLimit() {
             return this.inputAmount < this.charLimit;
         },
+        underMediaLimit() {
+            const images = this.imageField.value != null ? this.imageField.value.length : 0;
+            const videos = this.videoField.value != null ? this.videoField.value.length : 0;
+            const total = images + videos
+            if (total > 4) {
+                this.validationMessage = "You can't add more than 4 images and videos";
+            }
+            else {
+                this.validationMessage = ""
+            }
+            return total <= 4;
+        },
+        underQuoteLimit() {
+            const total = this.quoteField.value != null ? this.quoteField.value.length : 0;
+            if (total > 4) { 
+                this.validationMessage = "You can't quote more than 4 posts"; 
+            }
+            else {
+                this.validationMessage = ""
+            }
+            return total <= 4;
+        },
         get isValid() {
-            return this.underLimit
+            return this.underTextLimit
+                && this.underMediaLimit()
+                && this.underQuoteLimit()
                 && ((this.textField.value != null && this.textField.value.length > 0)
                 || (this.videoField.value != null && this.videoField.value.length > 0)
                 || (this.imageField.value != null && this.imageField.value.length > 0))
@@ -136,9 +185,31 @@ export default function (data) {
             style += "bottom: 0; top: initial;";
             return style;
         },
+        getTaxonomyFields() {
+            const fields = this.fields
+                .filter(x => this.taxonomyFieldNames.indexOf(x.name) > -1)
+                .map(x => { return { ...x } });
+
+            const updatedFields = fields.map(x => {
+                x.hidden = false;
+                return x;
+            })
+            return updatedFields;
+        },
+        getSettingsFields() {
+            const fields = this.fields
+                .filter(x => this.settingsFieldNames.indexOf(x.name) > -1)
+                .map(x => { return { ...x } });
+
+            const updatedFields = fields.map(x => {
+                x.hidden = false;
+                return x;
+            })
+            return updatedFields;
+        },
         updateQuoteField(item) {
             const field = this._mxForm_GetField(this.fields, 'QuotedItems');
-            if (!field) return;
+            if (!field) return; 
 
             let threadIds = field.value || []
 
@@ -292,6 +363,9 @@ export default function (data) {
         hideFloatingPanel(val) {
             this.showFloatingPanel = val;
         },
+        setFieldVisibility(fieldName, val) {
+            this._mxForm_SetFieldVisibility(this.fields, fieldName, val)
+        },
         hideTagField(val) {
             this.showTags = val;
             this._mxForm_SetFieldVisibility(this.fields, this.tagFieldName, val)
@@ -308,13 +382,57 @@ export default function (data) {
             this.showVideo = !val;
             this._mxForm_SetFieldVisibility(this.fields, this.videoFieldName, val)
         },
+        // modal
+        toggle() {
+            this._mxModal_Toggle('formSettings');
+        },
+        applyAdditionalFieldUpdates() {
+            //taxonomy
+            for (var i = 0; i < this.fields.length; i++)
+            {
+                let field = this.taxonomyFields.filter(y => y.name == this.fields[i].name)[0];
+                if (field == null) continue;
+                this.fields[i].value = field.value;
+            }
+            //settings
+            for (var i = 0; i < this.fields.length; i++) {
+                let field = this.settingsFields.filter(y => y.name == this.fields[i].name)[0];
+                if (field == null) continue;
+                this.fields[i].value = field.value;
+            }
+            this.toggle();
+        },
         setHtml(data) {
             // make ajax request
             //@scroll.window="fixed = isInPosition ? true : false"
             const label = data.label || 'Submit'
             const html = `
+            <!--Additional settings-->
+            <dialog id="formSettings">
+                <article>
+                  <header>
+                    <button
+                      aria-label="Close"
+                      rel="prev"
+                      data-target="formSettings"
+                      @click="toggle"
+                    ></button>
+                    <h3 x-text="'Settings'"></h3>
+                  </header>
+
+                  <h4>Taxonomy</h4>
+                  <div x-data="formFields({ fields: taxonomyFields })"></div>
+
+                  <h4>Settings</h4>
+                  <div x-data="formFields({ fields: settingsFields })"></div>
+
+                  <footer>
+                    <button @click="applyAdditionalFieldUpdates()">Apply changes</button>
+                  </footer>
+                </article>
+            </dialog>
+
             <span id="fixedPosition"><span>
-            <!--Floating--> 
              
             <!--Floating button-->
             <button
@@ -341,7 +459,12 @@ export default function (data) {
                     <!--Quotes-->
                     <fieldset class="padded" x-data="formFields({fields})"></fieldset>
 
-                    <fieldset class="padded" role="group">
+
+                    <div style="text-align:center" x-show="validationMessage">
+                        <em x-text="validationMessage"></em>
+                    </div>
+
+                    <fieldset class="padded py-0" role="group">
                         <button x-show="fixed" class="small secondary material-icons flat" @click="fixed = false">vertical_align_center</button>
                         <button x-show="!fixed" class="small secondary material-icons flat" @click="fixed = true">swap_vert</button>
                         <!--
@@ -361,10 +484,8 @@ export default function (data) {
                         <button class="small secondary material-icons flat" x-show="!showImage" @click="hideImageField(false)" :disabled="loading">image</button>
                         <button class="small secondary material-icons flat" x-show="showImage" @click="hideImageField(true)" :disabled="loading">cancel</button>
 
-                        <!--Tags-->
-                        <button x-show="showTags == true" class="small secondary material-icons flat" @click="hideTagField(false)" :disabled="loading">sell</button>
-                        <button x-show="showTags == false" class="small secondary material-icons flat" @click="hideTagField(true)" :disabled="loading">cancel</button>
-
+                        <button class="small secondary material-icons flat" @click="toggle" :disabled="loading">settings</button>
+                      
                         <button class="small flat" disabled><sub x-text="characterCount"></sub></button>
                         <button class="flat primary" @click="await submit(fields)"  :disabled="loading || !isValid">${label}</button>
 
