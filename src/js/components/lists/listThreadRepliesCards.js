@@ -23,6 +23,7 @@ export default function (data) {
         parentId: '',
         itemEvent: '',
         quoteEvent: '',
+        loading: false,
 
         async init() {
             const self = this;
@@ -34,13 +35,15 @@ export default function (data) {
             this.searchUrl = data.searchUrl;
             this.userId = data.userId;
             this.parentId = data.parentId;
-            this.targetChannel = data.targetChannel;
+            this.channelId = data.channelId;
             this.quoteEvent = data.quoteEvent;
             this.filters = data.filters;
 
             component = data.component || component
-             
+
+            this.loading = true;
             await this.initSearch();
+            this.loading = false;
 
             this.setHtml(data);
         },
@@ -56,7 +59,7 @@ export default function (data) {
         setHtml(data) {
             // make ajax request 
             const html = `
-            <div x-transition class="list">
+            <div x-transition class="list" :class="loading ? 'loading-padding' : ''">
               <template x-for="(item, i) in threadItems" :key="item.id || i" >
               <div>
               <div class="line-in"></div>
