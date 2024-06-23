@@ -1,7 +1,8 @@
 @use "sass:color";
 @use "sass:map";
 @use "../../../node_modules/@picocss/pico/scss/settings" as *;
-@use "../../../node_modules/@picocss/pico/scss/colors" as *;
+//@use "../../../node_modules/@picocss/pico/scss/colors" as *;
+@use "../colors" as *;
 @use "../../../node_modules/@picocss/pico/scss/helpers/functions";
 
 //$primary-color: #8800ff;
@@ -12,7 +13,7 @@ $contrast-color: #CDE6F5;
 
 // Default: Light theme
 @mixin theme {
-  #{$css-var-prefix}background-color: #{$white};
+  #{$css-var-prefix}background-color: #{$offwhite};
 
   // Text color
   #{$css-var-prefix}color: #{$zinc-750};
@@ -103,7 +104,7 @@ $contrast-color: #CDE6F5;
 
   // Form elements
   @if map.get($modules, "forms/basics") {
-    #{$css-var-prefix}form-element-background-color: #{mix($slate-50, $white, 25%)};
+    #{$css-var-prefix}form-element-background-color: #{mix($slate-50, $offwhite, 75%)};
     #{$css-var-prefix}form-element-selected-background-color: #{$slate-100};
     #{$css-var-prefix}form-element-border-color: #{$slate-150};
     #{$css-var-prefix}form-element-color: #{$zinc-850};

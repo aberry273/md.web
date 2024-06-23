@@ -1,4 +1,4 @@
-import { mxFetch } from '/src/js/mixins/index.js';
+import { mxFetch } from './src/js/mixins/index.js';
 
 export default () => {
     return {
