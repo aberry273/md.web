@@ -4,7 +4,7 @@ let component = `
       item: item,
     })"></div>
 `
-import { mxList, mxSearch, mxWebsockets, mxAlert } from '/src/js/mixins/index.js';
+import { mxList, mxSearch, mxWebsockets, mxCardPost, mxAlert } from '/src/js/mixins/index.js';
 export default function (data) {
     return {
         // mixins
@@ -13,6 +13,7 @@ export default function (data) {
         //...mxAction(data),
         ...mxWebsockets(data),
         ...mxAlert(data),
+        ...mxCardPost(data),
 
         // PROPERTIES
         items: [],
@@ -53,6 +54,7 @@ export default function (data) {
                 }
                 
             })
+
             await this.initSearch();
 
             this.setHtml(data);
@@ -69,6 +71,10 @@ export default function (data) {
         async initSearch() {
             let queryData = this.filters || {} 
             await this.$store.wssContentPosts.SearchByUrl(this.searchUrl, queryData);
+        },
+
+        replies(post) {
+            return this._mxCardPost_getActionSummary(post.id).replies
         },
 
         get threadItems() {
@@ -115,11 +121,11 @@ export default function (data) {
                             
                         })"></div>
 
-                        <div x-show="item.replies > 0 && !showReplies(item)">
+                        <div x-show="replies(item) > 0 && !showReplies(item)">
                             <a class="line child click" @click="toggleReplies(item)">
                                 <small class="pl">
                                     <small>
-                                        <span>Show <span x-text="item.replies"></span> replies</span>
+                                        <span>Show replies</span>
                                     </small>
                                 </small>
                             </a>
