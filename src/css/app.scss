@@ -50,17 +50,17 @@
     // Theme   
     "colors/utilities": true,
   )
-); 
+);  
   
 // Custom theme  
 @use "theme/styles";
 @use "theme/schemes";
-
-// Layout
+ 
+// Layout 
 @use "layout/body"; 
 
-// Custom components
-@use "components/input-amount";
+// Custom components 
+@use "components/input-amount"; 
 @use "components/priority-range";
 @use "components/invoice-table";
 @use "components/amount";
