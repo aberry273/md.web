@@ -4,12 +4,12 @@ export default function (data) {
 	return {
     // PROPERTIES
     loading: false,
+    disabled: null,
     fields: [],
-    loading: false,
     method: data.method || 'POST',
     // INIT
     init() {
-      this.loading = false;
+    this.disabled = data.disabled;
       this.setHtml(data)
     },
     // METHODS
@@ -23,10 +23,9 @@ export default function (data) {
       this.fields = data.fields || []
       this.$root.innerHTML = `
       <form method="${this.method}">
-        <progress x-show="loading"></progress>
         <fieldset x-data="formFields({fields})"></fieldset>
         <footer align="center">
-          <input type="submit" value="Submit"/>
+          <input type="submit" :disabled="disabled" value="Submit"/>
         </footer>
       </form>
       `
