@@ -1,5 +1,5 @@
 @use "sass:map";
-@use "../../../node_modules/@picocss/pico/scss/settings" as *;
+@use "../settings" as *;
 
 /*
 label[for="amount"] {

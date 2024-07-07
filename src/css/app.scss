@@ -30,7 +30,7 @@
     "forms/input-date": false,
     "forms/input-file": false,
     "forms/input-range": true, 
-    "forms/input-search": false,
+    "forms/input-search": false, 
    
     // Components
     "components/accordion": false,
@@ -38,20 +38,22 @@
     "components/dropdown": false,
     "components/group": false, 
     "components/loading": false,
-    "components/modal": false,
+    "components/modal": false, 
     "components/nav": false,
     "components/progress": false,
     "components/tooltip": false,
-
-    // Utilities
+ 
+    // Utilities 
     "utilities/accessibility": false,
     "utilities/reduce-motion": false,
     
-    // Theme   
-    "colors/utilities": true,
+    // Theme    
+    "colors/utilities": true, 
   )
 );  
-  
+
+@forward "settings"; 
+
 // Custom theme  
 @use "theme/styles";
 @use "theme/schemes";
@@ -60,7 +62,9 @@
 @use "layout/body"; 
 
 // Custom components 
+/*
 @use "components/input-amount"; 
 @use "components/priority-range";
 @use "components/invoice-table";
 @use "components/amount";
+*/

@@ -1,0 +1,1 @@
+body>main,body>footer{max-width:700px;margin-inline:auto}body>main svg{display:block;width:4rem;height:4rem;margin-bottom:var(--pico-block-spacing-vertical);margin-inline:auto}body>main form label{color:var(--pico-muted-color)}body>main form :last-child{margin-bottom:0}
