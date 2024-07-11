@@ -52,7 +52,7 @@ nav.floating.bottom {
     scroll-behavior: revert;
 }
 .reply-padding {
-    min-height: 500px;
+    min-height: 200px;
 }
 
 .show {
@@ -248,6 +248,12 @@ details.dropdown.secondary summary:not([role]) {
 .muted {
     color: var(--pico-contrast-focus);
 }
+.highlight {
+    font-weight:600;
+    --pico-font-size: 1rem;
+    --pico-line-height: 1.25;
+    --pico-typography-spacing-top: 1.5rem;
+}
 
 .wysiwyg {
     text-align: left;
@@ -311,7 +317,7 @@ details.dropdown.secondary summary:not([role]) {
 }
 
 .line.child {
-    margin-left: 24px;
+    margin-left: 0.75em;
 }
 .line.primary {
     border-color: var(--pico-primary);
@@ -567,6 +573,9 @@ button.flat {
     color: var(--pico-secondary);
 }
 
+.contrast {
+    color: var(--pico-contrast);
+}
 .flat.contrast {
     color: var(--pico-contrast);
 }
@@ -638,7 +647,8 @@ article.floating {
     z-index: 11;
 }
 article a {
-    text-decoration:none;
+    text-decoration: none;
+    color: var(--pico-secondary);
 }
 article .wysiwyg span {
     cursor: pointer;
@@ -695,7 +705,8 @@ article.quote {
     margin: 0px;
     padding: 0 calc(var(--pico-block-spacing-vertical)*0.25);
     box-shadow: none;
-    border: solid 1px #dedede;
+    border: solid 1px var(--pico-blockquote-border-color);
+    background-color: var(--pico-blockquote-border-color);
     border-radius: 8px;
 }
 

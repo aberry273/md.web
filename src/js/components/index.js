@@ -9,12 +9,15 @@ import card from './cards/card.js'
 import cardPost from './cards/cardPost.js'
 import cardPostActionless from './cards/cardPostActionless.js'
 import cardPostReply from './cards/cardPostReply.js'
+import cardPostEditable from './cards/cardPostEditable.js'
 import cardPostQuote from './cards/cardPostQuote.js'
 import cardMedia from './cards/cardMedia.js'
 import cardImage from './cards/cardImage.js'
 import cardVideo from './cards/cardVideo.js'
 // CONTENT
 import { header, aclContentEditorWysiwyg, aclContentEmoji } from './content/index.js'
+// TABLES
+import { aclTable } from './tables/index.js'
 // NAVIGATION
 import navbar from './navigation/navbar.js'
 import usernavbar from './navigation/usernavbar.js'
@@ -52,6 +55,7 @@ export {
     // CARDS
     card,
     cardPost,
+    cardPostEditable,
     cardPostReply,
     cardPostQuote,
     cardPostActionless,
@@ -67,6 +71,9 @@ export {
 
     aclContentEditorWysiwyg,
     aclContentEmoji,
+
+    // TABLES
+    aclTable,
 
     // NAVIGATION
     navbar,

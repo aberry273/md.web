@@ -61,32 +61,33 @@ export function pagination(data) {
 export function link(data) {
     return `
     <template x-if="selectedPost.link">
-        <article @click="" class="link" style="padding: 0px;" >
-            <header class="padless">
-                <button x-show="selectedPost.link.hide" class="small secondary material-icons flat" @click="selectedPost.link.hide = false">open_in_full</button>
-                 <a x-show="selectedPost.link.hide" style="text-decoration:none" :href="selectedPost.link.url" target="_blank">
-                        <sup x-text="selectedPost.link.url"></sup>
-                    </a>
-                <button x-show="!selectedPost.link.hide" style="position:absolute" class="small secondary material-icons flat" @click="selectedPost.link.hide = true">close</button>
-            </header>
-            <div x-show="!selectedPost.link.hide">
-                <hr />
-                <figure style="text-align:center;" x-show="selectedPost.link.image">
-                    <a style="text-decoration:none" :href="selectedPost.link.url" target="_blank">
-                        <img
-                            style="max-height: 200px; border-radius: 8px"
-                            :src="selectedPost.link.image"
-                            :alt="selectedPost.link.title"
-                        />
-                    </a>
-                </figure>
-                <div class="padless" style="padding: 0px 8px;">
-                    <a style="text-decoration:none" :href="selectedPost.link.url" target="_blank">
-                        <sup x-text="selectedPost.link.url"></sup>
-                    </a>
-                    <div>
-                        <b x-text="selectedPost.link.title"></b>
-                        <p x-text="selectedPost.link.description"></p>
+        <article @click="" class="quote" style="padding: 0px;">
+
+            <button x-show="selectedPost.link.hide" class="small  material-icons flat" @click="selectedPost.link.hide = false">open_in_full</button>
+            <button x-show="!selectedPost.link.hide"  class="small  material-icons flat" @click="selectedPost.link.hide = true">close_fullscreen</button>
+
+            <a style="text-decoration:none" :href="selectedPost.link.url" target="_blank">
+                <sup x-text="selectedPost.link.url"></sup>
+            </a>
+            
+            <div x-show="!selectedPost.link.hide" class="grid">
+                <div x-show="selectedPost.link.image">
+                    <figure style="text-align:center;" >
+                        <a style="text-decoration:none" :href="selectedPost.link.url" target="_blank">
+                            <img
+                                style="max-height: 200px; border-radius: 8px"
+                                :src="selectedPost.link.image"
+                                :alt="selectedPost.link.title"
+                            />
+                        </a>
+                    </figure>
+                </div>
+                <div>
+                    <div class="padless" style="padding: 0px 8px;">
+                        <div x-show="selectedPost.link.title || selectedPost.link.description">
+                            <b x-text="selectedPost.link.title"></b>
+                            <p x-text="selectedPost.link.description"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,7 +95,6 @@ export function link(data) {
     </template>
     `
 }
-
 export function header(data) {
     return `
     <header class="padded pb-0">
@@ -112,9 +112,64 @@ export function header(data) {
                     </template>
                     <aside>
                         <li class="secondary pa-0" style="padding-top:0px;">
-                            <strong class="pb-0">
-                                <span x-text="selectedPost.profile.username"></span>
-                            </strong>
+                            <span class="pb-0 highlight" x-text="selectedPost.profile.username"></span>
+                            <small class="pl muted noselect" x-show="selectedPost.date"><em><small x-text="selectedPost.date"></small></em></small>
+                        </li>
+                    </aside>
+                </ul>
+            </template>
+            <ul>
+                <li>
+                    <i class="material-icons muted noselect" x-show="selectedPost.status == 0">visibility_off</i>
+                    <strong x-show="selectedPost.channelName">
+                        <a class="py-0 primary my-0" style='text-decoration:none' :href="'/channels/'+selectedPost.channelId">
+                            <sup x-text="selectedPost.channelName"></sup>
+                        </a>
+                    </strong>
+                    <i x-show="selectedPost.parentVote == 'Agree'" aria-label="Agreed" class="icon noselect muted material-icons">expand_less</i>
+                    <i x-show="selectedPost.parentVote == 'Disagree'" aria-label="Disagreed" class="icon noselect muted material-icons">expand_more</i>
+
+                     <!--Show more--> 
+                    <details class="dropdown flat no-chevron">
+                        <summary role="outline">
+                            <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
+                        </summary>
+                        <ul dir="rtl">
+                            <li x-show="!showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = true">Show tags</a></li>
+                            <li x-show="showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = false">Hide tags</a></li>
+
+                            <li><a class="click" @click="_mxCardPost_modalAction('share', selectedPost)">Share</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalAction('copy', selectedPost)">Copy Link</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalAction('label', selectedPost)">Label Post</a></li>
+
+                        </ul>
+                    </details> 
+                </li>
+            </ul>
+        </nav>
+    </header>
+    `
+}
+
+export function headerEditable(data) {
+    return `
+    <header class="padded pb-0">
+        <nav>
+            <template x-if="selectedPost.profile != null">
+                <ul class="profile">
+                    <template x-if="selectedPost.profile.image != null && selectedPost.profile.image.length>0">
+                        <li>
+                            <button class="avatar small">
+                                <img
+                                    :src="selectedPost.profile.image+'?w=40'"
+                                />
+                            </button>
+                        </li>
+                    </template>
+                    <aside>
+                        <li class="secondary pa-0" style="padding-top:0px;">
+                            <span class="pb-0 highlight" x-text="selectedPost.profile.username"></span>
+
                             <small class="pl muted noselect" x-show="selectedPost.date"><em><small x-text="selectedPost.date"></small></em></small>
                             
                         </li>
@@ -133,28 +188,29 @@ export function header(data) {
                     <i x-show="selectedPost.parentVote == 'Disagree'" aria-label="Disagreed" class="icon noselect muted material-icons">expand_more</i>
 
                      <!--Show more-->
-                    <template x-if="selectedPost.userId == userId">
-                        <details class="dropdown flat no-chevron">
-                            <summary role="outline">
-                                <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
-                            </summary>
-                            <ul dir="rtl">
-                                <li x-show="!showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = true">Show tags</a></li>
-                                <li x-show="showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = false">Hide tags</a></li>
+                    <details class="dropdown flat no-chevron">
+                        <summary role="outline">
+                            <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
+                        </summary>
+                        <ul dir="rtl">
+                            <li x-show="!showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = true">Show tags</a></li>
+                            <li x-show="showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = false">Hide tags</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalAction('copy', selectedPost)">Copy Link</a></li>
 
-                                <li><a class="click" @click="_mxCardPost_modalAction('share', selectedPost)">Share</a></li>
-                                <li><a class="click" @click="_mxCardPost_modalAction('copy', selectedPost)">Copy Link</a></li>
-                                <li><a class="click" @click="_mxCardPost_modalAction('edit', selectedPost)">Edit</a></li>
-                                <li><a class="click" @click="_mxCardPost_modalAction('delete', selectedPost)">Delete</a></li>
-                            </ul>
-                        </details>
-                    </template>
+                            <li><a class="click" @click="_mxCardPost_modalAction('share', selectedPost)">Share Post</a></li>
+                            
+                            <li x-show="selectedPost.userId == userId" ><a class="click" @click="_mxCardPost_modalAction('edit', selectedPost)">Edit</a></li>
+                            <li x-show="selectedPost.userId == userId" ><a class="click" @click="_mxCardPost_modalAction('delete', selectedPost)">Delete</a></li>
+
+                        </ul>
+                    </details> 
                 </li>
             </ul>
         </nav>
     </header>
     `
 }
+
 
 export function footer(data) {
     return `
@@ -183,10 +239,13 @@ export function footer(data) {
                 <li>
                     <!--Replies-->
                     <strong class="py-0 my-0">
-                        <a class="py-0 secondary my-0" style='text-decoration:none' :href="selectedPost.href">
+                        <a class="py-0 primary my-0" style='text-decoration:none' :href="selectedPost.href">
                             <small>
                                 <small>
+                                    <!--
                                     <span x-text="selectedPost.shortThreadId"></span>
+                                    -->
+                                    Open
                                 </small>
                             </small>
                         </a>
@@ -218,7 +277,9 @@ export function footer(data) {
                     
                     <div role="group" class="small flat pb-0">
                         <!--React-->
+                        <!--
                         <span style="top:-4px" x-data="aclContentEmoji({ selectIcon: true, selectedIcon: selectedIcon, event: onEmojiEvent })"></span>
+                        -->
                         <!--
                         <strong><sup class="noselect" x-text="action.reactions || 0"></sup></strong>
                         -->
@@ -295,9 +356,7 @@ export function headerQuote(data) {
                     </template>
                     <aside>
                         <li class="secondary pa-0" style="padding-top:0px;">
-                            <strong class="pb-0">
-                                <span x-text="selectedPost.profile.username"></span>
-                            </strong>
+                            <span class="pb-0 highlight" x-text="selectedPost.profile.username"></span>
                         </li>
                         </aside>
                 </ul>
@@ -325,10 +384,13 @@ export function footerQuote(data) {
                     <li>
                         <!--Replies-->
                         <strong class="py-0 my-0">
-                            <a class="py-0 secondary my-0" style='text-decoration:none' :href="selectedPost.href">
+                            <a class="py-0 primary my-0" style='text-decoration:none' :href="selectedPost.href">
                                 <small>
                                     <small>
+                                        <!--
                                         <span x-text="item.shortThreadId"></span>
+                                        -->
+                                        open
                                     </small>
                                 </small>
                             </a>
