@@ -62,14 +62,14 @@ export function link(data) {
     return `
     <template x-if="selectedPost.link">
         <article @click="" class="quote" style="padding: 0px;">
+            <div style="display: flex; align-items: center;">
+                <button x-show="selectedPost.link.hide" class="small  material-icons flat" @click="selectedPost.link.hide = false">open_in_full</button>
+                <button x-show="!selectedPost.link.hide"  class="small  material-icons flat" @click="selectedPost.link.hide = true">close_fullscreen</button>
 
-            <button x-show="selectedPost.link.hide" class="small  material-icons flat" @click="selectedPost.link.hide = false">open_in_full</button>
-            <button x-show="!selectedPost.link.hide"  class="small  material-icons flat" @click="selectedPost.link.hide = true">close_fullscreen</button>
-
-            <a style="text-decoration:none" :href="selectedPost.link.url" target="_blank">
-                <sup x-text="selectedPost.link.url"></sup>
-            </a>
-            
+                <a style="text-decoration:none; font-size: 0.8em; white-space:nowrap; overflow: hidden; text-overflow:ellipsis; " :href="selectedPost.link.url" target="_blank">
+                    <span x-text="selectedPost.link.url"></span>
+                </a>
+            </div>
             <div x-show="!selectedPost.link.hide" class="grid">
                 <div x-show="selectedPost.link.image">
                     <figure style="text-align:center;" >
@@ -134,14 +134,12 @@ export function header(data) {
                         <summary role="outline">
                             <i aria-label="Close" class="icon material-icons icon-click" rel="prev">more_vert</i>
                         </summary>
-                        <ul dir="rtl">
-                            <li x-show="!showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = true">Show tags</a></li>
-                            <li x-show="showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = false">Hide tags</a></li>
-
-                            <li><a class="click" @click="_mxCardPost_modalAction('share', selectedPost)">Share</a></li>
-                            <li><a class="click" @click="_mxCardPost_modalAction('copy', selectedPost)">Copy Link</a></li>
-                            <li><a class="click" @click="_mxCardPost_modalAction('label', selectedPost)">Label Post</a></li>
-
+                        <ul dir="rtl"> 
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('copy', selectedPost)">Copy Url</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('edit', selectedPost)">Edit Post</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('delete', selectedPost)">Delete Post</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('label', selectedPost)">Label Post</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('pin', selectedPost)">Pin Post</a></li> 
                         </ul>
                     </details> 
                 </li>
@@ -195,12 +193,12 @@ export function headerEditable(data) {
                         <ul dir="rtl">
                             <li x-show="!showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = true">Show tags</a></li>
                             <li x-show="showMetadata && selectedPost.tags"><a class="click" @click="showMetadata = false">Hide tags</a></li>
-                            <li><a class="click" @click="_mxCardPost_modalAction('copy', selectedPost)">Copy Link</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('copy', selectedPost)">Copy Link</a></li>
 
-                            <li><a class="click" @click="_mxCardPost_modalAction('share', selectedPost)">Share Post</a></li>
+                            <li><a class="click" @click="_mxCardPost_modalActionEditRoute('share', selectedPost)">Share Post</a></li>
                             
-                            <li x-show="selectedPost.userId == userId" ><a class="click" @click="_mxCardPost_modalAction('edit', selectedPost)">Edit</a></li>
-                            <li x-show="selectedPost.userId == userId" ><a class="click" @click="_mxCardPost_modalAction('delete', selectedPost)">Delete</a></li>
+                            <li x-show="selectedPost.userId == userId" ><a class="click" @click="_mxCardPost_modalActionEditRoute('edit', selectedPost)">Edit</a></li>
+                            <li x-show="selectedPost.userId == userId" ><a class="click" @click="_mxCardPost_modalActionEditRoute('delete', selectedPost)">Delete</a></li>
 
                         </ul>
                     </details> 
@@ -251,17 +249,16 @@ export function footer(data) {
             </ul>
             <ul>
                 <li>
+                    <i x-show="!showMetadata && selectedPost.tags.length > 0" aria-label="Show more" @click="showMetadata = true" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">label_outline</i>
+                    <i x-show="showMetadata && selectedPost.tags.length > 0" aria-label="Show more" @click="showMetadata = false" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">label_off</i>
+                   
                     <!--
-                    <i x-show="!showMetadata && selectedPost.tags" aria-label="Show more" @click="showMetadata = true" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_more</i>
-                    <i x-show="showMetadata && selectedPost.tags" aria-label="Show more" @click="showMetadata = false" :class="false ? 'primary': ''" class="icon material-icons icon-click" rel="prev">unfold_less</i>
-                    -->
-                    <!--
-                    <button :disabled="!userId" @click="_mxCardPost_action('agree', selectedPost)" class="chip small " style="" :class="agreed ? 'flat primary': 'flat'" >
+                    <button :disabled="userId == null" @click="_mxCardPost_action('agree', selectedPost)" class="chip small " style="" :class="agreed ? 'flat primary': 'flat'" >
                         <i aria-label="Agree" class="icon material-icons">expand_less</i>
                         <sup class="noselect" x-text="action.agrees || 0"></sup>
                     </button>
 
-                    <button :disabled="!userId" @click="_mxCardPost_action('disagree', selectedPost)" class="chip small " style="" :class="disagreed ? 'flat primary': 'flat'" >
+                    <button :disabled="userId == null" @click="_mxCardPost_action('disagree', selectedPost)" class="chip small " style="" :class="disagreed ? 'flat primary': 'flat'" >
                         <i aria-label="Disagree" class="icon material-icons">expand_more</i>
                         <sup class="noselect" x-text="action.disagrees || 0"></sup>
                     </button>
@@ -282,18 +279,18 @@ export function footer(data) {
                         -->
                         <!--Vote-->
                         <!-- || userId == selectedPost.userId-->
-                        <button :disabled="!userId" class="flat chip material-icons-round xsmall" @click="_mxCardPost_action('agree', selectedPost)" :class="agreed ? 'flat primary': 'flat'">expand_less</button>
+                        <button :disabled="userId == null" class="flat chip material-icons-round xsmall" @click="_mxCardPost_action('agree', selectedPost)" :class="agreed ? 'flat primary': 'flat'">expand_less</button>
                           <strong><sup class="noselect" :class="(!userId) ? 'muted' : ''" x-text="action.votes || 0"></sup></strong>
-                        <button :disabled="!userId" class="flat chip material-icons-round xsmall" @click="_mxCardPost_action('disagree', selectedPost)" :class="disagreed ? 'flat primary': 'flat'">expand_more</button>
+                        <button :disabled="userId == null" class="flat chip material-icons-round xsmall" @click="_mxCardPost_action('disagree', selectedPost)" :class="disagreed ? 'flat primary': 'flat'">expand_more</button>
                    
                         <!--Quotes-->
-                        <button :disabled="!userId" @click="_mxCardPost_quote(selectedPost)" class="chip small flat" style="" >
+                        <button :disabled="userId == null" @click="_mxCardPost_quote(selectedPost)" class="chip small flat" style="" >
                             <i aria-label="Quote" class="icon material-icons-round">format_quote</i>
                             <sup class="noselect" x-text="action.quotes || 0"></sup>
                         </button>
 
                         <!--Reply-->
-                        <button :disabled="!userId'" @click="_mxCardPost_reply(selectedPost)" class="chip small flat" style="" >
+                        <button :disabled="userId == null" @click="_mxCardPost_reply(selectedPost)" class="chip small flat" style="" >
                             <i aria-label="Reply" class="icon material-icons-round">chat_bubble_outline</i>
                             <sup class="noselect" x-text="action.replies || 0"></sup>
                         </button>
@@ -302,27 +299,38 @@ export function footer(data) {
             </ul>
         </nav>
         <hr x-show="showMetadata" />
-        <nav x-show="showMetadata">
-                <ul style="width: 100%" >
-                    <li class="pl">
-                        <label><sup>Category</sup></label>
-                        <a href="#" style="text-decoration:none" class="tag flat closable primary small">
-                            <strong><sup x-text="selectedPost.category"</sup></strong>
-                        </a>
-                    </li>
+            <nav x-show="showMetadata" class="px mx">
+                    <ul style="width: 100%;">
+                        <li class="pl px mx" x-show="selectedPost.taxonomy.category">
+                            <label class="muted"><sup>Category</sup></label>
+                            <a href="#" style="text-decoration:none" class="tag flat closable primary small">
+                                <strong><sup x-text="selectedPost.taxonomy.category"</sup></strong>
+                            </a>
+                        </li>
              
-                    <li class="pl">
-                        <div class=" chips">
-                            <label><sup>Tags</sup></label>
-                            <template x-for="(tag, i) in selectedPost.tags">
-                                <a @click="_mxCardPost_filterByTag(tag)" style="text-decoration:none" class="tag closable secondary small">
-                                    <strong><sup x-text="tag"</sup></strong>
-                                </a>
-                            </template>
-                        </div>
-                    </li>
-                </ul>
-        </nav>
+                        <li class="pl px mx"  x-show="selectedPost.taxonomy.tags">
+                            <div class=" chips">
+                                <label class="muted"><sup>Tags</sup></label>
+                                <template x-for="(tag, i) in selectedPost.taxonomy.tags">
+                                    <a @click="_mxCardPost_filterByTag(tag)" style="text-decoration:none" class="tag closable secondary small">
+                                        <strong><sup x-text="tag"</sup></strong>
+                                    </a>
+                                </template>
+                            </div>
+                        </li>
+
+                        <li class="pl px mx" x-show="selectedPost.taxonomy.labels">
+                            <div class=" chips">
+                                <label class="muted"><sup>Labels</sup></label>
+                                <template x-for="(label, i) in selectedPost.taxonomy.labels">
+                                    <a @click="_mxCardPost_filterByTag(label)" style="text-decoration:none" class="tag closable secondary small">
+                                        <strong><sup x-text="label"</sup></strong>
+                                    </a>
+                                </template>
+                            </div>
+                        </li>
+                    </ul>
+            </nav>
     </footer>
     `
 }
@@ -398,13 +406,13 @@ export function footerQuote(data) {
                 <ul>
                     <li>
                         <!--Agree-->
-                        <button :disabled="!userId" @click="_mxCardPost_action('agree', selectedPost)" class="chip small " style="" :class="_mxCardPost_userSelectedAction('agree', selectedPost) ? 'flat primary': 'flat'" >
+                        <button :disabled="userId == null" @click="_mxCardPost_action('agree', selectedPost)" class="chip small " style="" :class="_mxCardPost_userSelectedAction('agree', selectedPost) ? 'flat primary': 'flat'" >
                             <i aria-label="Agree" class="icon material-icons">expand_less</i>
                             <sup class="noselect" x-text="action.agrees || 0"></sup>
                         </button>
 
                         <!--Disagree-->
-                        <button :disabled="!userId" @click="_mxCardPost_action('disagree', selectedPost)" class="chip small " style="" :class="_mxCardPost_userSelectedAction('disagree', selectedPost) ? 'flat primary': 'flat'" >
+                        <button :disabled="userId == null" @click="_mxCardPost_action('disagree', selectedPost)" class="chip small " style="" :class="_mxCardPost_userSelectedAction('disagree', selectedPost) ? 'flat primary': 'flat'" >
                             <i aria-label="Disagree" class="icon material-icons">expand_more</i>
                             <sup class="noselect" x-text="action.disagrees || 0"></sup>
                         </button>

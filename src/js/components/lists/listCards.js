@@ -18,7 +18,6 @@ export default function (data) {
         // PROPERTIES
         items: [],
         forceLoad: true,
-        showPostReplies: [],
         showReplies: false,
         userId: '',
         searchUrl: '',
@@ -27,6 +26,7 @@ export default function (data) {
         itemEvent: '',
         quoteEvent: '',
         filterUpdates: {},
+        mergedFilters: {},
 
         async init() {
             const self = this;
@@ -39,20 +39,20 @@ export default function (data) {
             this.itemEvent = data.itemEvent;
             this.searchUrl = data.searchUrl;
             this.userId = data.userId;
-            this.threadId = data.threadId;
+            this.parentId = data.parentId;
             this.channelId = data.channelId;
             this.quoteEvent = data.quoteEvent;
             this.filters = data.filters;
+            this.mergedFilters = this.mergeFilters();
 
             component = data.component || component
 
             // On update post from the websocket 
-            this._mxEvents_On(this.$store.wssContentPosts.getMessageEvent(), async (e) => {
+            this._mxEvents_On(this.itemEvent, async (e) => {
                 const msgData = e.data;
                 if (!msgData) return;
-                //check if item meeds filter criteria
-                let filters = { ...this.filters, ...this.filterUpdates.filters }
-                var itemMatchesFilters = this.filterItem(msgData.data, filters);
+                //check if item meeds filter criteria 
+                var itemMatchesFilters = this.filterItem(msgData.data, mergedFilters);
                 //Only live update items if the current filters apply
                 if (itemMatchesFilters) {
                     this.items = this.$store.wssContentPosts.updateItems(this.items, msgData);
@@ -61,7 +61,9 @@ export default function (data) {
 
             // On updates from filter
             this.$events.on(this.filterEvent, async (filterUpdates) => {
-                this.filterUpdates = filterUpdates;
+                this.filterUpdates = filterUpdates; 
+                this.mergedFilters = this.mergeFilters();
+                filterUpdates.filters = this.mergedFilters;
                 await this.initSearch(filterUpdates, false);
             })
             const defaultQuery = {
@@ -71,11 +73,11 @@ export default function (data) {
             if (this.forceLoad) await this.initSearch(defaultQuery);
             this.setHtml(data);
         },
-        get combinedFilters() {
+        mergeFilters() {
             return { ...this.filters, ...this.filterUpdates.filters }
         },
-        combineFilters(item) {
-            let parentFilters = {
+        createReplyFilters(item) {
+            const parentFilters = {
                 parentId: item.id
             }
             return { ...parentFilters, ...this.filterUpdates.filters }
@@ -88,6 +90,7 @@ export default function (data) {
             return updates;
         },
         async initSearch(queryData, replaceItems = false) {
+            //console.log(queryData);
             if (this.searchUrl) {
                 const results = await this.$store.wssContentPosts.SearchByUrl(this.searchUrl, queryData, replaceItems);
                 this.items = results.posts;
@@ -123,22 +126,11 @@ export default function (data) {
         toggleReplies(post) {
             if (!post) return;
             post.toggle = !post.toggle;
-            return;
-
-            const index = this.showPostReplies.indexOf(post.id);
-            if (index == -1) {
-                this.showPostReplies.push(post.id)
-            }
-            else {
-                this.showPostReplies.splice(index, 1);
-            }
         },
 
         repliesToggled(post) {
             if (!post) return false;
             return post.toggle;
-            const index = this.showPostReplies.indexOf(post.id);
-            return index > -1;
         },
 
         replies(post) {
@@ -153,7 +145,7 @@ export default function (data) {
             // make ajax request 
             const html = `
             <div class="list">
-                <template x-for="(item, i) in items" :key="item.id">
+                <template x-for="(item, i) in items" :key="item.id+item.threadId">
                     <div>
                         <div x-data="cardPost({
                             item: item,
@@ -161,6 +153,7 @@ export default function (data) {
                             actionEvent: actionEvent,
                             updateEvent: item.id,
                         })"></div>
+
 
                         <!-- Replies -->
                         <div x-show="showReplies && replies(item) > 0 && !repliesToggled(item)">
@@ -189,7 +182,7 @@ export default function (data) {
                                         actionEvent: actionEvent,
                                         itemEvent: $store.wssContentPosts.getMessageEvent(),
                                         parentId: item.id,
-                                        filters: combineFilters(item),
+                                        filters: createReplyFilters(item),
                                         showReplies: true,
                                         forceLoad: true,
                                         userId: userId,

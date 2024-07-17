@@ -255,6 +255,13 @@ details.dropdown.secondary summary:not([role]) {
     --pico-typography-spacing-top: 1.5rem;
 }
 
+[contenteditable=true]:empty:before {
+    color: var(--pico-contrast-focus);
+    content: attr(placeholder);
+    pointer-events: none;
+    display: block; /* For Firefox */
+}
+
 .wysiwyg {
     text-align: left;
     --pico-outline-width: 0.0625rem;
@@ -692,8 +699,13 @@ article span.p {
     --pico-color: var(--pico-secondary);
 }
 
-.list article {
+.list article{
     margin-bottom: calc(var(--pico-block-spacing-vertical)*0.25);
+    border: solid 1px var(--pico-blockquote-border-color);
+    box-shadow: none;
+}
+:root[data-theme=light] .list article {
+    background-color: #FFF;
 }
 article.link {
     margin: 0px;
@@ -711,9 +723,10 @@ article.quote {
 }
 article.highlighted {
     border: solid 1px #FFF;
-    background-color: var(--pico-blockquote-border-color);
 }
-
+:root[data-theme=light] article.highlighted {
+    border: solid 1px #000;
+}
 article.form-post {
     margin: 0px;
     padding: 0 calc(var(--pico-block-spacing-vertical)*0.25);
@@ -954,6 +967,11 @@ article.snackbar.success {
     background-color: #029764;
     color: #FFF;
 }
+article.snackbar.outline {
+    border-color: #029764;
+    background-color: initial;
+}
+
 
 article.snackbar.error {
     background-color: #d93526;
@@ -964,14 +982,41 @@ article.snackbar.information {
     background-color: #ff9500;
     color: #FFF;
 }
+article.outlined {
+    border-color: #029764;
+    border: 1px;
+    background-color: transparent;
+    box-shadow: none;
+    border: solid 1px var(--pico-blockquote-border-color);
+    border-bottom: none;
+    border-radius: 8px;
+}
 
-    article.snackbar.success p,
-    article.snackbar.information p,
-    article.snackbar.error p {
-        color: #FFF;
-        margin-bottom: 0;
-        padding: 0 var(--pico-block-spacing-horizontal);
-    }
+
+.pin {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0px;
+    padding: 12px;
+    margin-bottom: calc(var(--pico-block-spacing-vertical)* .33);
+    border: 1px;
+    background-color: var(--pico-background-color);
+    margin-bottom: 0px;
+}
+.pin p
+{
+    margin-bottom: 0;
+    padding: 0 var(--pico-block-spacing-horizontal);
+}
+
+article.snackbar p,
+article.snackbar p,
+article.snackbar p {
+    color: #FFF;
+    margin-bottom: 0;
+    padding: 0 var(--pico-block-spacing-horizontal);
+}
 
 /*FORMS*/
 form footer {

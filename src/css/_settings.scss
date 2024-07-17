@@ -71,7 +71,7 @@ $breakpoints: map.deep-merge(
       (
         breakpoint: 1024px,
         viewport: 950px,
-        root-font-size: 105%,
+        root-font-size: 100%,
       ),
 
     // Extra large
@@ -80,7 +80,7 @@ $breakpoints: map.deep-merge(
       (
         breakpoint: 1280px,
         viewport: 1200px,
-        root-font-size: 105%,
+        root-font-size: 100%,
       ),
 
     // Extra extra large
@@ -89,7 +89,7 @@ $breakpoints: map.deep-merge(
       (
         breakpoint: 1536px,
         viewport: 1450px,
-        root-font-size: 110%,
+        root-font-size: 100%,
       )
   ),
   $breakpoints
